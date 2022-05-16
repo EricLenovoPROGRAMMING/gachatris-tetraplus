@@ -12,11 +12,11 @@ Uploaded as a private repository on May 14, 2022
 ### NOTE: This game is under progress.
 ### Features:
 - Fully-working 3-corner T-Spin detection
-- Sondbanks
+- Soundbanks
 - Characters
 - Tuning
 - Full-view GUI
 
 ### Planned features to come:
-- Various modes (Sprint, T-Spin Double Only, Survival)
+- Various modes (Sprint, T-Spin Double Only, Survival, Downstack Attack ())
 - ...more to come...
