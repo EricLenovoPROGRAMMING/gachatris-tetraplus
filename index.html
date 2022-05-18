@@ -7,7 +7,6 @@
  <link rel="stylesheet" href="stylesheets.css">
  <title>Gachatris Tetraplus Alpha</title>
 </head>
-
 <body>
  <div id=core>
   <div id=menus>
@@ -15,7 +14,7 @@
     <div id=el-logoDiv>
      <img id=logoEL src="assets/menu/logoel.png" oncontextmenu="undefined" />
     </div>
-    <gtris_gui id=headerBackButton class='guiClass_back' onclick='backButton()'>RETURN</gtris_gui>
+    <gtris_gui id=headerBackButton onclick='backButton()'></gtris_gui>
     <gtris_head id=headerTitle>Gachatris Tetraplus - Main</gtris_head>
    </div>
    <div id=menu-viewer>
@@ -61,13 +60,12 @@
     <gtris-subdiv class='menuClass'>
      <gtris-list>
       <gtris-listCell>
-       <gtris_text id=TEXT-keysSelecting>
+       <gtris_text id=guiText-keysSelecting>
         PRESS ANY KEY TO CHANGE THE SELECTED MAPPING.
        </gtris_text>
       </gtris-listCell>
       <gtris-listCell>
        <gtris_text id=keysSelecting>
-        HARD DROP
        </gtris_text>
       </gtris-listCell>
      </gtris-list>
@@ -109,7 +107,6 @@
      <gtris-list>
       <gtris-listCellPerm id="gamesummary">
        <gtris-listCell>
-        
        </gtris-listCell>
       </gtris-listCellPerm>
       <gtris-listCell>
@@ -123,25 +120,26 @@
       </gtris-listCell>
      </gtris-list>
     </gtris-subdiv>
-        <gtris-subdiv class='menuClass'>
-         <gtris-list>
-          <gtris-listCellPerm id="pause-padding">
-          </gtris-listCellPerm>
-          <gtris-listCell>
-           <gtris-button onclick="unpause()" id="guiButton-retry">Continue</gtris-button>
-          </gtris-listCell>
-          <gtris-listCell>
-           <gtris-button onclick="gameStart(gameMode)" class="guiButton-retry">Start Over</gtris-button>
-          </gtris-listCell>
-          <gtris-listCell>
-           <gtris-button onclick="endGame('Forcibly Ended')" class="guiButton-forceend">Force End</gtris-button>
-          </gtris-listCell>
-         </gtris-list>
-        </gtris-subdiv>
+    <gtris-subdiv class='menuClass'>
+     <gtris-list>
+      <gtris-listCellPerm id="pause-padding">
+      </gtris-listCellPerm>
+      <gtris-listCell>
+       <gtris-button onclick="unPause()" id="guiButton-retry">Continue</gtris-button>
+      </gtris-listCell>
+      <gtris-listCell>
+       <gtris-button onclick="gameStart()" class="guiButton-retry">Start Over</gtris-button>
+      </gtris-listCell>
+      <gtris-listCell>
+       <gtris-button onclick="endGame('Forcibly Ended', true, 'lose')" class="guiButton-forceend">Force End</gtris-button>
+      </gtris-listCell>
+     </gtris-list>
+    </gtris-subdiv>
    </div>
   </div>
   <div id=gtris>
    <div id=tetrion>
+    <tetrionPadding>
     <div id=gtris-body>
      <div id=leftborder>
       <div id=holdDiv>
@@ -188,17 +186,33 @@
       <stat id=stopwatch>0:00.000</stat>
      </statsTable>
     </div>
+    </tetrionPadding>
+       <div id="gtrisLayout">
+        <gtris-msg id=gtris-readygo>
+        </gtris-msg>
+       </div>
+     <div id=tetrionLayer>
+         <gtris-result id=tetrionResultText>WIN</gtris-result>
+         <div id=showResultCharImg>
+         <img id=resultCharImg src='assets/characters/pikumon/win.png' oncontextmenu=""></img>
+         </div>
+        </div>
    </div>
   </div>
+    <div id=splash>
+     <div id=splashLogoDiv>
+      <img src='assets/menu/splashlogo.png' id=splashLogo />
+     </div>
+     <div id=loadingDiv>
+      <gtris-text-large id=gtrisSplashText></gtris-text-large>
+     </div>
+    </div>
  </div>
  <div id=hiddenSpriteCanvasses>
   <canvas id=spriteCanvas></canvas>
   <img id=customSprite />
  </div>
- <script src="jQuery.js"></script>
- <script type="text/javascript" src="scripts/howler-lib.js"></script>
-
- <script type="text/javascript" src="gachatris-polyfill.js"></script>
+ <script type="text/javascript" src="initializer.js"></script>
 </body>
 
 </html>
