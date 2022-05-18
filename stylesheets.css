@@ -128,7 +128,6 @@ gtris-list>gtris-listCell {
  height: auto;
  justify-content: center;
  margin: 0 0 1.0em 0;
- overflow-y: scroll;
 }
 
 #gamesummary,
