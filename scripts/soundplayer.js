@@ -11,7 +11,8 @@ function SoundLoader(){
  this.soundNamesArrayNoLoop = [
   'harddrop','move','rotate','land','lock','firsthold','hold',
   'b2b','game-3','game-2','game-1','game-start','bravo',
-  'prespin','prespinmini','game-lose','game-win',`ko`, 'step'
+  'prespin','prespinmini','game-lose','game-win',`ko`, 'step',
+  'collapse', 'lineup','ihs','irs'
   ]
  this.load=function(){
   if(this.selected.se!=this.current.se){
@@ -44,12 +45,16 @@ function SoundLoader(){
  }
  this.playse=function(name){
   if(selectedSettings.Volume.SFX>0){
+  this.se[name].stop()
   this.se[name].volume(selectedSettings.Volume.SFX/100)
   this.se[name].play()
   }
  }
  this.stopse = function(name) {
   this.se[name].stop()
+ }
+ this.pausese = function(name) {
+  this.se[name].pause()
  }
  this.fadese=function(name,a,b,c){
   this.se[name].fade(a,b,c)

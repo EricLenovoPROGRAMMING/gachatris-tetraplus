@@ -1,5 +1,5 @@
 /**(C) EricLenovo 2022
- * Gachatris: One JavaScriptius
+ * Gachatris: Tetraplus (One JS)
  * May 5, 2022 @10:46AM Philippine Time
  * GPL 3.0 license
  */
@@ -11,7 +11,7 @@ eval = function() {
  return console.warn('JS Console is not usable in this site.')
 }*/
 
-var version = '0.0.021 Alpha'
+var gtris_version = '0.0.038 Alpha Release'
 var syncTime = 0
 var syncFrame = 0
 var actualFrame = 0
@@ -25,7 +25,7 @@ var keysPressed, keysLast
 var gameRunning, gametype, gameRunner
 
 var meterBar = {
- capactity: docId('meterBars'),
+ capacity: docId('meterBars'),
  garbage: docId('meter_A')
 }
 
@@ -51,7 +51,7 @@ var _CTX = {
 }
 
 function RESIZE() {
- var varSize = 3
+ var varSize = 0 || selectedSettings.Other.Resize
  var leftBorder = docId('leftborder')
  var rightBorder = docId('rightborder')
  var leftBorderChildren = docId('leftborder').children
@@ -60,7 +60,7 @@ function RESIZE() {
  var holdPlaceholder = docId('holdTextPlaceholder')
  var nextPlaceholder = docId('nextTextPlaceholder')
  var playField = docId('playField')
- var content = docId('gtris')
+ var [content, contentLayer, resultText, resultImg] = [$tag('tetrionPadding'), docId('tetrionLayer'), $tag('gtris-result'), docId('showResultCharImg')]
  var clearText = docId('clearTexts')
  var holdDiv = docId('holdDiv')
  var header1 = $tag('h1')
@@ -74,8 +74,8 @@ function RESIZE() {
   back: docId('headerBackButton')
  }
  var listCellDetails = $tag('gtris-listCell-Details')
-
-
+ var characterImage = docId('characterImage')
+ var logoSplash = docId('splashLogoDiv')
 
  var screenHeight = window.innerHeight - 34;
  var screenWidth = ~~(screenHeight * 2);
@@ -85,25 +85,34 @@ function RESIZE() {
 
  if (varSize === 1 && screenHeight > 602) cellSize = 10;
  else if (varSize === 2 && screenHeight > 602) cellSize = 20;
- else if (varSize === 3 && screenHeight > 902) cellSize = 40;
+ else if (varSize === 3 && screenHeight > 902) cellSize = 34;
  else cellSize = Math.max(~~(screenHeight / 28), 7);
 
  var padNum = (window.innerHeight - (cellSize * 20 + 2)) / 3;
  var padNum2 = (window.innerHeight - (cellSize * 20 + 20)) / 1.5
  var padNum3 = (window.innerHeight - (cellSize * 20)) / 15
+ var padNum4 = (window.innerHeight - (cellSize * 20 + 2)) / 3.5;
 
  var pad = padNum + 'px'
- content.style.padding = `${pad} 0`
-
-
-
+ for(var e of content)
+ e.style.padding = `${pad} 0`
+ contentLayer.style.padding = `${padNum4}px 0`
+ for(var e of resultText)
+ e.style.fontSize = `${cellSize*3}px`
+ resultImg.style.height=`${cellSize*23}px`
+ resultImg.style.width=`${cellSize*23}px`
+ 
  menuHeader.style.height = `${cellSize*2.1}px`
  logoHeader.body.style.height = logoHeader.body.style.width =
   logoHeader.logo.style.height = logoHeader.logo.style.width =
   menuHeader.style.height
+  
+  logoHeader.back.style.height = logoHeader.logo.style.width = `${cellSize*2.1}px`
+  
  for (let g of listCellDetails) {
   g.style.height = `${cellSize*4}px`
  }
+ characterImage.style.height = `${cellSize*4}px`
  docId('character-cells').style.paddingBottom = `${cellSize*4}px`
  for (let g of $tag('gtris-text-large')) {
   g.style.fontSize = `${cellSize*1.8}px`
@@ -115,9 +124,11 @@ function RESIZE() {
   g.style.fontSize = `${cellSize*0.9}px`
  }
 
-
-
  logoHeader.title.style.fontSize = `${cellSize}px`
+
+ logoSplash.style.width = logoSplash.style.height = `${cellSize*16}px`
+
+
 
  leftBorder.style.width = `${cellSize*5}px`
  rightBorder.style.width = `${cellSize*5}px`
@@ -192,8 +203,6 @@ function RESIZE() {
  customSprite.style.width = customSprite.width = _canvasses.sprite.style.width = `${_canvasses.sprite.width}px`
  customSprite.style.height = customSprite.height = _canvasses.sprite.style.height = `${_canvasses.sprite.height}px`
 
-
-
  holdDiv.style.height = `${cellSize*5}px`
 
  document.documentElement.style.fontSize = `${cellSize*0.9}px`
@@ -202,19 +211,46 @@ function RESIZE() {
  }
 
  docId('tSpin').style.fontSize = `${cellSize*0.4}px`
- docId('regular').style.fontSize = `${cellSize*0.8}px`
+ docId('regular').style.fontSize = `${cellSize*0.7}px`
  docId('B2B').style.fontSize = `${cellSize*0.4}px`
  docId('tSpin').style.height = `${cellSize*0.4}px`
- docId('regular').style.height = `${cellSize*0.8}px`
+ docId('regular').style.height = `${cellSize*0.7}px`
  docId('B2B').style.height = `${cellSize*0.4}px`
  docId('REN').style.height = `${cellSize*1.2}px`
  docId('REN').style.fontSize = `${cellSize*1.2}px`
 
  makeSprite()
+ if(gameRunning){
+  if(hold.piece) hold.draw()
+  field.draw()
+  preview.draw()
+  piece.draw()
+  piece.drawGhost()
+ }
+ gridLines(_CTX.grid)
 }
-addEventListener('resize', RESIZE, false)
-addEventListener('DOMContentLoaded', RESIZE(), false)
-RESIZE()
+addEventListener('resize', function(){
+ for(var x=0; x<4; x++)
+ setTimeout(function(){
+ RESIZE()
+ },40*x)
+}, false)
+addEventListener('DOMContentLoaded', RESIZE, false)
+
+function gridLines(ctx) {
+ clear(ctx)
+ ctx.fillStyle = '#000000';
+ for (var x = -1; x < ctx.canvas.width + 1; x += cellSize) {
+  ctx.fillRect(x, 0, 10 / cellSize, ctx.canvas.height);
+ }
+ for (var y = -1; y < ctx.canvas.height + 1; y += cellSize) {
+  if(y==-1)
+   ctx.fillStyle = '#ff0000';
+   else ctx.fillStyle = '#000000';
+  ctx.fillRect(0, (cellSize * 0.4) + y, ctx.canvas.width, 10 / cellSize);
+ }
+}
+
 //draw the cell using cellSize
 function drawCell(x, y, color, ctx, row) {
  x = x * cellSize;
@@ -262,7 +298,6 @@ var pieceSettings = {
  PREV: 5,
  Ghost: 0,
 }
-
 var defaultBinds = {
  pause: 27,
  LEFT: 37,
@@ -335,11 +370,13 @@ var settingsList = {
   SoundBank: ['Default', 'JavaScriptus'],
  },
  NonIterable: {
-  Character: ['No Characer', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Markthin'],
+  Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10'],
  },
  Other: {
-  Skin: ['Default', 'Solid'],
-  Ghost: ['Off', 'Outlined Ghost', 'Gray', 'Colored']
+  Skin: ['Default'],
+  Ghost: ['Off', 'Outlined Ghost', 'Gray', 'Colored'],
+  Resize: [`Automatic`, `Small`, `Medium`, `Large`],
+  Gridlines: [`-`, 'O']
  }
 }
 
@@ -365,10 +402,12 @@ var selectedSettings = {
  },
  Other: {
   Skin: 0,
-  Ghost: 2
+  Ghost: 2,
+  Resize: 0,
+  Gridlines: 0
  },
  Binds: {
-  pause: 27,
+  Pause: 27,
   LEFT: 37,
   RIGHT: 39,
   SDROP: 40,
@@ -377,7 +416,7 @@ var selectedSettings = {
   CW: 88,
   CCW: 90,
   ['180DEG']: 16,
-  retry: 82,
+  Retry: 82,
  },
 
 }
@@ -399,78 +438,35 @@ try {
   loadSTORAGE()
 } catch (e) {}
 
-function keyCodeToKeyFlag(keyCode) {
- if (keyCode === selectedSettings.Binds.LEFT) {
-  return flags.LEFT;
- } else if (keyCode === selectedSettings.Binds.RIGHT) {
-  return flags.RIGHT;
- } else if (keyCode === selectedSettings.Binds.SDROP) {
-  return flags.SDROP;
- } else if (keyCode === selectedSettings.Binds.HDROP) {
-  return flags.HDROP;
- } else if (keyCode === selectedSettings.Binds.CW) {
-  return flags.CW;
- } else if (keyCode === selectedSettings.Binds.CCW) {
-  return flags.CCW;
- } else if (keyCode === selectedSettings.Binds['180DEG']) {
-  return flags['180DEG'];
- } else if (keyCode === selectedSettings.Binds.HOLD) {
-  return flags.HOLD;
- } else {
-  return 0;
- }
-}
-
-function keyUpDown(e) {
- if ([32, 37, 38, 39, 40].indexOf(e.keyCode) !== -1)
-  e.preventDefault();
- if (!isKeySelectorOn) {
-  if (e.type === "keydown" && e.keyCode === selectedSettings.Binds.pause) {
-   if (paused) {
-    unpause();
-   } else {
-    pause();
-   }
-  }
-  if (e.type === "keydown" && e.keyCode === selectedSettings.Binds.retry) {
-   gameStart(gametype);
-  }
-  if (!isReplay) {
-   var flag = keyCodeToKeyFlag(e.keyCode);
-   if (e.type === "keydown") {
-    keysPressed |= flag;
-   } else if (e.type === "keyup") {
-    keysPressed &= ~flag;
-   }
-  }
- } else {
-  if (e.type === "keydown") {
-   isKeySelectorOn = false
-
-   for (var i in selectedSettings.Binds) {
-    if (selectedSettings.Binds[i] == e.keyCode)
-     selectedSettings.Binds[i] = undefined
-   }
-
-   selectedSettings.Binds[keyMappingSelected] = e.keyCode
-   keyMappingSelected = undefined
-   loadKeyboardSettingss()
-   switchMenu(2, true, 'Control Mappings', true)
-  }
- }
-}
-addEventListener('keydown', keyUpDown, false);
-addEventListener('keyup', keyUpDown, false);
-
-
 function pause() {
+ if(gameRunning){
  isPaused = true
-
+ field.checkWarning('paused')
+ activeMenu(true,'0', true)
+ switchMenu(9, true, 'Paused', true)
+}
 }
 
-function unpause() {
+function unPause() {
  isPaused = false
+ field.checkWarning('resumed')
+ activeMenu(false)
+}
 
+function countDownText(text, spreadOut){
+ var $e = $('#gtris-readygo')
+ $e.css('display','block')
+ $e.stop(true)
+ docId('gtris-readygo').innerHTML = text
+ $e.animate({opacity:1}, 0)
+ if(spreadOut==false){
+  $e.animate({opacity:0.8}, 600)
+  $e.animate({opacity:0.2}, 600)
+ }
+ if (spreadOut == true) {
+  $e.animate({ opacity: 0 }, 600, function(){
+  $e.css('display','none')})
+ }
 }
 
 function init(mode, parameter) {
@@ -483,17 +479,20 @@ function init(mode, parameter) {
   replayData = {
    keyList: {},
    seed: ~~(Math.random() * 2147483647),
-   tuning: {}
+   tuning: {},
+   mode: parameter
   }
   for (let i in settingsRange.Tuning) {
    replayData.tuning[i] = selectedSettings.Tuning[i]
   }
- }
+ } 
+ isPaused = false
  clear(_CTX.field)
  clear(_CTX.active)
  for (let i in settingsRange.Tuning) {
   pieceSettings[i] = replayData.tuning[i]
  }
+ pieceSettings[`Ghost`] = selectedSettings.Other.Ghost
  piece.rng.seed = replayData.seed
  keysPressed = 0
  keysLast = 0
@@ -502,11 +501,9 @@ function init(mode, parameter) {
  preview.init()
  preview.draw()
  field.new(10, 42)
- piece.x = 'reset'
- piece.y = -1000
+ piece.reset()
  frame = 0
- piece.index = 'reset'
- piece.tetro = [[]]
+ stopFrame = 0
  soundPlayer.selected.se = selectedSettings.Sound.SoundBank
  soundPlayer.load()
  field.resetFieldPosition()
@@ -519,15 +516,15 @@ function init(mode, parameter) {
   }, 1000 / 120)
  gameRunning = true
  G_LOOP()
- console.log('start')
 }
-
 function gameStart(gametype, parameter) {
  init(gametype, parameter);
  activeMenu(false)
+ docId('gtris').style.display = 'block'
 }
 
 var frame = 0
+var stopFrame = 0
 
 function G_LOOP() {
  if (gameRunning && !isPaused) {
@@ -535,22 +532,27 @@ function G_LOOP() {
   switch (frame - 1) {
    case 0: {
     soundPlayer.playse('game-3')
+    countDownText('READY <br> 3', false)
     break
    }
    case 120: {
     soundPlayer.playse('game-2')
+    countDownText('READY <br> 2', false)
     break
    }
    case 120 * 2: {
     soundPlayer.playse('game-1')
+    countDownText('READY <br> 1', false)
     break
    }
    case 120 * 3: {
     soundPlayer.playse('game-start')
+    countDownText('START', true)
     break
    }
   }
   if (frame == 120 * 3) piece.new(preview.next())
+  G_ACTIVITY()
   P_UPDATE()
   Statistics()
  } else if (!gameRunning) {
@@ -564,6 +566,11 @@ function P_UPDATE() {
   replayData.keyList[frame] = keysPressed
  } else if (frame in replayData.keyList) {
   keysPressed = replayData.keyList[frame]
+  
+  if (replayData.keyList[frame] == 'end') {
+   endGame('Replay Ended', true, 'lose')
+  }
+  
  }
  if (keysPressed & flags.HOLD && !(keysLast & flags.HOLD)) {
   piece.hold()
@@ -585,8 +592,26 @@ function P_UPDATE() {
  }
  piece.checkShift(keysPressed, keysLast)
  piece.update()
-
  keysLast = keysPressed
+ if(field.are.line>=0||field.are.piece>=0){
+  if(field.are.line>=0){
+   field.are.line--
+  }else
+  if(field.are.piece>=0){
+   field.are.piece--
+  }
+  if(field.are.line==0){
+  field.removeLines()
+  if (field.are.piece < 0) {
+   if (frame > 120 * 3)
+    piece.new(preview.next())
+  }
+  }
+ if(field.are.piece==0){
+  if(frame>120*3)
+   piece.new(preview.next())
+  }
+ }
 }
 
 function Statistics() {
@@ -600,6 +625,8 @@ function Statistics() {
 }
 
 function endGame(title, downfall, winlose) {
+ if(gameRunning)
+ replayData.keyList[frame + 40] = 'end'
  if (downfall == true) {
   gtrisBody.style.transition = 'transform 2.5s ease-in'
   gtrisBody.style.transform = 'translateY(4800px) rotateZ(90deg)'
@@ -608,23 +635,33 @@ function endGame(title, downfall, winlose) {
  if (winlose == 'win') {
 
  } else if (winlose == 'lose') {
+  field.showResultAnimation('lose', title)
   soundPlayer.playse('game-lose')
  } else if (winlose !== void 0) {
 
  }
  clearInterval(gameRunner)
+ countDownText('')
  gameRunning = false
+ stopFrame = frame
  activeMenu(true, 0.5, true)
  switchMenu(8, true, title, true)
+ placeStats(['time',`pps`])
 }
 
 function placeStats(array){
  var summary = docId('gamesummary')
  var str = ''
+ summary.innerHTML='STATUS: <br>'
  for(let D of array){
   switch(D.toLowerCase()){
    case 'time': {
-    str = ``
+    str = `Time: ${(function(){
+    var time = frame - (120 * 3)
+    var seconds = ((time / 120) % 60).toFixed(3)
+    var minutes = (Math.floor((time) / (3600 * 2))).toFixed(0)
+    return `${minutes}:${seconds<10?'0':''}${seconds}`
+})()} (${stopFrame})`
     break
    }
    case 'lines': {
@@ -632,7 +669,7 @@ function placeStats(array){
     break
    }
    case 'pps': {
-    str = `Pieces:${field.pieces}, ${field.pps}/sec`
+    str = `Pieces: ${field.pieces}, ${(field.pieces / ((stopFrame - (120 * 3)) / 120))}/sec`
     break
    }
    case 'level': {
@@ -644,7 +681,7 @@ function placeStats(array){
     break
    }
    case 'gtris': {
-    str = `Gachatrises: ${field.statistics.gtris}`
+    str = `Gachatrises: ${field.statistics.line.gtris}`
     break
    }
    case 'pc': {
@@ -652,20 +689,27 @@ function placeStats(array){
     break
    }
   }
+  summary.innerHTML+=`${str} <br>`
  }
 }
 
-
-! function() {
+!function() {
  setTimeout(
-  function() {
+  async function() {
    let array = ['menus']
-   for (let i of array) {
-    $create('script', function(a) {
-     a.src = `scripts/${i}.js`
-     a.type = 'text/javascript'
-     document.body.appendChild(a)
-    })
+   for (let i in array) {
+     $create('script', function(a) {
+      a.src = `scripts/${array[i]}.js`
+      a.id = `script-${array[i]}`
+      a.type = 'text/javascript'
+      document.body.appendChild(a)
+     })
    }
-  }, 100)
+  },10)
 }()
+
+
+function G_ACTIVITY(){
+ docId('stats1').innerHTML=field.pieces
+ docId('stats2').innerHTML=field.lineTotal
+}
