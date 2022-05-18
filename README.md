@@ -8,6 +8,7 @@ Gachatris Tetraplus is the successor to the Gachatris JavaScriptus
 Started developing May 5, 2022
 
 Uploaded as a private repository on May 14, 2022
+Published on May 18, 2022, 3:30PM GMT +8:00
 
 ### NOTE: This game is under progress.
 ### Features:
@@ -16,6 +17,7 @@ Uploaded as a private repository on May 14, 2022
 - Characters
 - Tuning
 - Full-view GUI
+- Splash screen
 
 ### Planned features to come:
 - Various modes (Sprint, T-Spin Double Only, Survival, Downstack Attack ())
