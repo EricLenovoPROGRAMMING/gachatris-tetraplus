@@ -42,7 +42,7 @@ Number.prototype.mod = function(n) {
 
 //initialize Gachatris
 !function(){
- let array=['jQuery','howler-lib','gachatris-data','piece','field','queue_prev','piecehold','soundplayer','main', 'menus']
+ let array=['jQuery','howler-lib','gachatris-data','piece','field','queue_prev','pieceHold','soundplayer','main', 'menus']
  var i=0
  function loadScript(){
   $create('script', function(a){
