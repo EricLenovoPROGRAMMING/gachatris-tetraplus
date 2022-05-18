@@ -9,6 +9,8 @@ Started developing May 5, 2022
 
 Uploaded as a private repository on May 14, 2022
 
+Launched online using GitHub Pages on May 18, 2022, 3:32PM GMT +8:00
+
 Published on May 18, 2022, 3:30PM GMT +8:00
 
 ### NOTE: This game is under progress.
