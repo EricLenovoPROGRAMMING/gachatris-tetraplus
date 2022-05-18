@@ -280,7 +280,7 @@ function draw(tetro, cx, cy, ctx, color, row) {
 
 function makeSprite() {
  var spriteCustom = docId('customSprite')
- spriteCustom.src = `tetrimino/Default.png`
+ spriteCustom.src = `tetrimino/default.png`
  spriteCustom.onload = () =>
   _CTX.sprite.drawImage(spriteCustom, 0, 0, spriteCustom.width, spriteCustom.height)
 }
