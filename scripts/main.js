@@ -251,7 +251,6 @@ function gridLines(ctx) {
  }
 }
 
-//draw the cell using cellSize
 function drawCell(x, y, color, ctx, row) {
  x = x * cellSize;
  x = ~~x;
