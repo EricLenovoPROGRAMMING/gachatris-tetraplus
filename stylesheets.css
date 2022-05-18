@@ -160,7 +160,7 @@ gtris-button {
  width: 50%;
  color: #fff;
  border: 0.1em solid #f0f;
- cursor: none;
+ cursor: pointer;
  border-radius: 2px;
  padding: 0.5rem 0.6rem 0.4rem;
  margin: 0 6em;
@@ -169,7 +169,6 @@ gtris-button {
 }
 
 gtris-button-list {
- content: " ";
  font: 1.25rem 'default';
  display: inline-block;
  text-align: left;
@@ -177,7 +176,7 @@ gtris-button-list {
  height: 30%;
  color: #fff;
  border: 2pt solid #e00;
- cursor: none;
+ cursor: pointer;
  border-radius: 10px;
  padding: 1rem 0.4rem 1rem 0.4rem;
  margin: 0 1em;
@@ -213,7 +212,6 @@ gtris-button-list {
 }
 
 img {
- content: attr(alt);
  text-indent: -1000px
 }
 
