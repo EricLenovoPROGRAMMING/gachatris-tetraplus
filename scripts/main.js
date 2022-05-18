@@ -11,7 +11,7 @@ eval = function() {
  return console.warn('JS Console is not usable in this site.')
 }*/
 
-var gtris_version = '0.0.038 Alpha Release'
+var gtris_version = '0.0.021 Alpha Release'
 var syncTime = 0
 var syncFrame = 0
 var actualFrame = 0
