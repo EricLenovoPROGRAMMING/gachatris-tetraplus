@@ -211,10 +211,6 @@ gtris-button-list {
  padding-left: 1%;
 }
 
-img {
- text-indent: -1000px
-}
-
 input[type='range'] {
  -webkit-appearance: none;
  /* Override default CSS styles */
