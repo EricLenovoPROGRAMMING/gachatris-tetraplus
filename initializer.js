@@ -41,7 +41,7 @@ Number.prototype.mod = function(n) {
 };
 
 //initialize Gachatris
-!function(){
+(function(){
  let array=['jQuery','howler-lib','gachatris-data','piece','field','queue_prev','pieceHold','soundplayer','main', 'menus']
  var i=0
  function loadScript(){
@@ -90,7 +90,7 @@ Number.prototype.mod = function(n) {
  //$('#splash').css('display','none')
  }
  
-}()
+})()
 
 //Globally handle errors
 window.onerror = (event,source,lineno,colno,error) =>{
