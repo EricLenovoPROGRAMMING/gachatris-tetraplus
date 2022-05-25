@@ -4,7 +4,7 @@ function gtris_transText(name, input) {
   return {
     en: {
       splash1: 'EricLenovo - ELSQPPH presents...',
-      splash2: 'Developed on May 5, 2022',
+      splash2: 'Development started on May 5, 2022',
       splash3: `Gachatris Tetraplus, v${_input}`,
 
       title: 'Gachatris Tetraplus Alpha',
