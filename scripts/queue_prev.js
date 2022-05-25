@@ -1,25 +1,21 @@
 function Preview() {
- 
-}
+ this.bag= [0, 1, 2, 3, 4, 5, 6];
 
-
-
-Preview.prototype.init = function() {
-
+this.init = function() {
  this.grabBag = this.gen();
  this.grabBag.push.apply(this.grabBag, this.gen());
  this.draw();
 };
-Preview.prototype.next = function() {
+this.next = function() {
  var next;
  next = this.grabBag.shift();
  this.grabBag.push.apply(this.grabBag, this.gen())
  this.draw()
  return next
 };
-Preview.prototype.gen = function() {
- var pieceList = void 0;
- pieceList = [0, 1, 2, 3, 4, 5, 6];
+this.gen = function() {
+ let pieceList = []
+ this.bag.forEach(function(a){pieceList.push(a)})
  for (var i = 0; i < pieceList.length - 1; i++)
  {
   var temp = pieceList[i];
@@ -30,7 +26,7 @@ Preview.prototype.gen = function() {
  return pieceList;
 }
 
-Preview.prototype.draw = function() {
+this.draw = function() {
  clear(_CTX.next);
  clear(_CTX.queue)
  for (var i = 0; i < Math.min(pieceSettings.PREV, this.grabBag.length); i++) {
@@ -73,7 +69,7 @@ Preview.prototype.draw = function() {
     'queue',
     void 0,
     0
-   );
+   )
   } else if (this.grabBag[i] === 3) {
    draw(
     pieces[this.grabBag[i]].tetro,
@@ -82,7 +78,7 @@ Preview.prototype.draw = function() {
     'queue',
     void 0,
     0
-   );
+   )
   } else {
    draw(
     pieces[this.grabBag[i]].tetro,
@@ -91,8 +87,9 @@ Preview.prototype.draw = function() {
     'queue',
     void 0,
     0
-   );
+   )
   }
  }
-};
+}
+}
 var preview = new Preview();
