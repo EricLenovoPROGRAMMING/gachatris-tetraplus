@@ -19,7 +19,9 @@ Published on May 18, 2022, 3:30PM GMT +8:00
 - Tuning
 - Full-view GUI
 - Splash screen
+- Localizations: English, Filipino
 
 ### Planned features to come:
-- Various modes (Sprint, T-Spin Double Only, Survival, Downstack Attack ())
+- Various modes (Sprint, T-Spin Double Only, Survival, Downstack Attack (JavaScriptus-inspired))
+- Replay Data Center
 - ...more to come...
