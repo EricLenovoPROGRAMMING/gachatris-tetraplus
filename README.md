@@ -11,7 +11,7 @@ Uploaded as a private repository on May 14, 2022
 
 Published on May 18, 2022, 3:30PM GMT +8:00
 
-### NOTE: This game is under progress.
+### NOTE: This game is under Alpha build, 0.0.048; there is no tab icon yet for this game, but it will be released in the next update.
 ### Features:
 - Fully-working 3-corner T-Spin detection
 - Soundbanks
@@ -22,6 +22,6 @@ Published on May 18, 2022, 3:30PM GMT +8:00
 - Localizations: English, Filipino
 
 ### Planned features to come:
-- Various modes (Sprint, T-Spin Double Only, Survival, Downstack Attack (JavaScriptus-inspired))
+- Various modes (Sprint, T-Spin Double Only, Garbage Survival, Downstack Attack (JavaScriptus-inspired))
 - Replay Data Center
 - ...more to come...
