@@ -2,217 +2,232 @@
 <html>
 
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1">
- <link rel="stylesheet" href="stylesheets.css">
- <title>Gachatris Tetraplus Alpha</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="stylesheets.css">
+  <title>Gachatris Tetraplus Alpha</title>
 </head>
 <body>
- <div id=core>
-  <div id=menus>
-   <div id=menuHeader>
-    <div id=el-logoDiv>
-     <img id=logoEL src="assets/menu/logoEL.png" oncontextmenu="undefined" />
+  <div id=core>
+    <div id=menus>
+      <div id=menuHeader>
+        <div id=el-logoDiv>
+          <img id=logoEL src="assets/menu/logoEL.png" oncontextmenu="undefined" />
+        </div>
+        <gtris_gui id=headerBackButton onclick='backButton()'></gtris_gui>
+        <gtris_head id=headerTitle>Gachatris Tetraplus Alpha</gtris_head>
+      </div>
+      <div id=menu-viewer>
+        <gtris-subdiv class='menuClass menuActive'>
+          <gtris-list>
+            <gtris-listCell>
+              <gtris-button onclick="gameStart()" id="guiButton-play">PLAY</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="switchMenu(1, true, 'h_settings')" id="guiButton-settings">SETTINGS</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="switchMenu(2,true,'h_controls')" id=guiButton-controls>CONTROLS</gtris-button>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCell>
+              <gtris-button onclick="switchMenu(3,true,'h_tuning')" id=guiButton-handlingtuning>Handling / Tuning</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="switchMenu(5,true,'h_audvol')" id=guiButton-audio>Audio / Volume</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="switchMenu(6,true,'h_character')" id=guiButton-selChar>Character</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="switchMenu(7,true,'h_miscellaneous')" id=guiButton-misc>Miscellaneous</gtris-button>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCell id="control-cells" class=settings-list-divider>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list id=settingsList-HANDLING class=settings-list-divider>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCell>
+              <gtris_text id=guiText-keysSelecting>
+                PRESS ANY KEY TO CHANGE THE SELECTED MAPPING.
+              </gtris_text>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris_text id=keysSelecting>
+              </gtris_text>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCell id="volume-cells" class=settings-list-divider>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCell-Details>
+              <div id=characterDetailDiv>
+                <div>
+                  <gtris-text id=guiText-characterUse>You are now using:</gtris-text>
+                </div>
+                <div>
+                  <gtris-text-large id=characterName></gtris-text-large>
+                </div>
+              </div>
+              <div id=characterImageDiv>
+                <img id="characterImage" />
+              </div>
+            </gtris-listCell-Details>
+            <gtris-listCell-Details2>
+                            <div id=characterFurtherDetailDiv>
+                              <gtris-text id=characterFurtherDetail></gtris-text>
+                            </div>
+            </gtris-listCell-Details2>
+          </gtris-list>
+          <gtris-list>
+            <gtris-listCell id="character-cells" class=settings-list-divider>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCell id="misc-cells" class=settings-list-divider>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCellPerm id="gamesummary">
+              <gtris-listCell>
+              </gtris-listCell>
+            </gtris-listCellPerm>
+            <gtris-listCell>
+              <gtris-button onclick="gameStart()" class="guiClass-retry">Start Over</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="gameStart('REPLAY')" id="guiButton-replay">View Replay</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="switchMenu(0,true, gtris_transText('title'));musicPlayer.playMfx('menu')" class="guiClass-mainmenu">Main Menu</gtris-button>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list>
+            <gtris-listCellPerm id="pause-padding">
+            </gtris-listCellPerm>
+            <gtris-listCell>
+              <gtris-button onclick="unPause()" id="guiButton-resume">Continue</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="gameStart()" class="guiClass-retry">Start Over</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="endGame('forceended', true, 'lose')" id="guiButton-forceend">Force End</gtris-button>
+            </gtris-listCell>
+          </gtris-list>
+        </gtris-subdiv>
+      </div>
     </div>
-    <gtris_gui id=headerBackButton onclick='backButton()'></gtris_gui>
-    <gtris_head id=headerTitle>Gachatris Tetraplus - Main</gtris_head>
-   </div>
-   <div id=menu-viewer>
-    <gtris-subdiv class='menuClass menuActive'>
-     <gtris-list>
-      <gtris-listCell>
-       <gtris-button onclick="gameStart()" id="guiButton-play">PLAY</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="switchMenu(1, true, 'Settings')" id="guiButton-settings">SETTINGS</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="switchMenu(2,true,'Controls')" id=guiButton-controls>CONTROLS</gtris-button>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCell>
-       <gtris-button onclick="switchMenu(3,true,'Handling and Tuning')" id=guiButton-handlingtuning>Handling / Tuning</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="switchMenu(5,true,'Audio and Volume')" id=guiButton-audio>Audio / Volume</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="switchMenu(6,true,'Select a Character for the Game')" id=guiButton-selChar>Character</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="switchMenu(7,true,'Miscellaneous Settings')" id=guiButton-misc>Miscellaneous</gtris-button>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCell id="control-cells" class=settings-list-divider>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list id=settingsList-HANDLING class=settings-list-divider>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCell>
-       <gtris_text id=guiText-keysSelecting>
-        PRESS ANY KEY TO CHANGE THE SELECTED MAPPING.
-       </gtris_text>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris_text id=keysSelecting>
-       </gtris_text>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCell id="volume-cells" class=settings-list-divider>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCell-Details>
-       <div id=characterDetailDiv>
-        <div>
-         <gtris-text id=guiText-characterUse>You are now using:</gtris-text>
+    <div id=gtris>
+      <div id=tetrion>
+        <tetrionPadding>
+          <div id=gtris-body>
+            <div id=leftborder>
+              <div id=holdDiv>
+                <div id=holdTextPlaceholder>
+                  <gtris_gui id=TEXT_hold>HOLD</gtris_gui>
+                </div>
+                <canvas id=holdCanvas></canvas>
+              </div>
+              <div id=clearTexts>
+                <gtris_text id=tSpin></gtris_text>
+                <gtris_text id=regular></gtris_text>
+                <gtris_text id=B2B></gtris_text>
+                <gtris_text id=REN></gtris_text>
+              </div>
+            </div>
+            <div id=playField>
+              <div id=loadedBackground>
+                <img id="characterBackground" />
+              </div>
+              <canvas id=gridCanvas></canvas>
+              <canvas id=fieldCanvas></canvas>
+              <canvas id=activeCanvas></canvas>
+            </div>
+            <div id=meterBars>
+              <div id=meter_A>
+              </div>
+            </div>
+            <div id=rightborder>
+              <div id=nextDiv>
+                <div id=nextTextPlaceholder>
+                  <gtris_gui id=TEXT_next>NEXT</gtris_gui>
+                </div>
+                <canvas id=nextCanvas></canvas>
+              </div>
+              <canvas id=queueCanvas></canvas>
+            </div>
+            <statsTable id=statistics>
+              <statLarge id=stats3 class=var-stat></statLarge>
+              <stat id=TEXT_stats3 class=text-stat></stat>
+              <statLarge id=stats2 class=var-stat></statLarge>
+              <stat id=TEXT_stats2 class=text-stat></stat>
+              <statLarge id=stats1 class=var-stat></statLarge>
+              <stat id=TEXT_stats1 class=text-stat></stat>
+              <stat id=stopwatch>0:00.000</stat>
+              <statMedium id=score>0</statMediun>
+            </statsTable>
+          </div>
+        </tetrionPadding>
+        <div id="gtrisLayout">
+          <gtris-msg id=gtris-readygo>
+          </gtris-msg>
         </div>
-        <div>
-         <gtris-text-large id=characterName>NOT</gtris-text-large>
+        <div id=tetrionLayer>
+          <gtris-result id=tetrionResultText>WIN</gtris-result>
+          <div id=showResultCharImg>
+            <img id=resultCharImg oncontextmenu=""></img>
+          </div>
         </div>
-       </div>
-       <div id=characterImageDiv>
-        <img id="characterImage" />
-       </div>
-      </gtris-listCell-Details>
-     </gtris-list>
-     <gtris-list>
-      <gtris-listCell id="character-cells" class=settings-list-divider>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCell id="misc-cells" class=settings-list-divider>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCellPerm id="gamesummary">
-       <gtris-listCell>
-       </gtris-listCell>
-      </gtris-listCellPerm>
-      <gtris-listCell>
-       <gtris-button onclick="gameStart()" class="guiButton-retry">Start Over</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="gameStart('REPLAY')" id="guiButton-replay">View Replay</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="switchMenu(0,true)" class="guiButton-mainmenu">Main Menu</gtris-button>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-    <gtris-subdiv class='menuClass'>
-     <gtris-list>
-      <gtris-listCellPerm id="pause-padding">
-      </gtris-listCellPerm>
-      <gtris-listCell>
-       <gtris-button onclick="unPause()" id="guiButton-retry">Continue</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="gameStart()" class="guiButton-retry">Start Over</gtris-button>
-      </gtris-listCell>
-      <gtris-listCell>
-       <gtris-button onclick="endGame('Forcibly Ended', true, 'lose')" class="guiButton-forceend">Force End</gtris-button>
-      </gtris-listCell>
-     </gtris-list>
-    </gtris-subdiv>
-   </div>
-  </div>
-  <div id=gtris>
-   <div id=tetrion>
-    <tetrionPadding>
-    <div id=gtris-body>
-     <div id=leftborder>
-      <div id=holdDiv>
-       <div id=holdTextPlaceholder>
-        <gtris_gui id=TEXT_hold>HOLD</gtris_gui>
-       </div>
-       <canvas id=holdCanvas></canvas>
+        <div id=tetrionPC>
+          <gtris_big id=perfectClear1>
+            PERFECT<br>CLEAR!
+          </gtris_big>
+          <gtris_big id=perfectClear2>
+            PERFECT<br>CLEAR!
+          </gtris_big>
+        </div>
       </div>
-      <div id=clearTexts>
-       <gtris_text id=tSpin></gtris_text>
-       <gtris_text id=regular></gtris_text>
-       <gtris_text id=B2B></gtris_text>
-       <gtris_text id=REN></gtris_text>
-      </div>
-     </div>
-     <div id=playField>
-      <div id=loadedBackground>
-       <img id="characterBackground" />
-      </div>
-      <canvas id=gridCanvas></canvas>
-      <canvas id=fieldCanvas></canvas>
-      <canvas id=activeCanvas></canvas>
-     </div>
-     <div id=meterBars>
-      <div id=meter_A>
-      </div>
-     </div>
-     <div id=rightborder>
-      <div id=nextDiv>
-       <div id=nextTextPlaceholder>
-        <gtris_gui id=TEXT_next>NEXT</gtris_gui>
-       </div>
-       <canvas id=nextCanvas></canvas>
-      </div>
-      <canvas id=queueCanvas></canvas>
-     </div>
-     <statsTable id=statistics>
-      <statLarge id=stats3></statLarge>
-      <stat id=TEXT_stats3></stat>
-      <statLarge id=stats2>0</statLarge>
-      <stat id=TEXT_stats2>LINES</stat>
-      <statLarge id=stats1>0</statLarge>
-      <stat id=TEXT_stats1>PIECES, 0.000/sec</stat>
-      <stat id=stopwatch>0:00.000</stat>
-     </statsTable>
     </div>
-    </tetrionPadding>
-       <div id="gtrisLayout">
-        <gtris-msg id=gtris-readygo>
-        </gtris-msg>
-       </div>
-     <div id=tetrionLayer>
-         <gtris-result id=tetrionResultText>WIN</gtris-result>
-         <div id=showResultCharImg>
-         <img id=resultCharImg src='assets/characters/pikumon/win.png' oncontextmenu=""></img>
-         </div>
-        </div>
-   </div>
-  </div>
     <div id=splash>
-     <div id=splashLogoDiv>
-      <img src='assets/menu/splashlogo.png' id=splashLogo />
-     </div>
-     <div id=loadingDiv>
-      <gtris-text-large id=gtrisSplashText></gtris-text-large>
-     </div>
+      <div id=splashLogoDiv>
+        <img src='assets/menu/splashlogo.png' id=splashLogo />
+      </div>
+      <div id=loadingDiv>
+        <gtris-text-large id=gtrisSplashText></gtris-text-large>
+      </div>
     </div>
- </div>
- <div id=hiddenSpriteCanvasses>
-  <canvas id=spriteCanvas></canvas>
-  <img id=customSprite />
- </div>
- <script type="text/javascript" src="initializer.js"></script>
+  </div>
+  <div id=hiddenSpriteCanvasses>
+    <canvas id=spriteCanvas></canvas>
+    <img id=customSprite />
+  </div>
+  <script type="text/javascript" src="error_handler.js"></script>
+  <script type="text/javascript" src="initializer.js"></script>
 </body>
 
 </html>

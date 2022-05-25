@@ -21,10 +21,13 @@ html {
 body {
  font-family: 'default';
  margin: 0 0;
+ max-height:100%;
  background: #000;
  background-size: cover;
  color: #fff;
+ align-items: center;
  overflow: hidden;
+ text-overflow: hidden
 }
 
 #core {
@@ -42,6 +45,7 @@ body {
  width: 100%;
  height: 100%;
  z-index: 49;
+ align-items: center;
 }
 #splash > #loadingDiv {
  display: flex;
@@ -56,13 +60,12 @@ body {
  position: absolute;
  width: 100%;
  height: 100%;
- 
+ align-items: center;
 }
 #splashLogo {
  width:100%;
  height:100%;
  opacity: 0;
- transform: translateY(10em);
 }
 
 #menus {
@@ -71,11 +74,11 @@ body {
  width: 100%;
  height: 100%;
  z-index: 10;
- top: 1;
+ top: 0%;
  opacity: 0;
- background: rgba(33, 0, 0, 1);
- transition: top 0.5s ease-in,
-  background 0.7s ease-in,
+ background: rgba(0, 0, 0, 1);
+ transition: top 0.5s ease-out,
+  background 0.7s ease-out,
   opacity .6s linear;
  overflow: hidden;
 }
@@ -83,7 +86,7 @@ body {
 .menuClass {
  display: grid;
  position: absolute;
- overflow-y: scroll;
+ overflow-y: auto;
  height: 100%;
  width: 100%;
  padding-top: 3rem;
@@ -94,8 +97,9 @@ body {
 }
 
 .settings-list-divider {
- overflow: scroll;
+ overflow: auto;
  display: table;
+ align-items: center
 }
 
 .menuActive {
@@ -108,9 +112,11 @@ body {
  background: #FBDA00;
 }
 
-gtris-listCell-Detail {
+gtris-listCell-Details {
  display: flex;
- justify-content: center
+ justify-content: center;
+ overflow-y:auto;
+ overflow-x: hidden
 }
 
 gtris-subdiv>gtris-list {
@@ -118,7 +124,17 @@ gtris-subdiv>gtris-list {
  margin: 0 0;
  width: 100%;
  height: auto;
- overflow-y: scroll;
+ overflow-y: auto;
+ overflow-x: hidden;
+}
+gtris-listCell-Details2 {
+  display: flex;
+  padding: 0 0;
+  width: 100%;
+  justify-content: center;
+  margin: 0 0 0.0em 0;
+  padding-left: 10px;
+  overflow-x: hidden;
 }
 
 gtris-list>gtris-listCell {
@@ -127,7 +143,7 @@ gtris-list>gtris-listCell {
  width: 100%;
  height: auto;
  justify-content: center;
- margin: 0 0 1.0em 0;
+ margin: 0 0 0em 0;
 }
 
 #gamesummary,
@@ -138,7 +154,8 @@ gtris-list>gtris-listCell {
  height: 50%;
  justify-content: center;
  margin: 0 0 1.0em 0;
- overflow-y: scroll;
+ overflow-y: auto;
+ overflow-x: hidden
 }
 
 gtris-listCell-Details {
@@ -149,6 +166,7 @@ gtris-listCell-Details {
  justify-content: center;
  margin: 0 0 1.0em 0;
  padding-left: 10px;
+ overflow: hidden hidden;
 }
 
 
@@ -158,7 +176,7 @@ gtris-button {
  text-align: center;
  width: 50%;
  color: #fff;
- border: 0.1em solid #f0f;
+ border: 0.1rem solid #f0f;
  cursor: pointer;
  border-radius: 2px;
  padding: 0.5rem 0.6rem 0.4rem;
@@ -187,13 +205,14 @@ gtris-button-list {
  background: rgba(0, 0, 0, 0.4);
  display: flex;
  justify-content: left;
- transition: opacity 200ms linear;
+ opacity: 100%;
+ transition: opacity 200ms ease-out;
+ align-content: center;
 }
 
 #menuHeader>* {
  position: relative;
  z-index: 11;
-
 }
 
 #headerBackButton {
@@ -204,44 +223,55 @@ gtris-button-list {
 }
 
 #headerTitle {
- height: 100%;
+ height: auto;
  vertical-align: center;
- padding-top: 1px;
- padding-left: 1%;
+ padding-left: 2%;
+ text-align: center;
+ align-self: center;
+}
+
+
+::-webkit-scrollbar {
+  width: 1em;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #a1a1a1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #088;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #505;
 }
 
 input[type='range'] {
  -webkit-appearance: none;
- /* Override default CSS styles */
  appearance: none;
  width: 100%;
- /* Full-width */
  height: 2em;
- /* Specified height */
  background: #d3d3d3;
- /* Grey background */
  outline: none;
- /* Remove outline */
  opacity: 0.7;
- /* Set transparency (for mouse-over effects on hover) */
  -webkit-transition: .2s;
- /* 0.2 seconds transition on hover */
  transition: opacity .2s;
 }
 
-/* Mouse-over effects */
+
 input[type='range']:hover {
  opacity: 1;
- /* Fully shown on mouse-over */
 }
 
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+
 input[type='range']::-webkit-slider-thumb {
  -webkit-appearance: none;
- /* Override default look */
  appearance: none;
  width: 25px;
- /* Set a specific slider handle width */
  height: 25px;
  /* Slider handle height */
  background: #04AA6D;
@@ -276,7 +306,78 @@ input[type='range']::-moz-range-thumb {
  height: 100%;
  width: 100%;
  position: absolute;
- overflow-y: hidden
+ overflow-y: visible
+}
+
+#tetrionPC {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow-y: visible;
+  overflow-x: visible;
+}
+gtris_big {
+position: absolute;
+text-align: center;
+font-size: 3.6em;
+}
+
+@keyframes PCAnim1 {
+  0%{
+    transform: rotateZ(0deg) scale(1);
+    letter-spacing: 3em;
+    padding-left: 3em;
+    opacity: 0%;
+  }
+  14%{
+    transform: rotateZ(0deg) scale(1);
+    letter-spacing: 0em;
+    padding-left: 0em;
+    opacity: 100%
+  }
+  70%{
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0%;
+  }
+}
+@keyframes PCAnim2 {
+  0%{
+    transform: scale(1);
+    opacity: 0%;
+  }
+  14%{
+    opacity: 0%
+  }
+  15% {
+    opacity: 100;
+    transform: scale(1);
+  }
+  63%{
+    transform: rotateZ(0deg) scale(1.8);
+    opacity: 0%;
+  }
+  100% {
+    transform: rotateZ(0deg) scale(0);
+    opacity: 0%;
+  }
+}
+
+#perfectClear1{
+  opacity:  0%;
+  animation-name: none;
+  animation-duration: 4500ms;
+  animation-timing-function: linear;
+}
+#perfectClear2 {
+  opacity: 0%;
+  animation-name: none;
+  animation-duration: 4500ms;
+  animation-timing-function: linear;
 }
 
 tetrionPadding {
@@ -326,11 +427,12 @@ tetrionPadding {
  position:absolute;
  display:flex;
  justify-content:center;
+ align-items: center;
  z-index:5;
 }
 #gtris-readygo {
- font-size: 3em;
- transform: translateY(30vh);
+ font-size: 2.5em;
+ 
  text-align: center
 }
 
@@ -425,9 +527,11 @@ stat {
  border: 2px solid #fff;
  position: relative;
  overflow: hidden;
- display: none;
+ display: block;
 }
 
 #meter_A {
+ margin-top: 90px;
+ display: inline-block;
  background: #a00;
 }
