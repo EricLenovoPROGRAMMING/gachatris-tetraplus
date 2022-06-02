@@ -2,7 +2,7 @@
  * Gachatris Tetraplus Initializer
  */
 
-/*const eval = () => {
+const eval = () => {
   console.warn('JS Console is not usable in this site.')
 } /**/
  "use strict"
