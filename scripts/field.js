@@ -35,7 +35,8 @@ function Field(NEW) {
   this.renenable = false;
   this.warning = false
   this.pieces = 0
-  this.lineTotal = 9
+  this.lineTotal = 0
+  this.lineLeft = 0
   this.score = 0
   this.level = 1
   this.canCheckGarbageBar = false
@@ -108,6 +109,8 @@ function Field(NEW) {
       double: 0,
     },
     pc: 0,
+    tsd:0,
+    maxREN: 0,
   }
   this.totalStrength = -1
   this.initStrength = -1
@@ -115,6 +118,8 @@ function Field(NEW) {
     pc: false,
     line: -1
   }
+  this.isTSDOnly = false
+  this.isC4W = false
 }
 
 Field.prototype = {
@@ -360,6 +365,22 @@ Field.prototype = {
       i[e] = 0
     return i
   },
+
+  modifyGrid: function(cy, gridArr, isFlipped) {
+    if (!isFlipped) {
+      for (let x = 0; x < this.width; x++) {
+        for (let y = 0; y < gridArr[x].length; y++)
+          this.grid[x][y + cy] = gridArr[x][y]
+      }
+    } else {
+      for (let x = this.width; x >= 0; x--) {
+        for (let y = 0; y < gridArr[x].length; y++)
+          this.grid[x][y + cy] = gridArr[x][y]
+      }
+    }
+    this.draw()
+  },
+
   new: function(x, y) {
     var cells = this.makeArrayLength(x)
     for (var i = 0; i < x; i++) {
@@ -392,21 +413,10 @@ Field.prototype = {
       pc: false,
       line: -1
     }
-    /* for (var x = 0; x < this.width; x++) {
-     for (var y = 0; y < this.height; y++) {
-      this.grid[x][y] = Math.max(1,Math.floor(Math.random() * 9))
-     }
-    }
-    for (var x = 3; x < 7; x++) {
-     for (var y in this.grid[x]) {
-      this.grid[x][y] = 0
-     }
-    }
-    this.grid[3][41]=10
-    this.grid[4][41]=10
-    this.grid[5][41]=10/**/
+    this.isTSDOnly = false
     this.garbageArray = []
-    this.checkGarbageBar()
+    if (this.canCheckGarbageBar)
+      this.checkGarbageBar()
     this.statistics = {
       line: {
         single: 0,
@@ -427,6 +437,8 @@ Field.prototype = {
         double: 0,
       },
       pc: 0,
+      tsd: 0,
+      maxREN: 0,
     }
     docId('characterBackground').src = this.character.fields.normal
   },
@@ -467,18 +479,6 @@ Field.prototype = {
           }
         }
 
-        for (var i = 0; i < pieces[5].spin.lowX[0].length * pieces[5].spin.highY[0].length; i++) {
-          if ((!this.testSpace(piece.x + pieces[5].spin.lowY[i][piece.pos], piece.y - 1 + pieces[5].spin.highY[i][piece.pos])) && piece.landed == true) {
-
-            this.mini3SpinCount += 0.25 + (this.mini2SpinCount * 0.5) + (this.miniSpinCount * this.spinCheckCount / 0.1);
-
-          }
-        }
-        for (var i = 0; i < pieces[5].spin.lowX[0].length * pieces[5].spin.highY[0].length; i++) {
-          if ((!this.testSpace(piece.x + (pieces[5].spin.lowY[i][piece.pos] * -1), piece.y - 1 + pieces[5].spin.highY[i][piece.pos])) && piece.landed == true) {
-            this.mini3REVSpinCount += 0.25 + (this.mini2SpinCount * 0.5) + (this.miniSpinCount * this.spinCheckCount / 0.1);
-          }
-        }
         for (var i = 0; i < pieces[5].spin.highX[0].length * pieces[5].spin.lowY[0].length; i++) {
           if ((this.testSpace(piece.x + pieces[5].spin.highX[i][piece.pos], piece.y + pieces[5].spin.lowY[i][piece.pos])) == false && piece.landed == true) {
             this.mini2SpinCount += 0.5 + (this.miniSpinCount * .2) * (this.spinCheckCount / 0.2);
@@ -553,6 +553,14 @@ Field.prototype = {
         for (var x = 0; x < 10; x++) {
           if (this.testSpace(x, y)) doesBlockExist = true
           this.grid[x][y] = this.grid[x][y - 1];
+          if (this.isC4W) {
+            for (var cx = 0; cx < 10; cx++) {
+              this.grid[cx][20] = Math.max(1, Math.floor(Math.random() * 9))
+            }
+            for (var cx = 3; cx < 7; cx++) {
+              this.grid[cx][20] = 0
+            }
+          }
         }
       }
     }
@@ -601,21 +609,21 @@ Field.prototype = {
       this.garbageArray.push(row)
     this.checkGarbageBar()
   },
-  offsetGarbage: function(count){
+  offsetGarbage: function(count) {
     var _count = count || 0
     for (var e = 0; e < _count; e++)
       this.garbageArray.shift()
     this.checkGarbageBar()
   },
-  checkGarbageBar: function(){
-    if(this.canCheckGarbageBar)
-    meterBar.garbage.style.marginTop = `${Math.max(0,(cellSize*20.4)-(cellSize * this.garbageArray.length))}px`
+  checkGarbageBar: function() {
+    if (this.canCheckGarbageBar)
+      meterBar.garbage.style.marginTop = `${Math.max(0,(cellSize*20.4)-(cellSize * this.garbageArray.length))}px`
     this.checkWarning()
   },
-  openGarbageBar: function(bool){
+  openGarbageBar: function(bool) {
     this.canCheckGarbageBar = bool
     meterBar.capacity.style.display = bool == true ? 'block' : 'none';
-    switch(bool){
+    switch (bool) {
       case true: {
         this.checkGarbageBar()
         break
@@ -626,7 +634,7 @@ Field.prototype = {
       }
     }
   },
-  offsetGarbageByClear: function(line, spin, ren, pc){
+  offsetGarbageByClear: function(line, spin, ren, pc) {
     var [renStrength, lineStrength, totalStrength, b2bStrength] = [0, 0, 0, 0]
     switch (pc) {
       case false: {
@@ -703,8 +711,8 @@ Field.prototype = {
     var perfectClear = true
     var range = [];
     this.valid = false;
-    for (var x = 0; x < tetro.length; x++) {
-      for (var y = 0; y < tetro[x].length; y++) {
+    for (var x = 0, xa = 0; x < tetro.length && xa < 31; x++, xa++) {
+      for (var y = 0, ya = 0; y < tetro[x].length && ya < 31; y++, ya++) {
         if (tetro[x][y]) {
           this.grid[x + piece.x][y + piece.y] = tetro[x][y]
           if (!once || x + piece.x < column) {
@@ -719,7 +727,13 @@ Field.prototype = {
       }
     }
     if (!this.valid) {
-      endGame('lockout', true, 'lose')
+      if (this.isTSDOnly == true) {
+        if (this.statistics.tsd >= 20)
+          endGame({ name: 'tsd_reached', name2: 'tsd_reached_result', array: this.statistics.tsd}, 'win', 'win')
+        else
+          endGame('lockout', true, 'lose')
+      } else
+        endGame('lockout', true, 'lose')
       return false;
     }
     range = range.sort(function(a, b) {
@@ -728,11 +742,12 @@ Field.prototype = {
     for (var row = 0, len = this.height; row < len; row++) {
       var count = 0;
       for (var x = 0; x < this.width; x++) {
-        if (this.grid[x][row]) count++;
+        if (this.testSpace(x, row)) count++;
       }
       if (count > 9) {
         linesDetection++;
         this.lineTotal++
+        this.lineLeft--
         if (this.are.add.line > 0) {
           this.are.line = this.are.add.line
           this.clearRows.push(row)
@@ -744,7 +759,15 @@ Field.prototype = {
         } else {
           for (var y = row; y >= -1; y--) {
             for (var x = 0; x < 10; x++) {
-              this.grid[x][y] = this.grid[x][y - 1];
+              this.grid[x][y] = this.grid[x][y - 1]
+              if (this.isC4W) {
+                for (var cx = 0; cx < 10; cx++) {
+                  this.grid[cx][20] = Math.max(1, Math.floor(Math.random() * 9))
+                }
+                for (var cx = 3; cx < 7; cx++) {
+                  this.grid[cx][20] = 0
+                }
+              }
             }
           }
         }
@@ -779,7 +802,7 @@ Field.prototype = {
 
     if (linesDetection == 0) {
       this.addGarbageToField()
-      if(this.renInteger >1){
+      if (this.renInteger > 1) {
         soundPlayer.playse('ren-end')
       }
       this.renInteger = -1
@@ -807,7 +830,7 @@ Field.prototype = {
         }
       }
     }
-
+    this.checkWarning()
     if (linesDetection !== 0) {
       this.showClearText('hide')
       this.showClearTextTSPIN('hide')
@@ -816,21 +839,28 @@ Field.prototype = {
         this.engagePC(true)
         this.statistics.pc++
       }
-      if (this.linespinrecog) {}
-      if (this.minispinrecog) {}
 
       this.renInteger++
       if (this.renInteger > 0) {
-        this.showClearTextREN('show', `${this.renInteger} REN`)
+        this.showClearTextREN('show', gtris_transText('combo', this.renInteger))
         this.score += this.renInteger * 50 * this.level
         soundPlayer.playse(`ren${Math.min(20,this.renInteger)}`)
       }
-
       this.clearLines(linesDetection, this.linespinrecog, this.minispinrecog, this.b2b, perfectClear)
       this.speak(linesDetection, this.linespinrecog, this.renInteger, this.b2b, perfectClear)
+      if (this.renInteger > this.statistics.maxREN) {
+        this.statistics.maxREN = this.renInteger
+      }
+      if (this.isTSDOnly == true) {
+        if (!((this.linespinrecog == true || this.minispinrecog) && linesDetection == 2)) {
+          if (this.statistics.tsd >= 20)
+            endGame({ name: 'tsd_reached', name2: 'tsd_reached_result', array: this.statistics.tsd }, 'win', 'win')
+          else
+            endGame('tsd_failed', true, 'lose')
+        } else this.statistics.tsd++
+      }
     }
     this.draw();
-    this.checkWarning()
     this.linespinrecog = false
     this.minispinrecog = false
     return true
@@ -1023,8 +1053,9 @@ Field.prototype = {
             break
           }
           case 4: {
-            if (this.b2b > 0)
+            if (this.b2b > 0) {
               this.score += 3200 * this.level
+            }
             else this.score += 2000 * this.level
             break
           }
@@ -1157,8 +1188,7 @@ Field.prototype = {
         }
       }
     }
-
-    this.offsetGarbageByClear(line, spin,this.renInteger,pc)
+    this.offsetGarbageByClear(line, spin, this.renInteger, pc)
     if (this.b2b > 0) {
       this.showClearTextB2B('show', `B2B x${this.b2b}`)
       soundPlayer.playse('b2b')
@@ -1171,11 +1201,13 @@ Field.prototype = {
     var checked = false
     for (var i = 0; i < this.width; i++) {
       for (var y = 0; y < this.height - 16 + this.garbageArray.length; y++) {
-        if (this.testSpace(i, y))
-          checked = true
+        if (this.testSpace(i, y)){
+          checked = true 
+          break
+        }
       }
     }
-    if (checked && stop !== 'stop') {
+    if (checked && stop !== 'stop' && !this.isC4W) {
       if (!this.warning) {
         soundPlayer.stopse('alarm')
         soundPlayer.playse('alarm')
@@ -1218,7 +1250,7 @@ Field.prototype = {
     clear(_CTX.field);
     draw(this.grid, 0, -19.6, 'field', void 0, 0);
     _CTX.field.globalCompositeOperation = 'source-atop';
-    _CTX.field.fillStyle = 'rgba(0,0,0,0.2)';
+    _CTX.field.fillStyle = 'rgba(0,0,0,0.05)';
     _CTX.field.fillRect(0, 0, _canvasses.field.width, _canvasses.field.height);
     _CTX.field.globalCompositeOperation = 'source-over';
   }

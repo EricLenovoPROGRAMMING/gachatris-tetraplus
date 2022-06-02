@@ -5,28 +5,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="stylesheet" href="stylesheets.css">
+  <link rel='icon' href="icon.png">
   <title>Gachatris Tetraplus Alpha</title>
 </head>
+
 <body>
   <div id=core>
     <div id=menus>
-      <div id=menuHeader>
-        <div id=el-logoDiv>
-          <img id=logoEL src="assets/menu/logoEL.png" oncontextmenu="undefined" />
-        </div>
-        <gtris_gui id=headerBackButton onclick='backButton()'></gtris_gui>
-        <gtris_head id=headerTitle>Gachatris Tetraplus Alpha</gtris_head>
-      </div>
       <div id=menu-viewer>
         <gtris-subdiv class='menuClass menuActive'>
           <gtris-list>
             <gtris-listCell>
-              <gtris-button onclick="gameStart()" id="guiButton-play">PLAY</gtris-button>
+              <gtris-button onclick="modeButtons()" id="guiButton-play">PLAY</gtris-button>
+            </gtris-listCell>
+            <gtris-listCell>
+              <gtris-button onclick="replayCenter.openReplayCenter()" class="guiClass-replayCenterMenu"></gtris-button>
             </gtris-listCell>
             <gtris-listCell>
               <gtris-button onclick="switchMenu(1, true, 'h_settings')" id="guiButton-settings">SETTINGS</gtris-button>
-            </gtris-listCell>
-            <gtris-listCell>
+
               <gtris-button onclick="switchMenu(2,true,'h_controls')" id=guiButton-controls>CONTROLS</gtris-button>
             </gtris-listCell>
           </gtris-list>
@@ -61,7 +58,6 @@
           <gtris-list>
             <gtris-listCell>
               <gtris_text id=guiText-keysSelecting>
-                PRESS ANY KEY TO CHANGE THE SELECTED MAPPING.
               </gtris_text>
             </gtris-listCell>
             <gtris-listCell>
@@ -92,9 +88,9 @@
               </div>
             </gtris-listCell-Details>
             <gtris-listCell-Details2>
-                            <div id=characterFurtherDetailDiv>
-                              <gtris-text id=characterFurtherDetail></gtris-text>
-                            </div>
+              <div id=characterFurtherDetailDiv>
+                <gtris-text id=characterFurtherDetail></gtris-text>
+              </div>
             </gtris-listCell-Details2>
           </gtris-list>
           <gtris-list>
@@ -115,9 +111,10 @@
               </gtris-listCell>
             </gtris-listCellPerm>
             <gtris-listCell>
-              <gtris-button onclick="gameStart()" class="guiClass-retry">Start Over</gtris-button>
+              <gtris-button onclick="gameStart(gameMode)" class="guiClass-retry">Start Over</gtris-button>
             </gtris-listCell>
             <gtris-listCell>
+              <gtris-button onclick="replayCenter.generateReplay()" class="guiClass-replayCenterMenu">ReplayCenter</gtris-button>
               <gtris-button onclick="gameStart('REPLAY')" id="guiButton-replay">View Replay</gtris-button>
             </gtris-listCell>
             <gtris-listCell>
@@ -140,8 +137,29 @@
             </gtris-listCell>
           </gtris-list>
         </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list id=modes-station>
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list id=mode-parameter-station>
+
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list id=replayCenter-station>
+
+          </gtris-list>
+        </gtris-subdiv>
+        <gtris-subdiv class='menuClass'>
+          <gtris-list id=replayResults-window>
+
+          </gtris-list>
+        </gtris-subdiv>
       </div>
     </div>
+
+
     <div id=gtris>
       <div id=tetrion>
         <tetrionPadding>
@@ -211,6 +229,15 @@
             PERFECT<br>CLEAR!
           </gtris_big>
         </div>
+      </div>
+    </div>
+    <div id=headerMax>
+      <div id=menuHeader>
+        <div id=el-logoDiv>
+          <img id=logoEL src="assets/menu/logoEL.png" oncontextmenu="undefined" />
+        </div>
+        <gtris_gui id=headerBackButton onclick='backButton()'></gtris_gui>
+        <gtris_head id=headerTitle>Gachatris Tetraplus Alpha</gtris_head>
       </div>
     </div>
     <div id=splash>

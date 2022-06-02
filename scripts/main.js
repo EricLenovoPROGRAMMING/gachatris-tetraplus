@@ -1,10 +1,10 @@
 /**(C) EricLenovo 2022
- * Gachatris: Tetraplus (One JS)
+ * Gachatris: Tetraplus (JS)
  * May 5, 2022 @10:46AM Philippine Time
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '0.0.048 Alpha Release';
+var gtris_version = '0.0.074 Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
@@ -15,7 +15,8 @@ var replayData = {}
 var isPaused = false
 var isKeySelectorOn = false
 var keyMappingSelected = null
-var keysPressed, keysLast
+var keysPressed = 0,
+  keysLast = 0
 var gameRunning, gameMode, gameRunner
 
 var meterBar = {
@@ -80,6 +81,9 @@ function RESIZE() {
       screenHeight = ~~(window.innerWidth / 1.024);
     }
 
+    docId("menus").scrollTop = 0
+    docId("menus").scrollTo(0,0)
+
     if (varSize === 1 && screenHeight > 302) cellSize = 12;
     else if (varSize === 2 && screenHeight > 502) cellSize = 17;
     else if (varSize === 3 && screenHeight > 702) cellSize = 27;
@@ -134,8 +138,6 @@ function RESIZE() {
 
     logoSplash.style.width = logoSplash.style.height = `${cellSize*16}px`
 
-
-
     leftBorder.style.width = `${cellSize*5}px`
     rightBorder.style.width = `${cellSize*5}px`
 
@@ -161,7 +163,7 @@ function RESIZE() {
 
     _canvasses.queue.height = cellSize * 3 * 10
     _canvasses.queue.style.height = `${_canvasses.queue.height*0.5}px`
-    _canvasses.queue.width = cellSize * 5
+    _canvasses.queue.width = cellSize * 6
     _canvasses.queue.style.width = `${_canvasses.queue.width*0.5}px`
 
 
@@ -190,9 +192,10 @@ function RESIZE() {
     }
 
     clearText.style.height = `${cellSize*3}px`
+    //clearText.style.width = `${cellSize * 6}px`
     statistics.style.width = `${_canvasses.field.width}px`
     statistics.style.height = leftBorder.style.height
-    statistics.style.top = `${cellSize*12}px`
+    statistics.style.top = `${cellSize*13}px`
     statistics.style.left = `${-_canvasses.field.width * 0.5}px`
     for (var large of $tag('statLarge')) {
       large.style.height = `${cellSize*1.4}px`
@@ -203,7 +206,7 @@ function RESIZE() {
       large.style.fontSize = `${cellSize*1.1}px`
     }
     for (var large of $tag('stat')) {
-      large.style.height = `${cellSize*0.7}px`
+    //  large.style.height = `${cellSize*0.7}px`
       large.style.fontSize = `${cellSize*0.7}px`
     }
 
@@ -302,6 +305,8 @@ function clear(ctx) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 }
 
+
+
 var pieceSettings = {
   DAS: 10,
   ARR: 0,
@@ -376,7 +381,8 @@ var settingsRange = {
     SFX: range(0, 101),
     Music: range(0, 101),
     Character: range(0, 101),
-    PieceNext: range(0, 101)
+    PieceNext: range(0, 101),
+    UI: range(0,101)
   },
 }
 var settingsList = {
@@ -385,7 +391,7 @@ var settingsList = {
     Music: ['Menu', 'Default Rock']
   },
   NonIterable: {
-    Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest'],
+    Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest', 'Mars'],
   },
   Other: {
     Skin: ['Default'],
@@ -406,6 +412,7 @@ var selectedSettings = {
     Music: 30,
     Character: 50,
     PieceNext: 50,
+    UI: 100
   },
   Tuning: {
     DAS: 18,
@@ -437,7 +444,18 @@ var selectedSettings = {
   ['180DEG']: 16,
     Retry: 82,
   },
-
+  Modes: {
+    linerun: {
+      LINE: 1,
+      TYPE: 0
+    },
+    scoreatk: {
+      TIMER: 6
+    },
+    fourwide: {
+      TIMER: 6
+    }
+  }
 }
 
 function loadSTORAGE() {
@@ -474,11 +492,11 @@ function unPause() {
   activeMenu(false)
 }
 
-function countDownText(text, spreadOut) {
+function countDownText(text, spreadOut, gtrisTransText) {
   var $e = $('#gtris-readygo')
   $e.css('display', 'block')
   $e.stop(true)
-  docId('gtris-readygo').innerHTML = text !== '' ? `${gtris_transText(text)}` : ''
+  docId('gtris-readygo').innerHTML = text !== '' ? `${!gtrisTransText ? gtris_transText(text) : text}` : ''
   $e.animate({ opacity: 1, letterSpacing: `0em`, paddingLeft: '0em' }, 0)
   if (spreadOut == false) {
     $e.animate({ opacity: 0.8 }, 600)
@@ -502,52 +520,65 @@ function init(mode, parameter) {
       keyList: {},
       seed: ~~(Math.random() * 2147483647),
       tuning: {},
-      mode: mode
+      mode: mode ? mode : 0
     }
     for (let i in settingsRange.Tuning) {
       replayData.tuning[i] = selectedSettings.Tuning[i]
     }
+    actualCustomInit(mode)
+    gameMode = mode
   }
-  isPaused = false
+  piece.rng.seed = field.rng.seed = replayData.seed
+  field.new(10, 42)
+  setTimeout(function(){
+    field.showResultAnimation("hide")
+  }, 100)
+  piece.reset()
   clear(_CTX.field)
   clear(_CTX.active)
+  customInit()
+  pieceSettings[`Ghost`] = selectedSettings.Other.Ghost
+  isPaused = false
   for (let i in settingsRange.Tuning) {
     pieceSettings[i] = replayData.tuning[i]
   }
   for (var e of $CN('stats-text'))
     e.innerHTML = ''
-  pieceSettings[`Ghost`] = selectedSettings.Other.Ghost
-  piece.rng.seed = field.rng.seed = replayData.seed
   keysPressed = 0
   keysLast = 0
   StartTime = Date.now()
   actualFrame = 0
-  preview.init()
-  preview.draw()
-  field.new(10, 42)
-  piece.reset()
+
   frame = 0
   stopFrame = 0
   soundPlayer.selected.se = selectedSettings.Sound.SoundBank
   soundPlayer.load()
   field.resetFieldPosition()
-  gameMode = replayData.mode
-  customInit()
   if (!gameRunning)
     gameRunner = setInterval(function() {
       syncTime = Math.floor((Date.now() - StartTime) / (1000 / 120))
       syncFrame = syncTime - actualFrame
-      for (var i = 0; i < syncFrame; i++, actualFrame++)
+      for (var i = 0; i < syncFrame; i++, actualFrame++)/**/
+      /*while(piece.y<-9){
         G_LOOP()
+        if(gameRunning == false) break
+      }*/
+      G_LOOP()
     }, 1000 / 120)
   gameRunning = true
 }
 
 function gameStart(gametype, parameter) {
+  docId('replayCenter-station').innerHTML = ''
   musicPlayer.killAllMfx()
-  musicPlayer.loadMfx(settingsList.Sound.Music[selectedSettings.Sound.Music].toLowerCase().replace(' ', '-'))
-  musicPlayer.switchCurrent(settingsList.Sound.Music[selectedSettings.Sound.Music].toLowerCase().replace(' ', '-'))
+  musicPlayer.loadMfx(settingsList.Sound.Music[selectedSettings.Sound.Music].toLowerCase().replace(/ /g, '-'))
+  musicPlayer.switchCurrent(settingsList.Sound.Music[selectedSettings.Sound.Music].toLowerCase().replace(/ /g, '-'))
   field.openGarbageBar(false)
+  gtrisBody.style.opacity = 1
+  gtrisBody.style.animation = 'none'
+  gtrisBody.style.animationDuration = '4s'
+  gtrisBody.style.animationTimingFunction = 'linear'
+
   init(gametype, parameter)
   activeMenu(false)
   docId('gtris').style.display = 'block'
@@ -556,13 +587,90 @@ function gameStart(gametype, parameter) {
 var frame = 0
 var stopFrame = 0
 
-function customInit(mode) {
+function actualCustomInit(mode) {
+  switch (mode) {
+    case 1: {
+      replayData.lineRun = {
+        lines: modeParameters.texts.linerun.LINE[selectedSettings.Modes.linerun.LINE],
+        type: selectedSettings.Modes.linerun.TYPE
+      }
+      break
+    }
+    case 2: {
+      replayData.scoreAtk = {
+        timer: modeParameters.texts.scoreatk.TIMER[selectedSettings.Modes.scoreatk.TIMER],
+      }
+      break
+    }
+    case 3: {
+      replayData.fourWide = {
+        timer: modeParameters.texts.fourwide.TIMER[selectedSettings.Modes.fourwide.TIMER],
+      }
+      break
+    }
+  }
+}
+
+function customInit() {
+  var mode = gameMode
+  scoreAtk.enableTimer(false)
+  preview.bag = [0, 1, 2, 3, 4, 5, 6]
+  field.isC4W = false
   var s = (num, tx) => docId(`stats${num}`).innerHTML = tx
   var t = (num, tx) => docId(`TEXT_stats${num}`).innerHTML = tx
-
-  if (mode == undefined) {
-    t(2, gtris_transText('lines'))
+  field.openGarbageBar(false)
+  s(1, 0)
+  t(1, gtris_transText('pieces', ['0.000']))
+  for (var i = 2; i < 4; i++) {
+    s(i, '')
+    t(i, '')
   }
+  switch (mode) {
+    default: {
+      t(2, gtris_transText('lines'))
+      break
+    }
+    case 1: {
+      field.lineLeft = replayData.lineRun.lines
+      preview.bag = {
+        0: [0, 1, 2, 3, 4, 5, 6],
+        1: [0, 0, 0, 0, 0, 0, 0],
+        2: [1, 2, 3, 4, 5, 6]
+      } [selectedSettings.Modes.linerun.TYPE]
+      t(2, gtris_transText('lines'))
+      s(2, field.lineLeft)
+      break
+    }
+    case 2: {
+      scoreAtk.enableTimer(true)
+      scoreAtk.setTimer(replayData.scoreAtk.timer)
+
+      t(2, gtris_transText('texttime'))
+      s(2, returnStatistics(scoreAtk.time))
+      break
+    }
+    case 3: {
+      fourWide.enableTimer(true)
+      fourWide.setTimer(replayData.fourWide.timer)
+      field.isC4W = true
+      t(2, gtris_transText('texttime'))
+      s(2, returnStatistics(fourWide.time))
+      t(3, gtris_transText('c4w_combo'))
+      s(3, field.statistics.maxREN)
+      field.modifyGrid(19, fourWide.generateC4W())
+      field.draw()
+      break
+    }
+    case 4: {
+      field.isTSDOnly = true
+
+      t(2, gtris_transText('tsd_goal'))
+      s(2, 0)
+      break
+    }
+  }
+  preview.init()
+  preview.draw()
 }
 
 function G_LOOP() {
@@ -592,10 +700,13 @@ function G_LOOP() {
       }
     }
     if (frame == 120 * 3) piece.new(preview.next())
-    G_ACTIVITY()
     P_UPDATE()
+    if (frame > 120 * 3) {
+      G_ACTIVITY()
+    }
     Statistics()
   } else if (!gameRunning) {
+    keysLast = keysPressed = 0
     clearInterval(gameRunner)
   }
 }
@@ -605,11 +716,9 @@ function P_UPDATE() {
     replayData.keyList[frame] = keysPressed
   } else if (frame in replayData.keyList) {
     keysPressed = replayData.keyList[frame]
-
     if (replayData.keyList[frame] == 'end') {
       endGame('replayended', true, 'lose')
     }
-
   }
   if (keysPressed & flags.HOLD && !(keysLast & flags.HOLD)) {
     piece.hold()
@@ -623,15 +732,16 @@ function P_UPDATE() {
   if (keysPressed & flags[`180DEG`] && !(keysLast & flags[`180DEG`])) {
     piece.rotate180()
   }
+  piece.DASPreloadAndCheckShift(keysPressed, keysLast)
   if (keysPressed & flags.SDROP) {
     piece.shiftDown()
   }
   if (keysPressed & flags.HDROP && !(keysLast & flags.HDROP)) {
     piece.hardDrop()
   }
+  
   piece.update()
-  piece.DASPreloadAndCheckShift(keysPressed, keysLast)
-
+  
   keysLast = keysPressed
   if (field.are.line >= 0 || field.are.piece >= 0) {
     if (field.are.line >= 0) {
@@ -659,9 +769,16 @@ function Statistics() {
     var time = frame - (120 * 3)
     var seconds = ((time / 120) % 60).toFixed(3)
     var minutes = (Math.floor((time) / (3600 * 2))).toFixed(0)
-    $iH('stopwatch', `${minutes}:${seconds<10?'0':''}${seconds}`)
+    $iH('stopwatch', gtris_transText('main_timer', [minutes, `${seconds<10?'0':''}${seconds}`]))
     $iH('TEXT_stats1', gtris_transText('pieces', (field.pieces / (time / 120)).toFixed(3)))
   }
+}
+
+function returnStatistics(e) {
+  var time = e
+  var seconds = ((time / 120) % 60).toFixed(3)
+  var minutes = (Math.floor((time) / (3600 * 2))).toFixed(0)
+  return gtris_transText('main_timer', [minutes, `${seconds<10?'0':''}${seconds}`])
 }
 
 function endGame(title, downfall, winlose) {
@@ -669,28 +786,34 @@ function endGame(title, downfall, winlose) {
     replayData.keyList[frame + 40] = 'end'
   musicPlayer.killAllMfx()
   musicPlayer.muteAllMfx()
-
   if (downfall == true) {
     gtrisBody.style.transition = 'transform 2.5s ease-in'
     gtrisBody.style.transform = 'translateY(4800px) rotateZ(90deg)'
-    field.checkWarning('stop')
   }
   if (winlose == 'win') {
-
+    field.showResultAnimation('win', typeof title !== 'object' ? gtris_transText(title) : gtris_transText(title.name, title.array))
+    soundPlayer.playse('game-win')
+    gtrisBody.style.opacity = 0
+    gtrisBody.style.animation = 'gameWin'
+    gtrisBody.style.animationDuration = '4s'
+    gtrisBody.style.animationTimingFunction = 'linear'
   } else if (winlose == 'lose') {
-    field.showResultAnimation('lose', gtris_transText(title))
+    field.showResultAnimation('lose', typeof title !== 'object' ? gtris_transText(title) : gtris_transText(title.name, title.array))
     soundPlayer.playse('game-lose')
   } else if (winlose !== void 0) {
-    field.showResultAnimation('win', gtris_transText(title))
+    field.showResultAnimation('win', typeof title !== 'object' ? gtris_transText(title) : gtris_transText(title.name, title.array))
     soundPlayer.playse('game-win')
   }
+  isPaused = false
   clearInterval(gameRunner)
+  field.checkWarning('stop')
   countDownText('')
   gameRunning = false
-  stopFrame = frame
+  stopFrame = frame - 1
   activeMenu(true, 0.5, true)
-  switchMenu(8, true, gtris_transText(title), true)
-  placeStats(['time', `pieces`, 'lines', 'gtris'])
+  switchMenu(8, true, typeof title !== 'object' ? gtris_transText(title) : gtris_transText(title.name2, title.array), "startPoint")
+
+  placeStats(['time', `pieces`, 'lines', 'gtris', 'score', 'pc', 'tsd', 'maxren'])
 }
 
 function placeStats(array) {
@@ -701,7 +824,7 @@ function placeStats(array) {
     switch (D.toLowerCase()) {
       case 'time': {
         str = gtris_transText("ss_time", [(function() {
-          var time = frame - (120 * 3)
+          var time = stopFrame - (120 * 3)
           var seconds = ((time / 120) % 60).toFixed(3)
           var minutes = (Math.floor((time) / (3600 * 2))).toFixed(0)
           return `${minutes}:${seconds<10?'0':''}${seconds}`
@@ -721,7 +844,7 @@ function placeStats(array) {
         break
       }
       case 'score': {
-        str = `Score: ${field.score}`
+        str = gtris_transText('ss_score', field.score)
         break
       }
       case 'gtris': {
@@ -729,7 +852,15 @@ function placeStats(array) {
         break
       }
       case 'pc': {
-        str = `Bravos: ${field.statistics.pc}`
+        str = gtris_transText('ss_pc', field.statistics.pc)
+        break
+      }
+      case 'tsd': {
+        str = gtris_transText('ss_tsd', field.statistics.spin.double + field.statistics.mini.double)
+        break
+      }
+      case 'maxren': {
+        str = gtris_transText('ss_maxren', field.statistics.maxREN)
         break
       }
     }
@@ -741,17 +872,46 @@ function placeStats(array) {
 function G_ACTIVITY() {
   docId('score').innerHTML = field.score
   docId('stats1').innerHTML = field.pieces
-  if (gameMode == undefined) {
-    docId('stats2').innerHTML = field.lineTotal
+  switch (gameMode) {
+    default: {
+      docId('stats2').innerHTML = field.lineTotal
+      break
+    }
+    case 1: {
+      docId('stats2').innerHTML = Math.max(field.lineLeft, 0)
+      if (field.lineLeft < 1) {
+        endGame('l_success', false, 'win')
+      }
+      break
+    }
+    case 2: {
+      docId('stats2').innerHTML = returnStatistics(scoreAtk.returnTimer())
+      break
+    }
+    case 3: {
+      docId('stats2').innerHTML = returnStatistics(fourWide.returnTimer())
+      docId('stats3').innerHTML = field.statistics.maxREN
+      break
+    }
+    case 4: {
+      docId('stats2').innerHTML = field.statistics.tsd
+      break
+    }
   }
-  /*if(frame>500&& frame % 100 == 0)
+  scoreAtk.run(frame > 120 * 3)
+  fourWide.run(frame > 120 * 3)
+  /*if(frame>500&& frame % 200 == 0)
    field.addGarbageToArray(Math.floor(field.rng.next()*4),Math.floor(field.rng.next() * 10))
   */
+
 }
 
 window.onblur = () => {
   musicPlayer.muteAllMfx(true)
+  soundPlayer.muteallse(true)
 }
 window.onfocus = () => {
   musicPlayer.muteAllMfx(false)
+  soundPlayer.muteallse(false)
+
 }

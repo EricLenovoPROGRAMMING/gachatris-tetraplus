@@ -11,7 +11,8 @@ function SoundLoader() {
   'harddrop', 'move', 'rotate', 'land', 'lock', 'firsthold', 'hold',
   'b2b', 'game-3', 'game-2', 'game-1', 'game-start', 'bravo',
   'prespin', 'prespinmini', 'game-lose', 'game-win', `ko`, 'step',
-  'collapse', 'lineup', 'ihs', 'irs', 'pause', 'softdrop', 'ren-end'
+  'collapse', 'lineup', 'ihs', 'irs', 'pause', 'softdrop', 'ren-end',
+  'hurry', 'timeup', 'hurry2'
   ]
   this.load = function() {
     try {
@@ -74,9 +75,14 @@ function SoundLoader() {
 
         this.se[`topoutwarning`] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/topoutwarning.ogg`, preload: false, loop: true })
 
+        this.se.hurry2.once('loaderror', () => {
+          this.se.hurry2 = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/hurry.ogg`, preload: true })
+        })
+
         for (var load in this.se) {
           this.se[load].load()
         }
+
       }
     } catch (e) {}
   }
@@ -101,6 +107,11 @@ function SoundLoader() {
     try {
       this.se[name].fade(a, b, c)
     } catch (e) {}
+  }
+  this.muteallse = function(bool) {
+    for (var e in this.se) {
+      this.se[e].mute(typeof bool !== "undefined" ? bool : false)
+    }
   }
 }
 

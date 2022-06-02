@@ -1,60 +1,70 @@
-function Gachamino() {
-  this.x;
-  this.y;
-  this.pos = 0;
-  this.tetro;
-  this.index;
-  this.kickData;
-  this.lockDelay = 0;
-  this.gravity = gravityUnit * 4
-  this.shiftDelay = 0;
-  this.shiftDir;
-  this.shiftReleased;
-  this.arrDelay = 0;
-  this.held = false;
-  this.finesse = 0;
-  this.dirty = false;
-  this.landed = false
-  this.rotateFail = false
-  this.spinX = 0
-  this.spinY = 0
-  this.initial = {
-    rot: 0,
-    hold: 0
-  }
-  this.lockCap = {
-    move: 0,
-    rotate: 0
-  }
-  this.lockLimit = {
-    move: 15,
-    rotate: 15
-  }
+var gravityUnit = 1 / 512
+var gravityArr = (function() {
+  var array = []
+  array.push(0);
+  for (var i = 1; i < 128; i++) array.push(i / 128);
+  for (var i = 1; i <= 20; i++) array.push(i);
+  return array;
+})()
 
-  this.stsd = {
-    x: 0,
-    y: 0
-  }
-  this.last = {
-    x: 0,
-    y: 0,
-    pos: 0
-  }
-  this.lockoutActive = false
-  this.hardDropEnabled = false
-}
 
-Gachamino.prototype = {
-  rng: new function() {
-    this.seed = 1;
-    this.next = function() {
-      return this.gen() / 2147483647;
-    };
-    this.gen = function() {
-      return (this.seed = (this.seed * 16807) % 2147483647);
-    };
-  }(),
-  reset: function() {
+const piece = new class {
+  constructor() {
+    this.x;
+    this.y;
+    this.pos = 0;
+    this.tetro;
+    this.index;
+    this.kickData;
+    this.lockDelay = 0;
+    this.gravity = gravityUnit * 4
+    this.shiftDelay = 0;
+    this.shiftDir;
+    this.shiftReleased;
+    this.arrDelay = 0;
+    this.held = false;
+    this.finesse = 0;
+    this.dirty = false;
+    this.landed = false
+    this.rotateFail = false
+    this.spinX = 0
+    this.spinY = 0
+    this.canHold = false
+    this.initial = {
+      rot: 0,
+      hold: 0
+    }
+    this.lockCap = {
+      move: 0,
+      rotate: 0
+    }
+    this.lockLimit = {
+      move: 15,
+      rotate: 15
+    }
+
+    this.stsd = {
+      x: 0,
+      y: 0
+    }
+    this.last = {
+      x: 0,
+      y: 0,
+      pos: 0
+    }
+    this.lockoutActive = false
+    this.hardDropEnabled = false
+    this.rng = new function() {
+      this.seed = 1;
+      this.next = function() {
+        return this.gen() / 2147483647;
+      };
+      this.gen = function() {
+        return (this.seed = (this.seed * 16807) % 2147483647);
+      };
+    }()
+  }
+  reset() {
     this.initial.hold = 0
     this.initial.rot = 0
     soundPlayer.fadese('topoutwarning', 0, 0, 0)
@@ -64,46 +74,66 @@ Gachamino.prototype = {
     this.y = -1000
     this.index = 'reset'
     this.tetro = [[]]
-  },
-  new: function(ind) {
-    this.injectPiece(ind)
-    if (this.initial.hold > 0) {
-      while (this.initial.hold > 0) {
-        var temp = hold.piece;
-        if (!this.held) {
-          if (hold.piece !== void 0) {
-            hold.piece = this.index;
-            soundPlayer.playse('hold')
-            this.injectPiece(temp)
-          } else {
-            hold.piece = this.index;
-            soundPlayer.playse('firsthold')
-            this.injectPiece(preview.next());
+    this.shiftReleased = true
+    this.shiftDir = 0
+    this.openHold(true)
+  }
+  openHold(bool) {
+    var e = docId('holdDiv')
+    switch (bool) {
+      case true: {
+        e.style.opacity = 1
+        this.canHold = true
+        break
+      }
+      default: {
+        e.style.opacity = 0
+        this.canHold = false
+        break
+      }
+    }
+  }
+  new(ind) {
+    if (this.injectPiece(ind)) {
+      if (this.initial.hold > 0) {
+        while (this.initial.hold > 0 && this.canHold) {
+          var temp = hold.piece;
+          if (!this.held) {
+            if (hold.piece !== void 0) {
+              hold.piece = this.index;
+              soundPlayer.playse('hold')
+              this.injectPiece(temp)
+            } else {
+              hold.piece = this.index;
+              soundPlayer.playse('firsthold')
+              this.injectPiece(preview.next());
+            }
+            this.held = true;
+            hold.draw();
+            this.initial.hold--
           }
-          this.held = true;
-          hold.draw();
-          this.initial.hold--
+          this.initial.hold = 0
         }
+        soundPlayer.playse('ihs')
+        $iH('TEXT_hold', gtris_transText('hold'))
       }
-      soundPlayer.playse('ihs')
-      $iH('TEXT_hold', gtris_transText('hold'))
-    }
-    if (this.initial.rot !== 0) {
-      soundPlayer.playse('irs')
-      $iH('TEXT_next', gtris_transText('next'))
-      while (this.initial.rot !== 0) {
-        if (this.initial.rot > 0) {
-          this.rotate(1)
-          this.initial.rot--
-        }
-        if (this.initial.rot < 0) {
-          this.rotate(-1)
-          this.initial.rot++
+      if (this.initial.rot !== 0) {
+        soundPlayer.playse('irs')
+        $iH('TEXT_next', gtris_transText('next'))
+        while (this.initial.rot !== 0) {
+          if (this.initial.rot > 0) {
+            this.rotate(1)
+            this.initial.rot--
+          } else
+          if (this.initial.rot < 0) {
+            this.rotate(-1)
+            this.initial.rot++
+          } else break
         }
       }
     }
-  },
-  injectPiece: function(index) {
+  }
+  injectPiece(index) {
     this.pos = 0;
     this.tetro = [];
     this.held = false;
@@ -124,22 +154,30 @@ Gachamino.prototype = {
     this.moved = false
     this.rotateFail = false
     if (!this.moveValid(0, this.index !== 0 ? 20 : 19, this.tetro)) {
-      endGame('blockout', true, 'lose')
+      if (field.isTSDOnly == true) {
+        if (field.statistics.tsd >= 20)
+          endGame({ name: 'tsd_reached', array: this.statistics.tsd }, 'win', 'win')
+        else
+          endGame('blockout', true, 'lose')
+      } else
+        endGame('blockout', true, 'lose')
       soundPlayer.playse('ko')
       this.y = -3737
       this.index = 'reset'
       this.tetro = [[]]
-      return
-    }
-    this.y = this.index !== 0 ? 20 : 19
+      return false
+    } else {
+      this.y = this.index !== 0 ? 20 : 19
 
-    if (this.moveValid(0, 1, this.tetro))
-      this.y += this.getDrop(1)
-    if (hold.piece !== void 0) {
-      hold.draw()
+      if (this.checkPieceValidation(0, 1, this.tetro))
+        this.y += this.getDrop(1)
+      if (hold.piece !== void 0) {
+        hold.draw()
+      }
     }
-  },
-  rotate: function(direction) {
+    return true
+  }
+  rotate(direction) {
     if (this.y > -20 && this.index !== 'reset') {
       var rotated = [];
       this.rotateFail = true
@@ -158,20 +196,30 @@ Gachamino.prototype = {
           }
         }
       }
+      var dir;
+      switch (direction) {
+        case 1:
+          dir = 'left'
+          break;
+        case -1:
+          dir = 'right'
+          break;
+      }
       var curPos = this.pos.mod(4);
       var newPos = (this.pos + direction).mod(4);
-      for (var x = 0, len = this.kickData[0].length; x < len; x++) {
+
+      for (var x = 0, len = this.kickData[dir][0].length; x < len; x++) {
         if (
           this.moveValid(
-            this.kickData[curPos][x][0] - this.kickData[newPos][x][0],
-            this.kickData[curPos][x][1] - this.kickData[newPos][x][1],
+            this.kickData[dir][curPos][x][0] - this.kickData[dir][newPos][x][0],
+            this.kickData[dir][curPos][x][1] - this.kickData[dir][newPos][x][1],
             rotated,
           )
         ) {
-          this.x += this.kickData[curPos][x][0] - this.kickData[newPos][x][0];
-          this.y += this.kickData[curPos][x][1] - this.kickData[newPos][x][1];
-          this.stsd.x = this.kickData[newPos][x][0]
-          this.stsd.y = this.kickData[newPos][x][1]
+          this.x += this.kickData[dir][curPos][x][0] - this.kickData[dir][newPos][x][0];
+          this.y += this.kickData[dir][curPos][x][1] - this.kickData[dir][newPos][x][1];
+          this.stsd.x = this.kickData[dir][newPos][x][0]
+          this.stsd.y = this.kickData[dir][newPos][x][1]
           this.tetro = rotated;
           this.pos = newPos;
           this.moved = false
@@ -196,7 +244,7 @@ Gachamino.prototype = {
       }
     } else if (this.y < -10) {
       this.initial.rot += direction
-      if (this.initial.rot == 4 || this.initial.rot == -4) {
+      if (this.initial.rot == 4 || this.initial.rot == -4 || this.initial.rot == 0) {
         this.initial.rot = 0
         $iH('TEXT_next', gtris_transText('next'))
       } else if (this.initial.rot == 2 || this.initial.rot == -2) {
@@ -222,8 +270,8 @@ Gachamino.prototype = {
         }
       }
     }
-  },
-  rotate180: function() {
+  }
+  rotate180() {
     if (this.y > -20 && this.index !== 'reset') {
       var rotated = [];
       var temp = this.tetro
@@ -250,18 +298,18 @@ Gachamino.prototype = {
 
       var curPos = this.pos.mod(4);
       var newPos = (this.pos + 2).mod(4);
-      for (var x = 0, len = this.kickData[0].length; x < len; x++) {
+      for (var x = 0, len = this.kickData['double'][0].length; x < len; x++) {
         if (
           this.moveValid(
-            this.kickData[curPos][x][0] - this.kickData[newPos][x][0],
-            this.kickData[curPos][x][1] - this.kickData[newPos][x][1],
+            this.kickData['double'][curPos][x][0] - this.kickData['double'][newPos][x][0],
+            this.kickData['double'][curPos][x][1] - this.kickData['double'][newPos][x][1],
             rotated,
           )
         ) {
-          this.x += this.kickData[curPos][x][0] - this.kickData[newPos][x][0];
-          this.y += this.kickData[curPos][x][1] - this.kickData[newPos][x][1];
-          this.stsd.x = this.kickData[newPos][x][0]
-          this.stsd.y = this.kickData[newPos][x][1]
+          this.x += this.kickData['double'][curPos][x][0] - this.kickData['double'][newPos][x][0];
+          this.y += this.kickData['double'][curPos][x][1] - this.kickData['double'][newPos][x][1];
+          this.stsd.x = this.kickData['double'][newPos][x][0]
+          this.stsd.y = this.kickData['double'][newPos][x][1]
           this.tetro = rotated;
           this.pos = newPos;
           this.moved = false
@@ -287,7 +335,7 @@ Gachamino.prototype = {
     } else if (this.y < -10) {
       for (var e = 0; e < 2; e++) {
         this.initial.rot++
-        if (this.initial.rot == 4 || this.initial.rot == -4) {
+        if (this.initial.rot == 4 || this.initial.rot == -4 || this.initial.rot == 0) {
           this.initial.rot = 0
           $iH('TEXT_next', gtris_transText('next'))
         } else if (this.initial.rot == 2 || this.initial.rot == -2) {
@@ -314,8 +362,8 @@ Gachamino.prototype = {
         }
       }
     }
-  },
-  DASPreloadAndCheckShift: function(keysDown, lastKeys) {
+  }
+  DASPreloadAndCheckShift(keysDown, lastKeys) {
     // Shift key pressed event.
     if (keysDown & flags.LEFT && !(lastKeys & flags.LEFT)) {
       this.shiftDelay = 0;
@@ -387,8 +435,8 @@ Gachamino.prototype = {
         this.shift(this.shiftDir);
       }
     }
-  },
-  shift: function(direction) {
+  }
+  shift(direction) {
     this.arrDelay = 0;
     if (this.y > -20 && this.index !== 'reset') {
       if (pieceSettings.ARR === 0 && this.shiftDelay === pieceSettings.DAS) {
@@ -414,15 +462,15 @@ Gachamino.prototype = {
         }
       }
     }
-  },
-  shiftDown: function() {
+  }
+  shiftDown() {
     if (this.y > -20 && this.index !== 'reset') {
       if (this.moveValid(0, 1, this.tetro)) {
         field.spinCheckCount = -869
         field.spinCheck()
         var grav = gravityArr[pieceSettings.SFT + 1];
         if (grav > 1) {
-          field.score += grav
+          field.score += this.getDrop(grav)
           soundPlayer.playse('softdrop')
           this.y += this.getDrop(grav);
         }
@@ -439,8 +487,8 @@ Gachamino.prototype = {
         }
       }
     }
-  },
-  hardDrop: function() {
+  }
+  hardDrop() {
     if (this.y > -20 && this.index !== 'reset') {
       for (var i = 1; this.checkPieceValidation(0, i, this.tetro); i++)
         field.score += 2
@@ -449,44 +497,46 @@ Gachamino.prototype = {
       this.hardDropEnabled = true
       this.lockDelay = 929 * pieceSettings.LCK;
     }
-  },
-  getDrop: function(distance) {
+  }
+  getDrop(distance) {
     for (var i = 1; i <= distance; i++) {
       if (!this.checkPieceValidation(0, i, this.tetro)) return i - 1;
     }
     return i - 1;
-  },
-  hold: function() {
-    if (this.y > -44 && this.index !== 'reset') {
-      var temp = hold.piece;
-      if (!this.held) {
-        if (hold.piece !== void 0) {
-          hold.piece = this.index;
-          soundPlayer.playse('hold')
-          this.injectPiece(temp)
-        } else {
-          hold.piece = this.index;
-          soundPlayer.playse('firsthold')
-          this.injectPiece(preview.next());
+  }
+  hold() {
+    if (this.canHold) {
+      if (this.y > -44 && this.index !== 'reset') {
+        var temp = hold.piece;
+        if (!this.held) {
+          if (hold.piece !== void 0) {
+            hold.piece = this.index;
+            soundPlayer.playse('hold')
+            this.injectPiece(temp)
+          } else {
+            hold.piece = this.index;
+            soundPlayer.playse('firsthold')
+            this.injectPiece(preview.next());
+          }
+          this.held = true;
+          hold.draw();
         }
-        this.held = true;
-        hold.draw();
-      }
-    } else if (this.y < -10) {
-      if (this.initial.hold == 0) {
-        this.initial.hold = 1
-        $iH('TEXT_hold', `INITIAL`)
-      }
-      else if (this.initial.hold == 1) {
-        this.initial.hold = 0
-        $iH('TEXT_hold', gtris_transText('hold'))
+      } else if (this.y < -10) {
+        if (this.initial.hold == 0) {
+          this.initial.hold = 1
+          $iH('TEXT_hold', `INITIAL`)
+        }
+        else if (this.initial.hold == 1) {
+          this.initial.hold = 0
+          $iH('TEXT_hold', gtris_transText('hold'))
+        }
       }
     }
-  },
-  moveValid: function(cx, cy, tetro) {
+  }
+  moveValid(cx, cy, tetro) {
     cx = cx + this.x;
     cy = Math.floor(cy + this.y);
-    for (var x = 0; x < tetro.length; x++) {
+    for (var x = 0, e = 0; x < tetro.length && e < 30; x++, e++) {
       for (var y = 0; y < tetro[x].length; y++) {
         if (
           tetro[x][y] &&
@@ -506,12 +556,12 @@ Gachamino.prototype = {
       field.spinCheck()
     }
     return true;
-  },
-  checkPieceValidation: function(cx, cy, tetro) {
+  }
+  checkPieceValidation(cx, cy, tetro) {
     cx = cx + this.x;
     cy = Math.floor(cy + this.y);
-    for (var x = 0; x < tetro.length; x++) {
-      for (var y = 0; y < tetro[x].length; y++) {
+    for (var x = 0, e = 0; x < tetro.length && e < 30; x++, e++) {
+      for (var y = 0, d = 0; y < tetro[x].length && d < 30; y++, d++) {
         if (
           tetro[x][y] &&
           (cx + x < 0 ||
@@ -524,43 +574,34 @@ Gachamino.prototype = {
       }
     }
     return true;
-  },
-  checkIfGTrisLocksAtExosphere: function(cy, tetro) {
-    cy = Math.floor(cy + this.y);
-    var lockout = false
-    for (var x = 0; x < tetro.length; x++) {
-      for (var y = 0; y < tetro[x].length; y++) {
-        if (
-          tetro[x][y] &&
-          //  this.y + y < field.height - 21 &&
-          !this.checkPieceValidation(0, 1, this.tetro)
-        ) {
-          if (!(this.y + y > field.height - 21)) {
-            lockout = true
-          } else if (this.checkPieceValidation(0, 1, this.tetro)) {
-            lockout = false
-            return
-          } else {
-            lockout = false
-            break
+  }
+  checkIfGTrisLocksAtExosphere(cy, tetro) {
+      cy = Math.floor(cy + this.y);
+      var range = []
+      var lockout = false
+      for (var x = 0, r = 0; x < tetro.length && r < 30; x++, r++) {
+        for (var y = 0; y < tetro[x].length; y++) {
+          if (tetro[x][y] &&  !this.checkPieceValidation(0, 1, this.tetro)){
+            if (range.indexOf(y + this.y) === -1) {
+              range.push(y + this.y);
+              if (y + this.y < 21) {lockout = true}
+            }
           }
         }
       }
-    }
-    if (!lockout) {
-      if (this.lockoutActive) {
-        soundPlayer.stopse('topoutwarning')
-        soundPlayer.fadese('topoutwarning', 0, 0, 0)
-        this.lockoutActive = false
+      if (!lockout) {
+        if (this.lockoutActive) {
+          soundPlayer.stopse('topoutwarning')
+          soundPlayer.fadese('topoutwarning', 0, 0, 0)
+          this.lockoutActive = false
+        }
+      } else
+      if (!this.lockoutActive) {
+        soundPlayer.playse('topoutwarning')
+        this.lockoutActive = true
       }
-    } else
-    if (!this.lockoutActive) {
-      soundPlayer.playse('topoutwarning')
-      this.lockoutActive = true
-    }
-  },
-  update: function() {
-
+  }
+  update() {
     if (this.y > -20 && this.index !== 'reset') {
 
       if (this.moveValid(0, 1, this.tetro)) {
@@ -602,12 +643,17 @@ Gachamino.prototype = {
           field.spinCheck()
           field.addPiece(this.tetro)
           this.y > -2039
-          //if(field.are.piece>0)
-          field.are.piece = field.are.add.piece
+          if (field.are.add.piece > 0)
+            field.are.piece = field.are.add.piece
+          this.checkIfGTrisLocksAtExosphere(0, this.tetro)
           if (field.valid && field.are.line <= 0 && field.are.piece <= 0) {
             this.new(preview.next())
           }
-          else this.y = -3738
+          else {
+            this.y = -3738
+            this.checkIfGTrisLocksAtExosphere(0,[[]])
+            return
+          }
           if (hold.piece !== void 0)
             hold.draw()
         } else {
@@ -631,27 +677,30 @@ Gachamino.prototype = {
         }
 
       }
-      if (
-        this.x !== this.last.x ||
-        Math.floor(this.y) !== this.last.y ||
-        this.pos !== this.last.pos ||
-        this.dirty
-      ) {
-        clear(_CTX.active);
-        this.drawGhost();
-        this.draw();
-        this.checkIfGTrisLocksAtExosphere(0, this.tetro)
-      }
-      this.last.x = this.x;
-      this.last.y = Math.floor(this.y);
-      this.last.pos = this.pos;
-      this.dirty = false;
     }
-  },
-  draw: function() {
+    if (
+      (this.x !== this.last.x ||
+      Math.floor(this.y) !== this.last.y ||
+      this.pos !== this.last.pos ||
+      this.dirty) &&
+      this.y>-10
+    ) {
+      clear(_CTX.active);
+      this.drawGhost();
+      this.draw();
+      this.checkIfGTrisLocksAtExosphere(0, this.tetro)
+    } else if(this.y<-9){
+      clear(_CTX.active);
+    }
+    this.last.x = this.x;
+    this.last.y = Math.floor(this.y);
+    this.last.pos = this.pos;
+    this.dirty = false;
+  }
+  draw() {
     draw(this.tetro, this.x, Math.floor(this.y) - 19.6, 'active', void 0, 0);
-  },
-  drawGhost: function() {
+  }
+  drawGhost() {
     if (pieceSettings.Ghost == 1 && !this.landed) {
       draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), 'active', void 0, 1)
     } else if (pieceSettings.Ghost === 2 && !this.landed) {
@@ -671,9 +720,9 @@ Gachamino.prototype = {
       draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), 'active', void 0, 0)
       _CTX.active.globalAlpha = 1
     }
-  },
-  checkSpintoSound: function() {
-    if (!this.moveValid(0, 1, this.tetro) || !this.moveValid(0, 2, this.tetro)) {
+  }
+  checkSpintoSound() {
+    {
       if (field.miniSpinCount >= 1 && field.spinCheckCount >= 0.7 && this.spinX == this.x && this.spinY == this.y) {
         if (field.miniSpinCount == 2) {
           soundPlayer.playse('prespin')
@@ -694,7 +743,7 @@ Gachamino.prototype = {
       if (field.miniSpinCount == 1 && field.spinCheckCount >= 1 && field.mini2SpinCount <= 1 && this.spinX == this.x && this.spinY == this.y) {
         soundPlayer.playse('prespinmini')
       }
-    } else
+    } 
     if (this.stsd.y == -2) {
       if (this.stsd.x == 1) {
         soundPlayer.playse('prespin')
@@ -704,16 +753,4 @@ Gachamino.prototype = {
       }
     }
   }
-}
-
-
-var gravityUnit = /*0.00390625/**/ 1 / 512; //1/256
-var gravityArr = (function() {
-  var array = []
-  array.push(0);
-  for (var i = 1; i < 128; i++) array.push(i / 128);
-  for (var i = 1; i <= 20; i++) array.push(i);
-  return array;
-})();
-
-var piece = new Gachamino();
+}()

@@ -1,4 +1,4 @@
-function Preview() {
+function Prev() {
  this.bag= [0, 1, 2, 3, 4, 5, 6];
 
 this.init = function() {
@@ -92,4 +92,4 @@ this.draw = function() {
  }
 }
 }
-var preview = new Preview();
+var preview = new Prev();

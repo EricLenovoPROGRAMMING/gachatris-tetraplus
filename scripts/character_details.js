@@ -47,6 +47,15 @@ function gtris_character_details(name) {
         description: "He is a forest explorer named after one of the places filled with trees.",
         versions: ['Original']
       },
+      mars: {
+        name: "Mars",
+        gender: "LGBTQ Non-binary (preferences of plural and neutral (they-them, it))",
+        date_existed: "June 2, 2022",
+        date_version: "0.0.074 Alpha",
+        author: "VoidPaws (Mars)",
+        description: "They have been one of the most excellent artists and story writers in their community.",
+        versions: ['Original']
+      },
     },
     fil: {
       ericlenovo: {
@@ -92,6 +101,15 @@ function gtris_character_details(name) {
         date_version: "0.0.048 Alpha",
         author: "That-Aromantic_Asexual",
         description: "Isang lalaking manlalakbay sa gubat na pinangalanan pagkatapos ng isa sa mga lugar na punong-puno ng mga puno.",
+        versions: ['Original']
+      },
+      mars: {
+        name: "Mars",
+        gender: "LGBTQ Non-binary (ginagamit na panghalip na maramihan at neutral (sila-nila, ito))",
+        date_existed: "Hunyo 2, 2022",
+        date_version: "0.0.074 Alpha",
+        author: "VoidPaws (Mars)",
+        description: "Sila ay isa nga sa pinakamahuhusay na mga artista at mga manunulat ng mga istorya sa kanilang komunidad.",
         versions: ['Original']
       },
     },

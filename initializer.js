@@ -2,9 +2,10 @@
  * Gachatris Tetraplus Initializer
  */
 
-/*eval = function() {
-  return console.warn('JS Console is not usable in this site.')
-}/**/
+/*const eval = () => {
+  console.warn('JS Console is not usable in this site.')
+} /**/
+ "use strict"
 
 function docId(id) {
   return document.getElementById(id)
@@ -24,9 +25,9 @@ function $tag(id, n) {
     return document.getElementsByTagName(id)
 }
 
-async function $create(tag, func) {
+function $create(tag, func) {
   let a = document.createElement(tag)
-  await func(a)
+  func(a)
 }
 
 
@@ -49,9 +50,10 @@ Number.prototype.mod = function(n) {
 
 
 (function() {
-  let array = ['jQuery', 'howler-lib', 'gachatris-data', 'piece', 'field', 'queue_prev', 'pieceHold', 'soundplayer','musicplayer', 'language', 'main', 'character_details','menus', 'modeparameters']
+  let array = ['jQuery', 'howler-lib', 'gachatris-data', 'piece', 'field', 'queue_prev', 'pieceHold', 'soundplayer', 'musicplayer', 'language', 'main', 'character_details','uiSound', 'menus', 'replayCenter', 'modeProto', 'modeparameters']
   var i = 0
   var sfx
+
   function loadScript() {
     $create('script', function(a) {
       a.src = `scripts/${array[i]}.js`
@@ -68,30 +70,33 @@ Number.prototype.mod = function(n) {
       }
     })
   }
-  function startup(){
-  sfx.play()
-}
+
+  function startup() {
+    sfx.play()
+  }
+
   function sound() {
     addEventListener("click", startup, false)
     addEventListener("keydown", startup, false)
-    sfx = new Howl({ src: "assets/menu/uise/gtrisstartup.ogg", preload: true, format: "ogg"})
-    sfx.volume(selectedSettings.Volume.Music / 100)
+    sfx = new Howl({ src: "assets/se/menu/gtrisstartup.ogg", preload: false, format: "ogg" })
+    sfx.volume(selectedSettings.Volume.SFX / 100)
     sfx.once('load', function() {
-      setTimeout(()=>{
-      sfx.play()
-      },100)
+      setTimeout(() => {
+        sfx.play()
+      }, 100)
     })
-    sfx.once('play',function(){
+    sfx.once('play', function() {
       initializeGTris()
       removeEventListener("click", startup, false)
       removeEventListener("keydown", startup, false)
     })
-    setTimeout(()=>{
+    setTimeout(() => {
       sfx.load()
-      },100)
+    }, 100)
     musicPlayer.loadMfx('menu')
   }
   loadScript()
+
   function skipWithKey() {
     var arr = [$('#gtrisSplashText'), $('#splashLogo')]
     arr.forEach((e) => {
@@ -99,7 +104,7 @@ Number.prototype.mod = function(n) {
       e.css({ 'opacity': 0 })
     })
     skip()
-    sfx.fade(selectedSettings.Volume.Music / 100, 0, 500)
+    sfx.fade(selectedSettings.Volume.SFX / 100, 0, 500)
     sfx.on('volume', function() { this.unload() })
   }
 
@@ -140,4 +145,3 @@ Number.prototype.mod = function(n) {
     })
   }
 })()
-

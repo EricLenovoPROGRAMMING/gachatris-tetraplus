@@ -150,7 +150,7 @@ function keyUpDown(e) {
 
       for (var i in selectedSettings.Binds) {
         if (selectedSettings.Binds[i] == e.keyCode)
-          selectedSettings.Binds[i] = 'duplicate = no bind'
+          selectedSettings.Binds[i] = undefined
       }
       selectedSettings.Binds[keyMappingSelected] = e.keyCode
       keyMappingSelected = undefined
@@ -167,26 +167,25 @@ var movedMenuSessions = [],
   menuLast = 0,
   headerLast = 'title'
 
-function activeMenu(activateMenu, opacity, eliminateundo, moreFunction, ) {
+function activeMenu(activateMenu, opacity, eliminateundo) {
   if (activateMenu == true) {
     docId('menus').style.opacity = '100%'
     docId('menus').style.top = '0%'
+    docId('menuHeader').style.bottom = '0%'
     docId('menus').style.visibility = 'visible'
     if (opacity && typeof opacity !== "undefined") {
       docId('menus').style.background = `rgba(${Math.random()*53},${Math.random()*53},${Math.random()*53},${opacity})`
     } else docId('menus').style.background = `rgba(${Math.random() * 53},${Math.random() * 53},${Math.random() * 53},1)`
-
-    //docId('gtris').style.display = 'none'
   } else {
     try {
       for (let i = 0; i < menuClass.length; i++) {
         menuClass[i].classList.remove('menuActive')
       }
     } catch (e) {}
+    docId('menuHeader').style.bottom = '50%'
     docId('menus').style.opacity = '0%'
     docId('menus').style.top = '100%'
     docId('menus').style.visibility = 'hidden'
-    //docId('gtris').style.display = 'block'
   }
   if (eliminateundo || typeof eliminateundo !== 'undefined') {
     movedMenuSessions = []
@@ -196,6 +195,10 @@ function activeMenu(activateMenu, opacity, eliminateundo, moreFunction, ) {
 function switchMenu(menuInd, showheader, title, disableUndo) {
   if (disableUndo == false || typeof disableUndo == 'undefined') {
     movedMenuSessions.push({ index: menuLast, show: showheader, header: headerLast })
+    menuLast = menuInd
+    headerLast = title
+  } else
+  if(disableUndo == "startPoint"){
     menuLast = menuInd
     headerLast = title
   }
@@ -208,9 +211,9 @@ function switchMenu(menuInd, showheader, title, disableUndo) {
   }
   menuClass[menuInd].classList.add('menuActive')
   if (showheader) {
-    docId('menuHeader').style.opacity = '100%'
+    docId('menuHeader').style.bottom = '0%'
   } else {
-    docId('menuHeader').style.opacity = '0%'
+    docId('menuHeader').style.bottom = '50%'
   }
   $iH('headerTitle', gtris_transText(title))
   if (movedMenuSessions.length !== 0) {
@@ -243,7 +246,6 @@ function backButton() {
       headerLast = 'title'
       docId('headerBackButton').style.display = 'none'
     }
-    console.table(movedMenuSessions)
   } else {
     keyMappingSelected = null
     isKeySelectorOn = false
@@ -429,7 +431,6 @@ function settingManipulate(parent, variable, PLUS, id) {
   if (typeof settingsList[parent][variable][selectedSettings[parent][variable]] === 'undefined') {
     selectedSettings[parent][variable] = 0
   }
-  console.log(parent, variable, PLUS, selectedSettings[parent][variable])
   docId(e).innerHTML = settingsList[parent][variable][selectedSettings[parent][variable]]
   saveSTORAGE()
   RESIZE()
