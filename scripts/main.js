@@ -195,7 +195,7 @@ function RESIZE() {
     //clearText.style.width = `${cellSize * 6}px`
     statistics.style.width = `${_canvasses.field.width}px`
     statistics.style.height = leftBorder.style.height
-    statistics.style.top = `${cellSize*13}px`
+    statistics.style.top = `${cellSize*9}px`
     statistics.style.left = `${-_canvasses.field.width * 0.5}px`
     for (var large of $tag('statLarge')) {
       large.style.height = `${cellSize*1.4}px`
