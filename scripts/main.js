@@ -4,7 +4,7 @@
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '0.0.074 Alpha';
+var gtris_version = '0.0.076 Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
@@ -614,6 +614,7 @@ function actualCustomInit(mode) {
 function customInit() {
   var mode = gameMode
   scoreAtk.enableTimer(false)
+  fourWide.enableTimer(false)
   preview.bag = [0, 1, 2, 3, 4, 5, 6]
   field.isC4W = false
   var s = (num, tx) => docId(`stats${num}`).innerHTML = tx
