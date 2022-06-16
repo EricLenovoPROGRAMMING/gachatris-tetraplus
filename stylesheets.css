@@ -81,6 +81,16 @@ body {
   pointer-events: none
 }
 
+gtris-tYellow {
+	color: #ee0;
+}
+.menuActive gtris-tRainbow {
+animation-name: frenzyColor;
+animation-timing-function: linear;
+animation-duration: 2s;
+animation-iteration-count: infinite;
+}
+
 #menus {
   display: block;
   position: absolute;
@@ -211,6 +221,7 @@ gtris-button {
   transition: border-color 0.03s linear;
   animation: none;
 }
+
 .menuActive gtris-button:hover {
   animation: buttonAnim 1500ms infinite;
   border: 0.1em dashed #f8f;
@@ -417,12 +428,12 @@ gtris_big {
 @keyframes buttonAnim {
   0% {
     transform: translateY(0em);
-    animation-timing-function:ease-in;
+    animation-timing-function: ease-in;
   }
 
   50% {
     transform: translateY(-0.2em);
-    animation-timing-function:ease-out;
+    animation-timing-function: ease-out;
   }
 
   50.1% {
@@ -430,7 +441,7 @@ gtris_big {
   }
 
   100% {
-    animation-timing-function:ease-in;
+    animation-timing-function: ease-in;
     transform: translateY(0em)
   }
 }
@@ -457,6 +468,122 @@ gtris_big {
   }
 }
 
+@keyframes boardFrenzyIn {
+  from {
+    opacity: 100%;
+    animation-timing-function: ease-in;
+    transform: rotateY(0deg);
+  }
+
+  to {
+    opacity: 100%;
+    transform: rotateY(90deg);
+  }
+}
+
+@keyframes boardFrenzyOut {
+  from {
+    opacity: 100%;
+    animation-timing-function: ease-out;
+    transform: rotateY(-90deg);
+  }
+
+  to {
+    opacity: 100%;
+    transform: rotateY(0deg);
+  }
+}
+
+@keyframes frenzyBorder {
+  0% {
+    border-color: rgba(255, 0, 0, 1);
+  }
+
+  15% {
+    border-color: rgba(255, 255, 0, 1);
+  }
+
+  29% {
+    border-color: rgba(0, 255, 0, 1);
+  }
+
+  44% {
+    border-color: rgba(0, 255, 255, 1);
+  }
+
+  69% {
+    border-color: rgba(0, 0, 255, 1);
+  }
+
+  88% {
+    border-color: rgba(255, 0, 255, 1);
+  }
+
+  100% {
+    border-color: rgba(255, 0, 0, 1);
+  }
+}
+
+@keyframes frenzyFill {
+  0% {
+    background: rgba(255, 0, 0, 1);
+  }
+
+  15% {
+    background: rgba(255, 255, 0, 1);
+  }
+
+  29% {
+    background: rgba(0, 255, 0, 1);
+  }
+
+  44% {
+    background: rgba(0, 255, 255, 1);
+  }
+
+  69% {
+    background: rgba(0, 0, 255, 1);
+  }
+
+  88% {
+    background: rgba(255, 0, 255, 1);
+  }
+
+  100% {
+    background: rgba(255, 0, 0, 1);
+  }
+}
+@keyframes frenzyColor {
+  0% {
+    color: rgba(255, 0, 0, 1);
+  }
+
+  15% {
+    color: rgba(255, 255, 0, 1);
+  }
+
+  29% {
+    color: rgba(0, 255, 0, 1);
+  }
+
+  44% {
+    color: rgba(0, 255, 255, 1);
+  }
+
+  69% {
+    color: rgba(0, 0, 255, 1);
+  }
+
+  88% {
+    color: rgba(255, 0, 255, 1);
+  }
+
+  100% {
+    color: rgba(255, 0, 0, 1);
+  }
+}
+
+
 #perfectClear1 {
   opacity: 0%;
   animation-name: none;
@@ -471,6 +598,7 @@ gtris_big {
   animation-timing-function: linear;
 }
 
+
 tetrionPadding {
   display: flex;
   justify-content: center;
@@ -479,10 +607,58 @@ tetrionPadding {
   position: absolute;
 }
 
+@keyframes frenzyActionCharacter {
+  0% {
+    transform: translateY(6em) rotateY(360deg);
+    opacity: 0%;
+  }
+
+  20% {
+    transform: translateY(2em) rotateY(0deg);
+    opacity: 100%
+  }
+
+  80% {
+    transform: translateY(0.7em) rotateY(0deg);
+    opacity: 100%
+  }
+
+  100% {
+    transform: translateY(-4em);
+    opacity: 0%;
+    animation-name: none;
+  }
+}
+
+@keyframes frenzyActionText {
+  0% {
+    transform: translateY(-3em) rotateY(0deg);
+    opacity: 0%;
+  }
+
+  20% {
+    transform: translateY(0.7em) rotateY(0deg);
+    opacity: 100%
+  }
+
+  80% {
+    transform: translateY(0.7em) rotateY(0deg);
+    opacity: 100%
+  }
+
+  100% {
+    transform: translateY(2em);
+    opacity: 0%;
+    animation-name: none;
+  }
+}
+
 #tetrionResultText {
   position: absolute;
-  color: #968;
-  transition: none
+  color: #fff;
+  transition: none;
+  animation-timing-function: linear;
+  animation-duration: 1100ms
 }
 
 #showResultCharImg {
@@ -490,7 +666,9 @@ tetrionPadding {
   width: auto;
   height: auto;
   transform: translateY(300px);
-  transition: none
+  transition: none;
+  animation-timing-function: linear;
+  animation-duration: 1100ms
 }
 
 #resultCharImg {
@@ -530,7 +708,8 @@ tetrionPadding {
 
 #holdTextPlaceholder,
 #nextTextPlaceholder,
-#meterBars,
+#meterBarRight,
+#meterBarLeft,
 #playField {
   transition: background 300ms linear,
     border-color 300ms linear;
@@ -567,6 +746,19 @@ gtris_gui {
   transform: translateX(-100%);
 }
 
+.gtris-rainbow-border-p1 {
+  animation-duration: 2200ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear
+}
+
+.gtris-rainbow-bg-p1 {
+  animation-duration: 2200ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear
+}
+
+
 #rightborder,
 #leftborder {
   display: table;
@@ -595,29 +787,110 @@ gtris_gui {
 }
 
 #statistics {
-  display: table;
+  display: flex;
   position: fixed;
-  border-collapse: collapse;
-  border-spacing: 0;
+  flex-direction: column;
+  justify-content: center;
+  float: right;
 }
 
 statLarge,
+stat,
+statMedium {
+  display: inline-block;
+  height: auto;
+  padding: 0 0;
+  width: 100%;
+  align-self: flex-end;
+  bottom: 0;
+}
+
 stat {
   display: inline-block;
-  padding: 0;
+  font-size: 100%;
+}
+
+statRow {
+  display: block;
+  width: 100%;
+  bottom: 0;
+  padding: 0 0rem;
 }
 
 statLarge {
   display: inline-block;
   width: 100%;
+  font-size: 190%;
+}
+
+statMedium {
+  display: inline-block;
+  font-size: 150%;
   vertical-align: bottom;
 }
 
 #fieldCanvas,
 #gridCanvas,
 #activeCanvas,
-#loadedBackground {
+#loadedBackground,
+#bgFrenzyLayout {
   position: absolute;
+}
+
+#bgFrenzyLayout {
+  position: absolute;
+  display: flex;
+  overflow: hidden;
+}
+
+@keyframes bgFrenzyRot {
+  from {
+    transform: translate(-50%, -50%) rotateZ(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotateZ(360deg);
+  }
+}
+
+#dynamicFrenzyBg {
+  position: absolute;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 2500ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear
+}
+#colorFrenzyOverlay  {
+	position: absolute;
+	opacity: 80%;
+	width: 100%;
+	height: 100%;
+	background: #488;
+}
+
+#meterBarRight {
+  border: 2px solid #fff;
+  border-left: 0px;
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+#meterBarLeft {
+  border: 2px solid #fff;
+  border-right: 0px;
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+#meter_A {
+  margin-top: 90px;
+  display: inline-block;
+  background: #a00;
 }
 
 #queueCanvas {
@@ -637,15 +910,18 @@ statLarge {
   visibility: hidden
 }
 
-#meterBars {
-  border: 2px solid #fff;
-  position: relative;
-  overflow: hidden;
-  display: block;
+#namePlateDiv {
+	position: absolute;
+	border: 2px solid #bbb;
+	background: #020202;
 }
 
-#meter_A {
-  margin-top: 90px;
-  display: inline-block;
-  background: #a00;
+#namePlateDiv #namePlateInline {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+#namePlateInline #namePlate {
+	position: relative;
 }
