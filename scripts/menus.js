@@ -134,14 +134,19 @@ function keyUpDown(e) {
       }
     }
     if (e.type === "keydown" && e.keyCode === selectedSettings.Binds.retry) {
+    	if($QSA('.menuActive', 0)?.innerHTML){
+    	if($QSA('.menuActive', 0).innerHTML.indexOf('<textarea') == -1)
       gameStart(gameMode);
+    	} else {
+    		gameStart(gameMode);
+    	}
     }
     if (!isReplay) {
       var flag = keyCodeToKeyFlag(e.keyCode);
       if (e.type === "keydown") {
-        keysPressed |= flag;
+        keysPressed |= flag
       } else if (e.type === "keyup") {
-        keysPressed &= ~flag;
+        keysPressed &= ~flag
       }
     }
   } else {
@@ -489,6 +494,25 @@ function setCharacterTest() {
   $iH('characterName', selectedSettings.NonIterable.Character == 0 ? '---' : charDetailPrepare.name)
 }
 
+function initSetNameWindow(){
+	switchMenu(12, true, "h_namechange")
+	//for optimization, we use a pre-existing DIV
+	docId('replayCenter-station').innerHTML = `
+	         <gtris-listCell>
+	           <gtris-text style="text-align:center">${gtris_transText("nameChangeDesc")}</gtris-text>
+	         </gtris-listCell>
+	         <gtris-listCell>
+	            <textarea id="replayCenterBox" onchange="changePlayerName('Main',this.value)" spellcheck="false" maxlength=25 style="width:80%;height:1em;resize:none;background:#232323;color:#fff;font-size:2em">${selectedSettings.Names.Main}</textarea>
+	         </gtris-listCell>
+	         `
+}
+
+function changePlayerName(obj, val){
+	var target = e => selectedSettings.Names[obj] = e
+	target(val)
+	saveSTORAGE(val)
+	console.log(val)
+}
 
 function setKey(NAME, variable, id, $iH) {
   let list = variable

@@ -3,7 +3,7 @@ class ReplayCenter
   constructor() {
     this.replayString;
     this.replayStringSession = ""
-    this.testReplayString //???
+    this.testReplayString
     this.replayBox = docId('replayCenterBox')
     this.replayCenterStation = docId('replayCenter-station')
     this.replayReq = {
@@ -19,6 +19,7 @@ class ReplayCenter
       "SFT",
       "LCK",
       "PREV",
+      "name"
       ]
     }
   }
@@ -50,6 +51,15 @@ class ReplayCenter
             errors++
           }
         }
+        for(var e of this.replayReq.tuning){
+        	if (typeof this.testReplayString.tuning[e] == "undefined") {
+        		errors++
+        	}
+        }
+        if(this.testReplayString?.tuning?.name)
+        if(this.testReplayString.tuning.name.length > 20){
+        	throw gtris_transText('rp_nameError')
+        }
         switch (this.testReplayString.mode) {
           case 1: {
             this.checkModeParameters("lineRun", ['lines', 'type'])
@@ -62,6 +72,22 @@ class ReplayCenter
           case 3: {
             this.checkModeParameters("fourWide", ['timer'])
             break
+          }
+          case 5: {
+          	this.checkModeParameters("dsFrenzy", ['timer', 'phase', 'fails'])
+          	break
+          }
+          case 6: {
+          	this.checkModeParameters("garbageSurvival", ['autolevel', 'receptioncount', 'initduration'])
+          	break
+          }
+          case 7: {
+          	this.checkModeParameters("levelrun", ['level', 'lines', 'aretype','linestorequire','levelcap'])
+          	break
+          }
+          case 8: {
+          	this.checkModeParameters("area20", ['level', 'lines', 'linestorequire', 'levelcap'])
+          	break
           }
         }
       }
@@ -118,7 +144,7 @@ class ReplayCenter
     switchMenu(12, true, "rp_center")
     this.replayCenterStation.innerHTML = `
          <gtris-listCell>
-           <gtris-text>${gtris_transText("rp_centerDesc")}</gtris-text>
+            <gtris-text>${gtris_transText("rp_centerDesc")}</gtris-text>
          </gtris-listCell>
          <gtris-listCell>
             <textarea id="replayCenterBox" onchange="replayCenter.replayStringSession = this.value" spellcheck="false" style="width:80%;height:30em;resize:none;background:#232323;color:#fff">${this.replayStringSession}</textarea>
@@ -142,7 +168,7 @@ class ReplayCenter
       let textIn = _textInput
       var blobs = new Blob([textIn], { type: 'text/plain' })
       var blobURL = URL.createObjectURL(blobs)
-      var element = document.createElement('a');
+      var element = document.createElement('a')
       element.setAttribute('href', blobURL)
       element.setAttribute('download', filename);
       document.body.appendChild(element);

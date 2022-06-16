@@ -17,13 +17,17 @@ const uiSound = new class {
 
   vol() {
     for (let e of this.arr) {
+    	try{
       this.s[e].volume(selectedSettings.Volume.UI / 100)
+    	}catch(e){}
     }
   }
 
   playse(e) {
+  	try{
     this.s[e].stop()
     this.s[e].play()
+  	}catch(e){}
   }
 }()
 

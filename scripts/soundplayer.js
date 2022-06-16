@@ -12,7 +12,7 @@ function SoundLoader() {
   'b2b', 'game-3', 'game-2', 'game-1', 'game-start', 'bravo',
   'prespin', 'prespinmini', 'game-lose', 'game-win', `ko`, 'step',
   'collapse', 'lineup', 'ihs', 'irs', 'pause', 'softdrop', 'ren-end',
-  'hurry', 'timeup', 'hurry2'
+  'hurry', 'timeup', 'hurry2', 'frenzy', 'levelup'
   ]
   this.load = function() {
     try {

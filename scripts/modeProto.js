@@ -39,7 +39,8 @@ class UltraScoreAttack {
     return Math.max(0, this.time)
   };
   endGame() {
-    endGame('u_finish', 'win', 'win')
+    field.fieldResult('u_finish', 'win', 'win')
+    endGame('u_finish', 'win')
     this.isTimerEnabled = false
   };
   ringTimer(hurrytype) {
@@ -92,7 +93,8 @@ class CenterFourWide {
     return Math.max(0, this.time)
   };
   endGame() {
-    endGame('c4w_finish', 'win', 'win')
+    field.fieldResult('c4w_finish', 'win', 'win')
+    endGame('c4w_finish', 'win')
     this.isTimerEnabled = false
   };
   ringTimer(hurrytype) {
@@ -112,7 +114,7 @@ class CenterFourWide {
     }
     for (var x = 0; x < 10; x++) {
       for (var y = 0; y < 23; y++) {
-        grid[x][y] = Math.max(1, Math.floor(Math.random() * 9))
+        grid[x][y] = 8
       }
     }
     for (var x = 3; x < 7; x++) {
@@ -129,3 +131,51 @@ class CenterFourWide {
 
 const [scoreAtk, fourWide] = [new UltraScoreAttack(), new CenterFourWide()]
 
+const garbageSurvival = new class {
+ constructor(){
+ 	this.garbageSpeed = [
+ 		800,
+ 		676,
+ 		558,
+ 		495,
+ 		370,
+ 		300,
+ 		274,
+ 		251,
+ 		220,
+ 		199
+ 		]
+ 	this.strength = [
+ 		4,
+ 		4,
+ 		4,
+ 		4,
+ 		5,
+ 		5,
+ 		6,
+ 		7,
+ 		8,
+ 		9
+ 		]
+ 	this.selectedLevel = 0
+ 	this.random = new ParkMillerPRNG()
+ 	this.initDelay = 0
+ }
+ init(seed, initDelay, selected){
+ 	this.random.seed = seed
+ 	this.selectedLevel = selected
+ 	this.initDelay = initDelay
+ }
+ returnGarb() {
+ 	return {
+ 		garbageRow: Math.floor(this.random.next() * 10),
+ 		count: Math.floor(this.random.next() * this.strength[this.selectedLevel - 1]),
+ 	}
+ }
+ run(e, func){
+ 	if(e % this.garbageSpeed[this.selectedLevel - 1] == 0 && e > this.initDelay){
+ 		var h = this.returnGarb()
+ 		func(h.count, h.garbageRow)
+ 	}
+ }
+}()
