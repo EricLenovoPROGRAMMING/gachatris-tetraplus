@@ -56,6 +56,15 @@ function gtris_character_details(name) {
         description: "They have been one of the most excellent artists and story writers in their community.",
         versions: ['Original']
       },
+      peternavea: {
+      	name: "Peter Navea",
+      	gender: "Male",
+      	date_existed: "June 16, 2022",
+      	date_version: "0.0.104HF Alpha",
+      	author: "PeterNavea",
+      	description: "This male can likely get popular when he makes something drawing attention to people.",
+      	versions: ['Original']
+      },
     },
     fil: {
       ericlenovo: {
@@ -111,6 +120,15 @@ function gtris_character_details(name) {
         author: "VoidPaws (Mars)",
         description: "Sila ay isa nga sa pinakamahuhusay na mga artista at mga manunulat ng mga istorya sa kanilang komunidad.",
         versions: ['Original']
+      },
+      peternavea: {
+      	name: "Peter Navea",
+      	gender: "Lalaki",
+      	date_existed: "Hunyo 16, 2022",
+      	date_version: "0.0.104HF Alpha",
+      	author: "PeterNavea",
+      	description: "Ang lalaking ito ay puwedeng maging popular kapag gumawa siya ng isang bagay na nakakakuha ng atensyon sa mga tao.",
+      	versions: ['Original']
       },
     },
 

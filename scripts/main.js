@@ -4,7 +4,7 @@
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '0.0.104 Alpha';
+var gtris_version = '0.0.104HF Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
@@ -116,8 +116,7 @@ function RESIZE() {
 			e.style.fontSize = `${cellSize*3}px`
 		resultImg.style.height = `${cellSize*23}px`
 		resultImg.style.width = `${cellSize*23}px`
-
-
+		
 		logoHeader.body.style.height = logoHeader.body.style.width =
 			logoHeader.logo.style.height = logoHeader.logo.style.width =
 			menuHeader.style.height = `${cellSize*2.1}px`
@@ -208,19 +207,9 @@ function RESIZE() {
 		clearText.style.height = `${cellSize*3}px`
 		statistics.style.width = `${_canvasses.field.width}px`
 		statistics.style.height = leftBorder.style.height
-		statistics.style.top = `${cellSize*10.9}px`
+		statistics.style.bottom = 0
 		statistics.style.left = `${-_canvasses.field.width * 0.53}px`
-		for (var large of $tag('statLarge')) {
-			large.style.height = `${cellSize*1.4}px`
-			large.style.fontSize = `${cellSize*1.4}px`
-		}
-		for (var large of $tag('statMedium')) {
-			large.style.height = `${cellSize*1.1}px`
-			large.style.fontSize = `${cellSize*1.1}px`
-		}
-		for (var large of $tag('stat')) {
-			large.style.fontSize = `${cellSize*0.7}px`
-		} /**/
+	 
 		docId('tSpin').style.fontSize = `${cellSize*0.4}px`
 		docId('regular').style.fontSize = `${cellSize*0.7}px`
 		docId('B2B').style.fontSize = `${cellSize*0.4}px`
@@ -400,7 +389,7 @@ var settingsList = {
 		Music: ['Menu', 'Default Rock']
 	},
 	NonIterable: {
-		Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest', 'Mars'],
+		Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest', 'Mars', 'PeterNavea'],
 	},
 	Other: {
 		Skin: ['Default'],
