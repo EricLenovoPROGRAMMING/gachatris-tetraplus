@@ -807,7 +807,7 @@ statMedium {
 
 stat {
   display: inline-block;
-  font-size: 100%;
+  font-size: 80%;
 }
 
 statRow {
@@ -820,12 +820,12 @@ statRow {
 statLarge {
   display: inline-block;
   width: 100%;
-  font-size: 190%;
+  font-size: 150%;
 }
 
 statMedium {
   display: inline-block;
-  font-size: 150%;
+  font-size: 110%;
   vertical-align: bottom;
 }
 
