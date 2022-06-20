@@ -56,7 +56,7 @@ const piece = new class {
 		this.lockoutActive = false
 		this.hardDropEnabled = false
 		this.rng = new ParkMillerPRNG()
-		this.levelGravityArr = [2, 2, 3, 4, 5, 6, 7, 9, 11, 14, 16, 19, 21, 28,39, 49, 66, 139, 142, 148]
+		this.levelGravityArr = [1, 2, 3, 4, 5, 6, 7, 8, 10, 14, 16, 19, 25, 31,41, 59, 89, 139, 142, 148]
 	}
 	restrictDelay(level) {
 		if (field.isGravityType == "marathon") {
@@ -67,7 +67,7 @@ const piece = new class {
 	}
 	restrictLock(level) {
 		if (field.isGravityType == "marathon") {
-			return (Math.max(1, ((level * 1.1) - 21) * 0.2))
+			return (Math.max(1, ((level) - 21) * 0.2 * 0.45))
 		} else if (field.isGravityType == "master") {
 			return (Math.max(1, ((level) - 6) * 0.5))
 		} else return 1
@@ -76,6 +76,7 @@ const piece = new class {
 		this.initial.hold = 0
 		this.initial.rot = 0
 		soundPlayer.fadese('topoutwarning', 0, 0, 0)
+		soundPlayer.stopse("topoutwarning")
 		$iH('TEXT_next', gtris_transText('next'))
 		$iH('TEXT_hold', gtris_transText('hold'))
 		this.x = 'reset'

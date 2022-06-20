@@ -3,7 +3,7 @@
  * ----------------------------------
  * Started developing on May 5, 2022
  */
-const eval = () => {
+/* const eval = () => {
   console.warn('JS Console is not usable in this site.')
 } /**/
 "use strict"

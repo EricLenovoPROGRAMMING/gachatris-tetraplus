@@ -65,6 +65,15 @@ function gtris_character_details(name) {
       	description: "This male can likely get popular when he makes something drawing attention to people.",
       	versions: ['Original']
       },
+      flotalendy: {
+      	name: "Flotalendy",
+      	gender: "Female",
+      	date_existed: "June 20, 2022",
+      	date_version: "0.0.134 Alpha",
+      	author: "Flotalendy",
+      	description: "She is an adventurer, an attorney and a therapist who can let people know what might be a mystery behind a controversial topic.",
+      	versions: ['Original']
+      },
     },
     fil: {
       ericlenovo: {
@@ -128,6 +137,15 @@ function gtris_character_details(name) {
       	date_version: "0.0.104HF Alpha",
       	author: "PeterNavea",
       	description: "Ang lalaking ito ay puwedeng maging popular kapag gumawa siya ng isang bagay na nakakakuha ng atensyon sa mga tao.",
+      	versions: ['Original']
+      },
+      flotalendy: {
+      	name: "Flotalendy",
+      	gender: "Babae",
+      	date_existed: "Hunyo 20, 2022",
+      	date_version: "0.0.134 Alpha",
+      	author: "Flotalendy",
+      	description: "Siya ay isang adventurer, isang abogado at isang therapist na maaaring ipaalam sa mga tao kung ano ang maaaring isang misteryo sa likod ng isang kontrobersyal na paksa.",
       	versions: ['Original']
       },
     },

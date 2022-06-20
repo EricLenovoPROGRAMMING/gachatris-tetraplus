@@ -203,6 +203,14 @@ function gtris_transText(name, input) {
 				area20_lines: `${_input} LINES`,
 				area20_lineReq: `LEVEL LINES`,
 				area20_success: "Success!",
+				
+				m_amogus: "Amogus",
+				m_amogusDesc1: "This mode has the ability to detect SUS in every 7 pieces placed. After every 7 pieces, the board, NEXT queue and HOLD placeholder are reset, and if a SUS opener exists in the board, it adds one to the SUS counter. This was inspired by Innersloth's <gtris-tYellow>Among Us</gtris-tYellow> game, from an Among Us meme, the Amogus, and by Tetris players who made the SUS opener. The more SUS made within the given time is the better. You need to build this SUS map almost like this below in a way as long as it is valid enough to be counted as a SUS to the SUS counter.",
+    m_amogusDesc2: "If you block/lock out, obviously, you lose. The official timer duration in this mode is 2 minutes.",
+    m_amogusTimer: "Sus Timer",
+    
+    amogus_suscounter: "SUS COUNTER",
+    amogus_sustimer: "SUS TIMER",
 
 		},
 		fil: {
@@ -405,6 +413,14 @@ function gtris_transText(name, input) {
 				area20_lines: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA`,
 				area20_lineReq: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA NG LEBEL`,
 				area20_success: "Tagumpay!!",
+			
+			 m_amogus: "Amogus",
+			 	m_amogusDesc1: "Ang mode na ito ay may kakayahang makita ang SUS sa bawat 7 pirasong inilagay. Pagkatapos ng bawat 7 piraso, nire-reset ang board, ang pilahan ng mga SUMUSUNOD na piraso, at lalagyan ng isang ITINABING HAWAK na piraso, at kung mayroong SUS opener sa board, nagdaragdag ito ng isa sa bilangan ng mga SUS. Ito ay inspirasyon ng larong <gtris-tYellow>Among Us</gtris-tYellow> ng Innersloth, mula sa isang meme ng Among Us, ang Amogus, at ng mga manlalarong Tetris na gumawa ng SUS opener. Ang mas maraming SUS na ginawa sa loob ng ibinigay na oras ay mas mabuti. Kailangan mong buuin ang mapa ng SUS na ito na halos ganito sa ibaba sa isang paraan hangga't ito ay may sapat na bisa upang mabilang bilang isang SUS sa bilangan ng mga SUS.",   
+			 	m_amogusDesc2: "Kung i-block/lock out mo, halatadong talo ka. Ang opisyal na tagal ng timer sa mode na ito ay 2 minuto.",
+			 	m_amogusTimer: "Orasan ng Sus",
+			 
+			 	amogus_suscounter: "BILANG NG MGA SUS",
+			 	amogus_sustimer: "ORASAN NG SUS",
 			
 		}
 	} [{

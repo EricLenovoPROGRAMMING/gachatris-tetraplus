@@ -31,7 +31,7 @@ const uiSound = new class {
   }
 }()
 
-
+!function(){
 uiSound.init()
 document.addEventListener("mouseover", function(e) {
   var el = e.target.tagName
@@ -52,3 +52,4 @@ document.addEventListener("input", function(e) {
     uiSound.vol()
   }
 })
+}()

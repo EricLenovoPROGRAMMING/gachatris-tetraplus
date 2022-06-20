@@ -511,7 +511,6 @@ function changePlayerName(obj, val){
 	var target = e => selectedSettings.Names[obj] = e
 	target(val)
 	saveSTORAGE(val)
-	console.log(val)
 }
 
 function setKey(NAME, variable, id, $iH) {

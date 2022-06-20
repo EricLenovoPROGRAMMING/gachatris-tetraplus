@@ -34,14 +34,17 @@ var modeParameters = {
 			LINE: range(30, 780, 30),
 			LINEREQ: range(4, 50),
 			LEVELCAP: range(15, 50),
-		}
+		},
+		amogus: {
+			TIMER: range(60 * 120, 3610 * 120, 10 * 120)
+		},
 	},
 
 }
-			modeParameters.texts.levelrun.LEVELCAP.push(gtris_transText("m_levelrunInfinity"))
-			modeParameters.texts.levelrun.LINE.push(gtris_transText("m_levelrunEndless"))
-			modeParameters.texts.area20.LEVELCAP.push(gtris_transText("m_area20Infinity"))
-			modeParameters.texts.area20.LINE.push(gtris_transText("m_area20Endless"))
+modeParameters.texts.levelrun.LEVELCAP.push(gtris_transText("m_levelrunInfinity"))
+modeParameters.texts.levelrun.LINE.push(gtris_transText("m_levelrunEndless"))
+modeParameters.texts.area20.LEVELCAP.push(gtris_transText("m_area20Infinity"))
+modeParameters.texts.area20.LINE.push(gtris_transText("m_area20Endless"))
 
 function modeParameterChange(varia, mode, varObj, varObjText) {
 	var value = varia
@@ -282,7 +285,7 @@ function modeParamSwitch(mode, name) {
 			}
 			modeParameters.texts.area20.LEVELCAP.push(gtris_transText("m_area20Infinity"))
 			modeParameters.texts.area20.LINE.push(gtris_transText("m_area20Endless"))
-		
+
 			a(`
 		                    <gtris-listCell style="height: auto; display: flex; width: 100%;padding-bottom:0.5em">
 		                     <gtris-text style='text-align:center'>
@@ -300,6 +303,84 @@ function modeParamSwitch(mode, name) {
 		                  `)
 			break
 		}
+		case 9: {
+			a(`
+		        <gtris-listCell style="height: auto; display: flex; width: 100%;padding-bottom:0.5em">
+		         <gtris-text style='text-align:center'>
+		         ${gtris_transText('m_amogusDesc1')}
+		         </gtris-text>
+		          </gtris-listCell>
+		          <gtris-listCell>
+		          <div style = "display:table; padding: 1em 1em 1em 1em">
+		          ${(function(){
+		          let a=3,
+		          b= 7,
+		          c= 6,
+		          d= 5,
+		          e = 2,
+		          bcolors = ["#222", "#0ff", "#00f", "#a60", "#ff0", "#0f0", "#f0f", "#f00"]
+		          var grid = [
+		          	[0, 0, 0, 0, 0, 0, a],
+		          [0, b, b, c, a, a, a],
+		          [b, b, 0, c, c, 0, 0],
+		          [0, d, d, c, e, e, e],
+		          [0, 0, d, d, 0, 0, e],
+		          [0, 0, 0, 0, 0, 0, 0]]
+		          
+		          var str = ""
+		          for(var y = 0; y < 7; y++){
+		          	str += `<riv style="display:flex;height:${cellSize}px;width:${cellSize*5}px;position:relative;padding:0 0;${y < 2 ? "background:#000":"none"};">`
+		          	for(var x = 0; x < 5; x++){
+		          			str += `<niv style="display:flex;height:${cellSize}px;width:${cellSize}px;position:relative;padding:0 0;background:${grid[x][y] !== 0?bcolors[grid[x][y]]:y<2?"#444":y>1?"#444":"none"};border: 1px solid #000"></niv>`
+		          	}
+		          	str += "</riv>"
+		          }
+		          return str
+		          }
+		          )()}
+		          
+		          </div>
+		          		          <div style = "display:table; padding: 1em 1em 1em 1em">
+		          ${(function(){
+		          let a=7,
+		          b= 3,
+		          c= 6,
+		          d= 5,
+		          e = 2,
+		          bcolors = ["#222", "#0ff", "#00f", "#a60", "#ff0", "#0f0", "#f0f", "#f00"]
+		          var grid = [
+		          	[0, 0, a, a, 0, 0, b],
+		          [0, a, a, c, b, b, b],
+		          [d, d, 0, c, c, 0, 0],
+		          [0, d, d, c, e, e, e],
+		          [0, 0, 0, 0, 0, 0, e],
+		          [0, 0, 0, 0, 0, 0, 0]]
+		          
+		          var str = ""
+		          for(var y = 0; y < 7; y++){
+		          	str += `<riv style="display:flex;height:${cellSize}px;width:${cellSize*5}px;position:relative;padding:0 0;${y < 2 ? "background:#000":"none"};">`
+		          	for(var x = 0; x < 5; x++){
+		          			str += `<niv style="display:flex;height:${cellSize}px;width:${cellSize}px;position:relative;padding:0 0;background:${grid[x][y] !== 0?bcolors[grid[x][y]]:y<2?"#444":y>1?"#444":"none"};border: 1px solid #000"></niv>`
+		          	}
+		          	str += "</riv>"
+		          }
+		          return str
+		          }
+		          )()}
+		          </div>
+		          </gtris-listCell>
+		          		        <gtris-listCell style="height: auto; display: flex; width: 100%;padding-bottom:0.5em">
+		          		         <gtris-text style='text-align:center'>
+		          		         ${gtris_transText('m_amogusDesc2')}
+		          		         </gtris-text>
+		          		         </gtris-listCell>
+		          		${makeParaneterSlider("amogus", "Timer", "amogus", "TIMER", "timer")}
+		              <gtris-listCell>
+		              <gtris-button onclick="gameStart(9)">${gtris_transText('startGame').toUpperCase()}</gtris-button>
+		            </gtris-listCell>
+		      `)
+			break
+		}
 	}
 	switchMenu(11, true, name)
 	RESIZE()
@@ -310,13 +391,11 @@ function modeParamSwitch(mode, name) {
 
 const makeParaneterSlider = function(name, nametype, mode, param, type) {
 	var randId = (Math.random() * 2147483647).toFixed(8)
-	return `
-	        <gtris-listCell style="height: 10%; display: table; width: 100%;">
-	          <div style="display: flex;">
+	return ` <gtris-listCell style = "height: 10%; display: table; width: 100%;" >
+			<div style="display: flex;">
 	           <gtris_normaltext style="width: auto; height: 100%;">${gtris_transText(`m_${name}${nametype}`)}:&nbsp</gtris_normaltext>
 	            <gtris_normaltext id=0x327496-${randId} style="width: auto; height: 100%;">${type.toUpperCase() == "TIMER" ? returnStatistics(modeParameters.texts[mode][param][selectedSettings.Modes[mode][param]]) : modeParameters.texts[mode][param][selectedSettings.Modes[mode][param]]}</gtris_normaltext>
-	          </div>
-	          <div style="display: flex;"><input type="range" onchange="saveSTORAGE()" min="0" max="${modeParameters.texts[mode][param].length - 1}" value="${selectedSettings.Modes[mode][param]}" oninput="modeParameterChange(this.value,'${mode}','${param}',{id:'${randId}',type:'${type}'})" style="height: 100%;"></div>
+	          </div> <div style = "display: flex;" > <input type="range" onchange="saveSTORAGE()" min="0" max="${modeParameters.texts[mode][param].length - 1}" value="${selectedSettings.Modes[mode][param]}" oninput="modeParameterChange(this.value,'${mode}','${param}',{id:'${randId}',type:'${type}'})" style="height: 100%;"></div>
 	        </gtris-listCell>
 	`
 }

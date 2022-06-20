@@ -4,13 +4,14 @@
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '0.0.104HF Alpha';
+var gtris_version = '0.0.134 Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
 var actualFrame = 0;
 var cellSize = 0
-var isReplay = false
+var isReplay = false;
+var is1V1 = false
 var replayData = {}
 var isPaused = false
 var isKeySelectorOn = false
@@ -389,14 +390,15 @@ var settingsList = {
 		Music: ['Menu', 'Default Rock']
 	},
 	NonIterable: {
-		Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest', 'Mars', 'PeterNavea'],
+		Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest', 'Mars', 'PeterNavea', 'Flotalendy'],
 	},
 	Other: {
 		Skin: ['Default'],
 		Ghost: ['Off', 'Outlined', 'Gray', 'Colored', 'Shadow'],
 		Resize: [`Automatic`, `Small`, `Medium`, `Large`, `Extra-Large`],
 		Gridlines: [`OFF`, 'ON'],
-		Language: ['English', 'Filipino']
+		Language: ['English', 'Filipino'],
+		ClearText: [`OFF`,`ON`]
 	}
 }
 
@@ -431,7 +433,8 @@ var selectedSettings = {
 		Ghost: 2,
 		Resize: 0,
 		Gridlines: 0,
-		Language: 0
+		Language: 0,
+		ClearText: 1,
 	},
 	Binds: {
 		Pause: 27,
@@ -478,12 +481,15 @@ var selectedSettings = {
 			LINE: 9,
 			LINEREQ: 6,
 			LEVELCAP: 14,
-		}
+		},
+		amogus: {
+			TIMER: 6
+		},
 	}
 }
 
 function loadSTORAGE() {
-	let ev = JSON.parse(localStorage['GTTP$#&6%26'])
+	let ev = JSON.parse(localStorage.getItem('GTTP$#&6%26'))
 	for (let A in ev) {
 		for (let B in ev[A]) {
 			if (selectedSettings[A][B] !== null)
@@ -493,7 +499,7 @@ function loadSTORAGE() {
 }
 
 function saveSTORAGE() {
-	localStorage['GTTP$#&6%26'] = JSON.stringify(selectedSettings)
+	localStorage.setItem('GTTP$#&6%26', JSON.stringify(selectedSettings))
 }
 try {
 	loadSTORAGE()
@@ -672,6 +678,12 @@ function actualCustomInit(mode) {
 			}
 			break
 		}
+		case 9: {
+			replayData.amogus = {
+				timer: modeParameters.texts.amogus.TIMER[selectedSettings.Modes.amogus.TIMER],
+			}
+			break
+		}
 	}
 }
 
@@ -681,6 +693,8 @@ function customInit() {
 	scoreAtk.enableTimer(false)
 	fourWide.enableTimer(false)
 	garbageSurvival.init(0, 0, 0)
+	amogusSus.init()
+	amogusSus.enableTimer(false)
 	preview.bag = [0, 1, 2, 3, 4, 5, 6]
 	field.isC4W = false
 	var s = (num, tx) => docId(`stats${num}`).innerHTML = tx
@@ -811,6 +825,20 @@ function customInit() {
 				s(3, field.remainingLevelLines)
 				t(3, gtris_transText("area20_lineReq"))
 			}
+			break
+		}
+		case 9: {
+			amogusSus.enableTimer(true)
+			amogusSus.setTimer(replayData.amogus.timer)
+		 
+			t(2, gtris_transText('amogus_sustimer'))
+			s(2, returnStatistics(amogusSus.time))
+			t(3, gtris_transText('amogus_suscounter'))
+			s(3,"0")
+			soundPlayer.custom.load({
+				dir: "amogus",
+				files: ["sus-exist", "sus-notexist"]
+			})
 			break
 		}
 	}
@@ -1055,7 +1083,7 @@ function Statistics() {
 }
 
 function returnStatistics(e) {
-	var time = e
+	var time = Math.max(e, 0)
 	var seconds = ((time / 120) % 60).toFixed(3)
 	var minutes = (Math.floor((time) / (3600 * 2))).toFixed(0)
 	return gtris_transText('main_timer', [minutes, `${seconds<10?'0':''}${seconds}`])
@@ -1143,17 +1171,16 @@ function placeStats(array) {
 
 
 function G_ACTIVITY() {
-	docId('score').innerHTML = field.score
 	if (gameMode !== 5)
 		$iH('TEXT_stats1', gtris_transText('pieces', (field.pieces / ((frame - (120 * 3)) / 120)).toFixed(3)))
 	switch (gameMode) {
 		default: {
-			docId('stats1').innerHTML = field.pieces
+			$iH('stats1', `${field.pieces}`)
 			docId('stats2').innerHTML = field.lineTotal
 			break
 		}
 		case 1: {
-			docId('stats1').innerHTML = field.pieces
+			$iH('stats1', `${field.pieces}`)
 			docId('stats2').innerHTML = Math.max(field.lineLeft, 0)
 			if (field.lineLeft < 1) {
 				field.fieldResult('l_success', false, 'win')
@@ -1162,18 +1189,20 @@ function G_ACTIVITY() {
 			break
 		}
 		case 2: {
-			docId('stats1').innerHTML = field.pieces
+			scoreAtk.run(frame > 120 * 3)
+			$iH('stats1', `${field.pieces}`)
 			docId('stats2').innerHTML = returnStatistics(scoreAtk.returnTimer())
 			break
 		}
 		case 3: {
-			docId('stats1').innerHTML = field.pieces
+		 fourWide.run(frame > 120 * 3)
+			$iH('stats1', `${field.pieces}`)
 			docId('stats2').innerHTML = returnStatistics(fourWide.returnTimer())
 			docId('stats3').innerHTML = field.statistics.maxREN
 			break
 		}
 		case 4: {
-			docId('stats1').innerHTML = field.pieces
+			$iH('stats1', `${field.pieces}`)
 			docId('stats2').innerHTML = field.statistics.tsd
 			break
 		}
@@ -1238,11 +1267,43 @@ function G_ACTIVITY() {
 			}
 			break
 		}
+		case 9: {
+						$iH('stats1', `${field.pieces}`)
+				amogusSus.run(frame > 120 * 3)
+				amogusSus.detect(
+					field.pieces,
+				field.grid,
+				function(e){
+					switch(e){
+						case "yes":{
+							soundPlayer.custom.playse("amogus/sus-exist")
+							amogusSus.susCounter++
+							break
+						}
+						case "no":{
+							soundPlayer.custom.playse("amogus/sus-notexist")
+							break
+						}
+					}
+					piece.y-=9393
+					preview.modifyBag(preview.gen(), 1)
+					piece.dirty = true
+					piece.new(preview.next())
+					piece.draw()
+					piece.drawGhost()
+					hold.piece = void 0
+					clear(_CTX.hold)
+					field.clearGrid()
+				},
+				)
+				$iH("stats3", amogusSus.susCounter)
+				$iH("stats2", returnStatistics(amogusSus.returnTimer()))
+			break
+		}
 	}
-	scoreAtk.run(frame > 120 * 3)
-	fourWide.run(frame > 120 * 3)
 	field.frenzyTimerRun()
 	field.checkFrenzyBar()
+		docId('score').innerHTML = field.score
 
 	/*if(frame>500&& frame % 200 == 0)
 	 field.addGarbageToArray(Math.floor(field.rng.next()*4),Math.floor(field.rng.next() * 10))

@@ -797,36 +797,36 @@ gtris_gui {
 statLarge,
 stat,
 statMedium {
-  display: inline-block;
-  height: auto;
-  padding: 0 0;
-  width: 100%;
-  align-self: flex-end;
-  bottom: 0;
+	display: inline-block;
+	height: auto;
+	padding: 0 0;
+	width: 100%;
+	align-self: flex-end;
+	bottom: 0;
 }
 
 stat {
-  display: inline-block;
-  font-size: 80%;
+	display: inline-block;
+	font-size: 80%;
 }
 
 statRow {
-  display: block;
-  width: 100%;
-  bottom: 0;
-  padding: 0 0rem;
+	display: block;
+	width: 100%;
+	bottom: 0;
+	padding: 0 0rem;
 }
 
 statLarge {
-  display: inline-block;
-  width: 100%;
-  font-size: 150%;
+	display: inline-block;
+	width: 100%;
+	font-size: 150%;
 }
 
 statMedium {
-  display: inline-block;
-  font-size: 110%;
-  vertical-align: bottom;
+	display: inline-block;
+	font-size: 110%;
+	vertical-align: bottom;
 }
 
 #fieldCanvas,

@@ -340,6 +340,7 @@ Field.prototype = {
 	engagePC: function(bool) {
 		var pc = [docId('perfectClear1'), docId('perfectClear2')]
 		if (bool == true) {
+			if(selectedSettings.Other.ClearText == 1){
 			for (var e of pc) {
 				e.style.animationName = 'none'
 			}
@@ -347,6 +348,7 @@ Field.prototype = {
 				pc[0].style.animationName = 'PCAnim1'
 				pc[1].style.animationName = 'PCAnim2'
 			}, 1)
+			}
 		} else {
 			for (var e of pc) {
 				e.style.animationName = 'none'
@@ -500,6 +502,15 @@ Field.prototype = {
 				prev: [],
 			}
 		}
+	},
+	
+	clearGrid: function(){
+		var cells = this.makeArrayLength(this.width);
+		for (var i = 0; i < this.width; i++) {
+			cells[i] = this.makeArrayLength(this.height);
+		}
+		this.grid = cells;
+		this.draw();
 	},
 
 	new: function(x, y) {
@@ -1201,11 +1212,13 @@ Field.prototype = {
 		components.stop()
 		if (compo == 'hide') {
 			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.03}px` }, 0, 'linear')
-		} else {
-			docId('regular').innerHTML = text
+		} else if(selectedSettings.Other.ClearText == 1){
+			$iH('regular', text)
 			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.03}px` }, 0, 'linear')
 			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.13}px` }, 1800, 'linear')
 			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.13}px` }, 200, 'linear')
+		} else {
+		 $iH('regular', "")
 		}
 	},
 	showClearTextTSPIN: function(compo, text, nent) {
@@ -1213,11 +1226,13 @@ Field.prototype = {
 		components.stop()
 		if (compo == 'hide') {
 			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.03}px` }, 0, 'linear')
-		} else {
-			docId('tSpin').innerHTML = text
+		} else if(selectedSettings.Other.ClearText == 1){
+			$iH('tSpin', text)
 			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.05}px` }, 0, 'linear')
 			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.16}px` }, 1800, 'linear')
 			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.17}px` }, 200, 'linear')
+		} else {
+						$iH('tSpin', "")
 		}
 	},
 	showClearTextB2B: function(compo, text) {
@@ -1227,9 +1242,9 @@ Field.prototype = {
 			components.style.letterSpacing = '0.5px'
 			components.style.transition = "letter-spacing 200ms ease-out"
 			components.style.transition = "opacity 200ms linear"
-		} else {
+		} else if(selectedSettings.Other.ClearText == 1){
 			components.style.opacity = '100%'
-			components.innerHTML = text
+			$iH('B2B', text)
 			components.style.transition = 'opacity 100ms linear'
 			components.style.transition = 'letter-spacing 0s linear'
 			components.style.letterSpacing = '0.5px'
@@ -1238,12 +1253,15 @@ Field.prototype = {
 				components.style.letterSpacing = `${cellSize*0.2}px`
 				components.style.transition = "letter-spacing 2s ease-out"
 			}, 2)
+		} else {
+						$iH('B2B', '')
 		}
 	},
 	showClearTextREN: function(showhide, text) {
 		let components = docId('REN')
+		if(selectedSettings.Other.ClearText == 1){
 		if (text !== void 0)
-			components.innerHTML = text
+		 $iH('REN', text)
 		if (showhide == 'hide') {
 			components.style.transition = 'opacity 200ms linear, letter-spacing 400ms easeOut'
 			components.style.letterSpacing = '0.5px'
@@ -1253,6 +1271,9 @@ Field.prototype = {
 			components.style.transition = "letter-spacing 200ms ease-out, opacity 200ms linear"
 			components.style.letterSpacing = `${cellSize*0.2}px`
 			components.style.opacity = "100%"
+		}
+		} else {
+			 $iH('REN', "")
 		}
 	},
 	clearLines: function(line, spin, mini, b2b, pc) {
