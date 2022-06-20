@@ -11,7 +11,7 @@ Uploaded as a private repository on May 14, 2022
 
 Published on May 18, 2022, 3:30PM GMT +8:00
 
-### NOTE: This game is under Alpha build, 0.0.076
+### NOTE: This game is under Alpha build, 0.0.134
 ### Features:
 - Fully-working 3-corner T-Spin detection
 - Soundbanks
@@ -21,8 +21,7 @@ Published on May 18, 2022, 3:30PM GMT +8:00
 - Splash screen
 - Localizations: English, Filipino
 - UI sounds and button animations
-- Modes: Zen, Line Run, Score Attack, C4W Infinity, TSD-Only Challenge
-
-### Planned features to come:
-- Downstack Challenge mode
+- Various modes to play on
+### Planned features to come
+- 1V1 mode
 - ...more to come...
