@@ -313,11 +313,11 @@ function modeParamSwitch(mode, name) {
 		          <gtris-listCell>
 		          <div style = "display:table; padding: 1em 1em 1em 1em">
 		          ${(function(){
-		          let a=3,
+		          let a=2,
 		          b= 7,
 		          c= 6,
 		          d= 5,
-		          e = 2,
+		          e = 3,
 		          bcolors = ["#222", "#0ff", "#00f", "#a60", "#ff0", "#0f0", "#f0f", "#f00"]
 		          var grid = [
 		          	[0, 0, 0, 0, 0, 0, a],
@@ -343,10 +343,10 @@ function modeParamSwitch(mode, name) {
 		          		          <div style = "display:table; padding: 1em 1em 1em 1em">
 		          ${(function(){
 		          let a=7,
-		          b= 3,
+		          b= 2,
 		          c= 6,
 		          d= 5,
-		          e = 2,
+		          e = 3,
 		          bcolors = ["#222", "#0ff", "#00f", "#a60", "#ff0", "#0f0", "#f0f", "#f00"]
 		          var grid = [
 		          	[0, 0, a, a, 0, 0, b],

@@ -4,7 +4,7 @@
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '0.0.134 Alpha';
+var gtris_version = '0.0.134QF Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
