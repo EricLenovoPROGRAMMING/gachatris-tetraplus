@@ -137,7 +137,7 @@
 							<gtris-button onclick="gameStart()" class="guiClass-retry">Start Over</gtris-button>
 						</gtris-listCell>
 						<gtris-listCell>
-							<gtris-button onclick="endGame('forceended', true, 'lose')" id="guiButton-forceend">Force End</gtris-button>
+							<gtris-button onclick="endGame('forceended', true, 'lose'); activeMenu(false); stoppingFrame -= 300" id="guiButton-forceend">Force End</gtris-button>
 						</gtris-listCell>
 					</gtris-list>
 				</gtris-subdiv>
