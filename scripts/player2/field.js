@@ -638,6 +638,7 @@ Field2.prototype = {
 		for (var i = 0; i < x; i++) {
 			cells[i] = this.makeArrayLength(y)
 		}
+		docId(this.mainAssets.meter_A).style.background = "#a00"
 		this.canClearLines = "normal"
 		this.canVoiceFrenzy = true
 		this.isActive = true
