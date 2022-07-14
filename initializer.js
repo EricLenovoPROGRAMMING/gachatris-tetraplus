@@ -7,6 +7,8 @@
   console.warn('JS Console is not usable in this site.')
 } /**/
 "use strict"
+var SCREEN_WIDTH = window.innerWidth,
+SCREEN_HEIGHT = window.innerHeight
 
 function docId(id) {
 	return document.getElementById(id)
@@ -40,10 +42,10 @@ function $create(tag, func) {
 
 function $copy(arr) {
 	var ARR = []
-	for (let a = 0; a < arr.length; a++) {
+	for (let a = 0, len = arr.length; a < len; a++) {
 		if (typeof arr[a] == "object" && arr[a] instanceof Array) {
 			ARR.push([])
-			for (let b = 0; b < arr[a].length; b++) {
+			for (let b = 0, len2 = arr[a].length; b < len2; b++) {
 				ARR[a].push(arr[a][b])
 			}
 		}
@@ -63,17 +65,33 @@ function range(start, end, inc) {
 	return array
 }
 
-function $iH(id, innerHTML) {
-	if (innerHTML !== void 0) {
-		if (docId(id).innerHTML !== innerHTML)
-			docId(id).innerHTML = innerHTML
+function $iH(id, innerHTM) {
+	if (innerHTM !== void 0) {
+		//f (docId(id).innerHTML !== innerHTM)
+			docId(id).innerHTML = innerHTM
 	}
 	else return docId(id).innerHTML
+	
 }
 
 Number.prototype.mod = function(n) {
 	return ((this % n) + n) % n
 };
+
+function getElemPos(doc,pos){
+	if(pos === "x"){
+		return docId(doc).getBoundingClientRect().x
+	}
+	if (pos === "y") {
+		return docId(doc).getBoundingClientRect().y
+	}
+	if (pos === "width") {
+		return docId(doc).getBoundingClientRect().width
+	}
+	if (pos === "height") {
+		return docId(doc).getBoundingClientRect().height
+	}
+}
 
 class ParkMillerPRNG {
 	constructor() {
@@ -89,7 +107,7 @@ class ParkMillerPRNG {
 
 
 (function() {
-	let array = ['jQuery', 'howler-lib', 'gachatris-data', 'piece', 'field', 'queue_prev', 'pieceHold', 'enhancementfrenzy', 'soundplayer', 'musicplayer', 'language', 'main', 'character_details', 'uiSound', 'menus', 'replayCenter', 'modeProto', 'modeparameters']
+	let array = ['jQuery', 'howler-lib', 'gachatris-data', 'piece', 'field', 'queue_prev', 'pieceHold', 'enhancementfrenzy', 'player2/piece', 'player2/field', 'player2/queue_prev', 'player2/pieceHold', 'player2/enhancementfrenzy', 'ai', 'ai_frenzy', 'soundplayer', 'musicplayer', 'language', 'main', 'gparticle', 'character_details', 'uiSound', 'menus', 'replayCenter', 'modeProto', 'modeparameters','loader']
 	var i = 0
 	var sfx
 
@@ -98,6 +116,9 @@ class ParkMillerPRNG {
 			a.src = `scripts/${array[i]}.js`
 			a.id = `script-${array[i]}`
 			a.type = 'text/javascript'
+			$iH('gtrisSplashText', `
+			 <div style="width:100%;height:1%;background:#444"><div style="width:${(i / array.length)*100}%;height:100%;background:#fff;"></div></div>
+			`)
 			document.body.appendChild(a)
 			a.onload = () => {
 				if (i < array.length - 1) {
@@ -115,6 +136,7 @@ class ParkMillerPRNG {
 	}
 
 	function sound() {
+		$iH('gtrisSplashText', gtris_transText("initializeGtris"))
 		addEventListener("click", startup, false)
 		addEventListener("keydown", startup, false)
 		sfx = new Howl({ src: "assets/se/menu/gtrisstartup.ogg", preload: false, format: "ogg" })

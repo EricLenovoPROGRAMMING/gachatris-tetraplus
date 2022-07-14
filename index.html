@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="stylesheet" href="stylesheets.css">
+	<link rel="stylesheet" href="stylesheets2.css">
 	<link rel='icon' href="icon.png">
 	<title>Gachatris Tetraplus Alpha</title>
 </head>
@@ -37,7 +38,7 @@
 							<gtris-button onclick="switchMenu(5,true,'h_audvol')" id=guiButton-audio>Audio / Volume</gtris-button>
 						</gtris-listCell>
 						<gtris-listCell>
-							<gtris-button onclick="switchMenu(6,true,'h_character')" id=guiButton-selChar>Character</gtris-button>
+							<gtris-button onclick="switchMenu(6,true,'h_character'); loadCharacterSettingss()" id=guiButton-selChar>Character</gtris-button>
 						</gtris-listCell>
 						<gtris-listCell>
 							<gtris-button onclick="switchMenu(7,true,'h_miscellaneous')" id=guiButton-misc>Miscellaneous</gtris-button>
@@ -193,13 +194,19 @@
 								<div id=dynamicFrenzyDiv>
 									<img src="assets/tetrion/frenzybg.png" id=dynamicFrenzyBg />
 								</div>
-								<div id=colorFrenzyOverlay></div>
+								<div id=colorFrenzyOverlay>
+								</div>
+								<div id=frenzyTimerDiv>
+									<gtris_text id=frenzyTimerText>73</gtris_text>
+								</div>
 							</frenzybg>
 							<canvas id=gridCanvas></canvas>
 							<canvas id=fieldCanvas></canvas>
 							<canvas id=activeCanvas></canvas>
 						</div>
 						<div id=meterBarRight class=gtris-rainbow-border-p1>
+							<div id=meter_A-under>
+							</div>
 							<div id=meter_A>
 							</div>
 						</div>
@@ -239,9 +246,10 @@
 						</div>
 					</div>
 				</tetrionPadding>
-				<div id="gtrisLayout">
-					<gtris-msg id=gtris-readygo>
-					</gtris-msg>
+				<div id=rectAnimArea>
+					<div id=rectAnimDiv>
+						<canvas id=keyframeAnimationCanvas></canvas>
+					</div>
 				</div>
 				<div id=tetrionLayer>
 					<gtris-result id=tetrionResultText>WIN</gtris-result>
@@ -258,11 +266,118 @@
 					</gtris_big>
 				</div>
 			</div>
+			<div id=tetrion2>
+				<tetrionPadding>
+					<div id=gtris-body2>
+						<div id=leftborder2>
+							<div id=holdDiv2>
+								<div id=holdTextPlaceholder2 class=gtris-rainbow-bg-p2>
+									<gtris_gui id=TEXT_hold2>HOLD</gtris_gui>
+								</div>
+								<canvas id=holdCanvas2></canvas>
+							</div>
+							<div id=clearTexts2>
+								<gtris_text id=tSpin2></gtris_text>
+								<gtris_text id=regular2></gtris_text>
+								<gtris_text id=B2B2></gtris_text>
+								<gtris_text id=REN2></gtris_text>
+							</div>
+						</div>
+						<div id=meterBarLeft2 class=gtris-rainbow-border-p2>
+							<div id=meter_FRENZY2 class=gtris-rainbow-bg-p2>
+							</div>
+						</div>
+						<div id=playField2 class=gtris-rainbow-border-p2>
+							<div id=loadedBackground2>
+								<img src="assets/characters/Flotalendy/normal.png" id="characterBackground2" />
+							</div>
+							<frenzybg id=bgFrenzyLayout2>
+								<div id=dynamicFrenzyDiv2>
+									<img src="assets/tetrion/frenzybg.png" id=dynamicFrenzyBg2 />
+								</div>
+								<div id=colorFrenzyOverlay2></div>
+								<div id=frenzyTimerDiv2>
+									<gtris_text id=frenzyTimerText2>73</gtris_text>
+								</div>
+							</frenzybg>
+							<canvas id=gridCanvas2></canvas>
+							<canvas id=fieldCanvas2></canvas>
+							<canvas id=activeCanvas2></canvas>
+						</div>
+						<div id=meterBarRight2 class=gtris-rainbow-border-p2>
+							<div id=meter_A-under2>
+							</div>
+							<div id=meter_A2>
+							</div>
+						</div>
+						<div id=rightborder2>
+							<div id=nextDiv2>
+								<div id=nextTextPlaceholder2 class=gtris-rainbow-bg-p2>
+									<gtris_gui id=TEXT_next2>NEXT</gtris_gui>
+								</div>
+								<canvas id=nextCanvas2></canvas>
+							</div>
+							<canvas id=queueCanvas2></canvas>
+						</div>
+						<statsTable id=statistics2>
+							<statRow>
+								<statLarge id=stats2-3 class=var-stat2></statLarge>
+								<stat id=TEXT_stats2-3 class=text-stat2></stat>
+							</statRow>
+							<statRow>
+								<statLarge id=stats2-2 class=var-stat2></statLarge>
+								<stat id=TEXT_stats2-2 class=text-stat2></stat>
+							</statRow>
+							<statRow>
+								<statLarge id=stats2-1 class=var-stat2></statLarge>
+								<stat id=TEXT_stats2-1 class=text-stat2></stat>
+							</statRow>
+							<statRow>
+								<stat id=stopwatch2></stat>
+							</statRow>
+							<statRow>
+								<statMedium id=score2></statMedium>
+							</statRow>
+						</statsTable>
+						<div id=namePlateDiv2>
+							<div id=namePlateInline2>
+								<gtris-namePlate id=namePlate2>EricLenovo</gtris-namePlate>
+							</div>
+						</div>
+					</div>
+				</tetrionPadding>
+				<div id=rectAnimArea2>
+					<div id=rectAnimDiv2>
+						<canvas id=keyframeAnimationCanvas2></canvas>
+					</div>
+				</div>
+				<div id=tetrionLayer2>
+					<gtris-result id=tetrionResultText2></gtris-result>
+					<div id=showResultCharImg2>
+						<img id=resultCharImg2 oncontextmenu=""></img>
+					</div>
+				</div>
+				<div id=tetrionPC2>
+					<gtris_big id=perfectClear12>
+						PERFECT<br>CLEAR!
+					</gtris_big>
+					<gtris_big id=perfectClear22>
+						PERFECT<br>CLEAR!
+					</gtris_big>
+				</div>
+			</div>
+
+			<div id="gtrisLayout">
+				<gtris-msg id=gtris-readygo>
+				</gtris-msg>
+			</div>
+			<canvas id="wholeCanvas">
+			</canvas>
 		</div>
 		<div id=headerMax>
 			<div id=menuHeader>
 				<div id=el-logoDiv>
-					<img id=logoEL src="assets/menu/logoEL.png" oncontextmenu="undefined" />
+					<img id=logoEL src="assets/menu/logoEL.png" oncontextmenu="" />
 				</div>
 				<gtris_gui id=headerBackButton onclick='backButton()'></gtris_gui>
 				<gtris_head id=headerTitle>Gachatris Tetraplus Alpha</gtris_head>
@@ -272,14 +387,22 @@
 			<div id=splashLogoDiv>
 				<img src='assets/menu/splashlogo.png' id=splashLogo />
 			</div>
-			<div id=loadingDiv>
+			<div id=splashTextDivLayer>
 				<gtris-text-large id=gtrisSplashText></gtris-text-large>
+			</div>
+		</div>
+		<div id=loadingScreen>
+			<div id=loadingPlaceholder>
+				<div id=loadingWheel></div>
+				<loadingtext id=loadingText>Now Loading</loadingtext>
 			</div>
 		</div>
 	</div>
 	<div id=hiddenSpriteCanvasses>
 		<canvas id=spriteCanvas></canvas>
 		<img id=customSprite />
+		<canvas id=spriteParticleCanvas></canvas>
+		<img id=customSpriteParticle />
 	</div>
 	<script type="text/javascript" src="error_handler.js"></script>
 	<script type="text/javascript" src="initializer.js"></script>

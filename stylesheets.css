@@ -40,7 +40,6 @@ body {
   display: flex;
   grid-row: 1;
   position: absolute;
-  background: #000;
   justify-content: center;
   width: 100%;
   height: 100%;
@@ -48,7 +47,7 @@ body {
   align-items: center;
 }
 
-#splash>#loadingDiv {
+#splash>#splashTextDivLayer {
   display: flex;
   justify-content: left;
   position: absolute;
@@ -69,6 +68,11 @@ body {
   width: 100%;
   height: 100%;
   opacity: 0;
+}
+
+#gtrisSplashText {
+	width: 100%;
+	font-size: 0.5em;
 }
 
 #headerMax {
@@ -140,7 +144,7 @@ animation-iteration-count: infinite;
   pointer-events: auto
 }
 
-.char-ACTIVE {
+.char-ACTIVE, .aichar-ACTIVE {
   background: #FBDA00;
 }
 
@@ -342,37 +346,6 @@ input[type='range']::-moz-range-thumb {
 
 
 
-#tetrion {
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-}
-
-#tetrionLayer {
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  overflow-y: visible
-}
-
-#tetrionPC {
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  overflow-y: visible;
-  overflow-x: visible;
-}
-
-gtris_big {
-  position: absolute;
-  text-align: center;
-  font-size: 3.6em;
-}
 
 @keyframes PCAnim1 {
   0% {
@@ -583,22 +556,11 @@ gtris_big {
   }
 }
 
-
-#perfectClear1 {
-  opacity: 0%;
-  animation-name: none;
-  animation-duration: 4500ms;
-  animation-timing-function: linear;
+gtris_big {
+  position: absolute;
+  text-align: center;
+  font-size: 3.6em;
 }
-
-#perfectClear2 {
-  opacity: 0%;
-  animation-name: none;
-  animation-duration: 4500ms;
-  animation-timing-function: linear;
-}
-
-
 tetrionPadding {
   display: flex;
   justify-content: center;
@@ -652,13 +614,120 @@ tetrionPadding {
     animation-name: none;
   }
 }
+#gtris {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center
+}
+
+#gtris-readygo {
+	font-size: 2.5em;
+
+	text-align: center
+}
+gtris_gui {
+	color: #000;
+	text-align: center;
+	padding: 0%;
+}
+@keyframes bgFrenzyRot {
+  from {
+    transform: translate(-50%, -50%) rotateZ(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotateZ(360deg);
+  }
+}
+
+#loadingScreen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: none;
+	background: #000;
+}
+#loadingScreen #loadingPlaceholder {
+	position: absolute;
+	display: flex;
+	bottom: 0;
+	right: 0;
+	padding: 0.4em 0.4em 0.4em 0.4em;
+	justify-content: right
+}
+#loadingText {
+	font-size: 2em
+}
+#loadingWheel {
+	border: 0.5em solid transparent;
+  border-top: 0.5em solid #fff;
+  border-bottom: 0.5em solid #fff;
+  border-radius: 100%;
+  width: 1em;
+  height: 1em;
+  animation: loadingSpin .7s linear infinite;
+}
+@keyframes loadingSpin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+/**************/
+
+#tetrion {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 50%;
+  position: relative
+}
+
+#tetrionLayer {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow-y: visible
+}
+
+#tetrionPC {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow-y: visible;
+  overflow-x: visible;
+}
+
+#perfectClear1 {
+  opacity: 0%;
+  animation-name: none;
+  animation-duration: 4500ms;
+  animation-timing-function: linear;
+}
+
+#perfectClear2 {
+  opacity: 0%;
+  animation-name: none;
+  animation-duration: 4500ms;
+  animation-timing-function: linear;
+}
 
 #tetrionResultText {
   position: absolute;
   color: #fff;
   transition: none;
   animation-timing-function: linear;
-  animation-duration: 1100ms
+  animation-duration: 1100ms;
+  text-align: center;
+  width: 150%;
 }
 
 #showResultCharImg {
@@ -677,19 +746,16 @@ tetrionPadding {
   height: 100%;
 }
 
-#gtris {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: none;
-}
-
 #gtris-body {
   display: flex;
   justify-content: center;
   position: absolute;
 }
-
+#wholeCanvas {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
 #gtrisLayout {
   height: 100%;
   width: 100%;
@@ -698,12 +764,6 @@ tetrionPadding {
   justify-content: center;
   align-items: center;
   z-index: 5;
-}
-
-#gtris-readygo {
-  font-size: 2.5em;
-
-  text-align: center
 }
 
 #holdTextPlaceholder,
@@ -721,12 +781,6 @@ tetrionPadding {
   display: flex;
   justify-content: center;
   position: relative
-}
-
-gtris_gui {
-  color: #000;
-  text-align: center;
-  padding: 0%;
 }
 
 #clearTexts {
@@ -843,15 +897,6 @@ statMedium {
   overflow: hidden;
 }
 
-@keyframes bgFrenzyRot {
-  from {
-    transform: translate(-50%, -50%) rotateZ(0deg);
-  }
-
-  to {
-    transform: translate(-50%, -50%) rotateZ(360deg);
-  }
-}
 
 #dynamicFrenzyBg {
   position: absolute;
@@ -862,6 +907,17 @@ statMedium {
   animation-duration: 2500ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear
+}
+#frenzyTimerDiv{
+	display:flex;
+	justify-content: center;
+	padding-top: 0.5em;
+	width: 100%;
+	height: 5em;
+}
+#frenzyTimerText {
+	position: absolute;
+	font-size: 3em
 }
 #colorFrenzyOverlay  {
 	position: absolute;
@@ -890,26 +946,20 @@ statMedium {
 #meter_A {
   margin-top: 90px;
   display: inline-block;
+  position:absolute;
   background: #a00;
+}
+#meter_A-under {
+	margin-top: 90px;
+	display: inline-block;
+	position: absolute;
+	background: #ff0;
+	transition: margin-top 505ms linear
 }
 
 #queueCanvas {
-  position: fixed
+  position: relative;
 }
-
-#statistics>* {
-  display: block;
-  text-align: right;
-  position: relative
-}
-
-#hiddenSpriteCanvasses {
-  display: grid;
-  grid-column: 1;
-  position: absolute;
-  visibility: hidden
-}
-
 #namePlateDiv {
 	position: absolute;
 	border: 2px solid #bbb;
@@ -922,6 +972,322 @@ statMedium {
 	align-items: center;
 	width: 100%;
 }
+
 #namePlateInline #namePlate {
 	position: relative;
 }
+
+#statistics>* {
+  display: block;
+  text-align: right;
+  position: relative
+}
+
+#rectAnimArea {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display:flex;
+	justify-content: center;
+}
+#rectAnimDiv {
+	position:relative
+}
+#keyframeAnimationCanvas {
+	width: 100%;
+	height:100%;
+}
+
+/************/
+
+#tetrion2 {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 50%;
+  position: relative;
+}
+
+#tetrionLayer2 {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow-y: visible
+}
+
+#tetrionPC2 {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  overflow-y: visible;
+  overflow-x: visible;
+}
+
+#perfectClear12 {
+  opacity: 0%;
+  animation-name: none;
+  animation-duration: 4500ms;
+  animation-timing-function: linear;
+}
+
+#perfectClear22 {
+  opacity: 0%;
+  animation-name: none;
+  animation-duration: 4500ms;
+  animation-timing-function: linear;
+}
+
+#tetrionResultText2 {
+  position: absolute;
+  color: #fff;
+  transition: none;
+  animation-timing-function: linear;
+  animation-duration: 1100ms;
+  text-align: center;
+  width: 150%;
+}
+
+#showResultCharImg2 {
+  position: absolute;
+  width: auto;
+  height: auto;
+  transform: translateY(300px) ;
+  transition: none;
+  animation-timing-function: linear;
+  animation-duration: 1100ms
+}
+
+#resultCharImg2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform:rotateY(180deg);
+}
+
+#gtris-body2 {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+}
+
+#gtrisLayout2 {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+#holdTextPlaceholder2,
+#nextTextPlaceholder2,
+#meterBarRight2,
+#meterBarLeft2,
+#playField2 {
+  transition: background 300ms linear,
+    border-color 300ms linear;
+}
+
+#holdTextPlaceholder2,
+#nextTextPlaceholder2 {
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  position: relative
+}
+
+#clearTexts2 {
+  display: flex;
+  flex-direction: column;
+  align-content: left;
+  float: right;
+  position: relative;
+  transform: translateX(100%);
+
+}
+
+#clearTexts2>* {
+  vertical-align: middle;
+  text-align: right;
+  width: 350%;
+  transform: translateX(-100%);
+}
+
+.gtris-rainbow-border-p2 {
+  animation-duration: 2200ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear
+}
+
+.gtris-rainbow-bg-p2 {
+  animation-duration: 2200ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear
+}
+
+
+#rightborder2,
+#leftborder2 {
+  display: table;
+  justify-content: top;
+  position: relative;
+}
+
+#holdCanvas2,
+#nextCanvas2 {
+  background: #333;
+  position: relative;
+  margin: 0 0;
+}
+
+#holdCanvas2 {
+  border-bottom-left-radius: 10%
+}
+
+#nextCanvas2 {
+  border-bottom-right-radius: 10%
+}
+
+#playField2 {
+  border: 2px solid #fff;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2))
+}
+#characterBackground2 {
+	transform: rotateY(180deg);
+}
+#statistics2 {
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  justify-content: center;
+  float: right;
+}
+
+#fieldCanvas2,
+#gridCanvas2,
+#activeCanvas2,
+#loadedBackground2,
+#bgFrenzyLayout2 {
+  position: absolute;
+}
+
+#bgFrenzyLayout2 {
+  position: absolute;
+  display: none;
+  overflow: hidden;
+}
+
+
+#dynamicFrenzyBg2 {
+  position: absolute;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 2500ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear
+}
+#frenzyTimerDiv2{
+	display:flex;
+	justify-content: center;
+	padding-top: 0.5em;
+	width: 100%;
+	height: 5em;
+}
+#frenzyTimerText2 {
+	position: absolute;
+	font-size: 3em
+}
+#colorFrenzyOverlay2  {
+	position: absolute;
+	opacity: 80%;
+	width: 100%;
+	height: 100%;
+	background: #488;
+}
+
+#meterBarRight2 {
+  border: 2px solid #fff;
+  border-left: 0px;
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+#meterBarLeft2 {
+  border: 2px solid #fff;
+  border-right: 0px;
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+#meter_A2 {
+  margin-top: 90px;
+  display: inline-block;
+  position:absolute;
+  background: #a00;
+}
+#meter_A-under2 {
+	margin-top: 90px;
+	display: inline-block;
+	position: absolute;
+	background: #ff0;
+	transition: margin-top 505ms linear
+}
+
+#queueCanvas2 {
+  position: relative;
+}
+#namePlateDiv2 {
+	position: absolute;
+	border: 2px solid #bbb;
+	background: #020202;
+}
+
+#namePlateDiv2 #namePlateInline2 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+#namePlateInline2 #namePlate2 {
+	position: relative;
+}
+
+#statistics2>* {
+  display: block;
+  text-align: right;
+  position: relative
+}
+
+#rectAnimArea2 {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display:flex;
+	justify-content: center;
+	transform: rotateY(180deg)
+}
+#rectAnimDiv2 {
+	position:relative
+}
+#keyframeAnimationCanvas2 {
+	width: 100%;
+	height:100%;
+}
+
+#hiddenSpriteCanvasses {
+  display: grid;
+  grid-column: 1;
+  position: absolute;
+  visibility: hidden
+}
+
