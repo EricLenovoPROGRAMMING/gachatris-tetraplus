@@ -4,7 +4,7 @@
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '0.1.143 Alpha';
+var gtris_version = '0.1.149 Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
@@ -2395,6 +2395,7 @@ window.onblur = () => {
 	pause()
 }
 window.onfocus = () => {
+	if(!isPaused)
 	musicPlayer.muteAllMfx(false)
 	soundPlayer.muteallse(false)
 

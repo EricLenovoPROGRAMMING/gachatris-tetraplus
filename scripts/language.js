@@ -4,15 +4,15 @@ function gtris_transText(name, input) {
 	return {
 		en: {
 			initializeGtris: "Press any key or click anywhere to initialize Gachatris Tetraplus.",
-			
+
 			splash1: 'EricLenovo - ELSQPPH presents...',
 			splash2: 'Development started on May 5, 2022',
 			splash3: `Gachatris Tetraplus, v${_input}`,
-   
+
 			title: 'Gachatris Tetraplus Alpha',
-   
-   loadingText: "Now Loading...",
-   
+
+			loadingText: "Now Loading...",
+
 			play: 'Play',
 			startGame: 'Start',
 			settings: 'Settings',
@@ -68,7 +68,7 @@ function gtris_transText(name, input) {
 			line3: 'Triple',
 			line4: 'Gachatris',
 			line5: 'Gachatris Plus',
-			
+
 			b2bcounter: `Back-to-back X${_input}`,
 
 			combo: `${_input} REN`,
@@ -102,7 +102,7 @@ function gtris_transText(name, input) {
 
 			nameChangeWindow: 'Change Name',
 			h_namechange: 'Change Your Name',
-			nameChangeDesc: "Your name serves as your nameplate below your Gachatris body. The maximum length of letters of your name is 20 characters.",
+			nameChangeDesc: "Your name serves as your nameplate below your Gachatris body. The maximum length of letters of your name is 25 characters.",
 
 			rp_center: "Replay Center",
 			rp_centerDesc: "Replay Center is where you can load replay data codes by pasting a replay data code or uploading your saved replay data files to the Game.",
@@ -194,73 +194,73 @@ function gtris_transText(name, input) {
 			m_levelrunLevelCap: "Maximum Level Cap",
 			m_levelrunEndless: "Endless",
 			m_levelrunInfinity: "Infinity",
-			
+
 			levelrun_lines: `${_input} LINES`,
 			levelrun_lineReq: `LEVEL LINES`,
 			levelrun_success: "Success!",
-			
- 			m_area20: "Area 20",
-				m_area20Desc: "This mode gives you a task to clear the number of lines. This is like the <gtris-tYellow>Line Run</gtris-tYellow> mode but with the leveling system as well as the fastest piece gravity, the 20G, which the piece right away instantly lands onto the blocks. You can make this game endless by changing the parameter of maximum lines. The higher the level is the shorter the piece delay as well as the lock delay. The official parameters for this mode are 300 lines, level 1, 10 lines per level, and the limit of level 30.",
-				m_area20Level: "Level",
-				m_area20Lines: "Lines to Clear",
-				m_area20LineReq: "Lines per Level",
-				m_area20LevelCap: "Maximum Level Cap",
-				m_area20Endless: "Endless",
-				m_area20Infinity: "Infinity",
-			
-				area20_lines: `${_input} LINES`,
-				area20_lineReq: `LEVEL LINES`,
-				area20_success: "Success!",
-				
-				m_amogus: "Amogus",
-				m_amogusDesc1: "This mode has the ability to detect SUS in every 7 pieces placed. After every 7 pieces, the board, NEXT queue and HOLD placeholder are reset, and if a SUS opener exists in the board, it adds one to the SUS counter. This was inspired by Innersloth's <gtris-tYellow>Among Us</gtris-tYellow> game, from an Among Us meme, the Amogus, and by Tetris players who made the SUS opener. The more SUS made within the given time is the better. You need to build this SUS map almost like this below in a way as long as it is valid enough to be counted as a SUS to the SUS counter.",
-    m_amogusDesc2: "If you block/lock out, obviously, you lose. The official timer duration in this mode is 2 minutes.",
-    m_amogusTimer: "Sus Timer",
-    
-    amogus_suscounter: "SUS COUNTER",
-    amogus_sustimer: "SUS TIMER",
-    
-    ai_parameter: "A.I. Parameters",
-    	ai_kpdi: "Keypress Delay Interval (120 Frames = 1 second)",
-    	ai_name: "A.I. Nameplate",
-    	ai_character: "Character",
-    	ai_changeCharacter: "Change Character",
-    	ai_characteruse: "You let the A.I. now use:",
-    	h_characterAI: "Select a Character for the A.I.",
-    
-    m_onevonegarb: "Garbage 1V1",
-			  m_onevonegarbDesc: `This utilizes the "One Versus One" Battlefield System with the utilization of its own Artificial Intelligence (A.I., Gachatris bot) as the second player. You can customize the keypress speed of the AI, its nameplate, and a Gacha character it is going to use. This type of mode uses the original garbage system, just like in the <gtris-tYellow>Survival</gtris-tYellow> mode.`,
-    m_onevonegarbGarbageReceptionLimit: "Garbage Reception Limit",
-    
-    onevonegarb_apm: `LINES SENT, ${_input}/min`,
-    
-    m_frenzywar: "Frenzy War",
-			  m_frenzywarDesc: `This utilizes the "One Versus One" Battlefield System with the utilization of its own Artificial Intelligence (A.I., Gachatris bot) as the second player. You can customize the keypress speed of the AI, its nameplate, and a Gacha character it is going to use. This mode uses the <gtris-tRainbow>Frenzy</gtris-tRainbow> state system for two players. It starts with a <gtris-tRainbow>Frenzy</gtris-tRainbow> round in this mode where two players go into their <gtris-tRainbow>Frenzy</gtris-tRainbow> state; after the <gtris-tRainbow>Frenzy</gtris-tRainbow> timer is up, evaluation takes place where it compares how much damage points two players have contributed; if one of them contributes the lower number of damage points, they receive damage from their opponent. All damages are inflicted to the HP bar of one of the players and can be countered. However, if one of them or both contribute zero damage points, either the "Frenzy Blast" part will be shortened or skipped. The one, with their opponent who reaches 0% HP, wins the game. The process loops over and over again until one of them reaches 0% HP. The official parameters for this mode are 150 HP, 1 minute (60 seconds), and initial phase 1.`,
-    m_frenzywarHealthBar: "Health",
-     m_frenzywarTimer: "Frenzy Timer",
-      m_frenzywarPhase: "Initial Map Phase",
-      
-      frenzywar_timer: "FRENZY TIMER",
-      frenzywar_health: "HEALTH POINTS",
-      
-      frenzywar_ready: "Get Ready!",
-      frenzywar_start: "Frenzy Blast!",
-      
-      frenzywar_lose: "All Damaged...",
-    
-	onevone_pwin: `${_input} has won!`,
-	onevone_pwinres: 'Yeah!'
+
+			m_area20: "Area 20",
+			m_area20Desc: "This mode gives you a task to clear the number of lines. This is like the <gtris-tYellow>Line Run</gtris-tYellow> mode but with the leveling system as well as the fastest piece gravity, the 20G, which the piece right away instantly lands onto the blocks. You can make this game endless by changing the parameter of maximum lines. The higher the level is the shorter the piece delay as well as the lock delay. The official parameters for this mode are 300 lines, level 1, 10 lines per level, and the limit of level 30.",
+			m_area20Level: "Level",
+			m_area20Lines: "Lines to Clear",
+			m_area20LineReq: "Lines per Level",
+			m_area20LevelCap: "Maximum Level Cap",
+			m_area20Endless: "Endless",
+			m_area20Infinity: "Infinity",
+
+			area20_lines: `${_input} LINES`,
+			area20_lineReq: `LEVEL LINES`,
+			area20_success: "Success!",
+
+			m_amogus: "Amogus",
+			m_amogusDesc1: "This mode has the ability to detect SUS in every 7 pieces placed. After every 7 pieces, the board, NEXT queue and HOLD placeholder are reset, and if a SUS opener exists in the board, it adds one to the SUS counter. This was inspired by Innersloth's <gtris-tYellow>Among Us</gtris-tYellow> game, from an Among Us meme, the Amogus, and by Tetris players who made the SUS opener. The more SUS made within the given time is the better. You need to build this SUS map almost like this below in a way as long as it is valid enough to be counted as a SUS to the SUS counter.",
+			m_amogusDesc2: "If you block/lock out, obviously, you lose. The official timer duration in this mode is 2 minutes.",
+			m_amogusTimer: "Sus Timer",
+
+			amogus_suscounter: "SUS COUNTER",
+			amogus_sustimer: "SUS TIMER",
+
+			ai_parameter: "A.I. Parameters",
+			ai_kpdi: "Keypress Delay Interval (120 Frames = 1 second)",
+			ai_name: "A.I. Nameplate",
+			ai_character: "Character",
+			ai_changeCharacter: "Change Character",
+			ai_characteruse: "You let the A.I. now use:",
+			h_characterAI: "Select a Character for the A.I.",
+
+			m_onevonegarb: "Garbage 1V1",
+			m_onevonegarbDesc: `This utilizes the "One Versus One" Battlefield System with the utilization of its own Artificial Intelligence (A.I., Gachatris bot) as the second player. You can customize the keypress speed of the AI, its nameplate, and a Gacha character it is going to use. This type of mode uses the original garbage system, just like in the <gtris-tYellow>Survival</gtris-tYellow> mode.`,
+			m_onevonegarbGarbageReceptionLimit: "Garbage Reception Limit",
+
+			onevonegarb_apm: `LINES SENT, ${_input}/min`,
+
+			m_frenzywar: "Frenzy War",
+			m_frenzywarDesc: `This utilizes the "One Versus One" Battlefield System with the utilization of its own Artificial Intelligence (A.I., Gachatris bot) as the second player. You can customize the keypress speed of the AI, its nameplate, and a Gacha character it is going to use. This mode uses the <gtris-tRainbow>Frenzy</gtris-tRainbow> state system for two players. It starts with a <gtris-tRainbow>Frenzy</gtris-tRainbow> round in this mode where two players go into their <gtris-tRainbow>Frenzy</gtris-tRainbow> state; after the <gtris-tRainbow>Frenzy</gtris-tRainbow> timer is up, evaluation takes place where it compares how much damage points two players have contributed; if one of them contributes the lower number of damage points, they receive damage from their opponent. All damages are inflicted to the HP bar of one of the players and can be countered. However, if one of them or both contribute zero damage points, either the "Frenzy Blast" part will be shortened or skipped. The one, with their opponent who reaches 0% HP, wins the game. The process loops over and over again until one of them reaches 0% HP. The official parameters for this mode are 150 HP, 1 minute (60 seconds), and initial phase 1.`,
+			m_frenzywarHealthBar: "Health",
+			m_frenzywarTimer: "Frenzy Timer",
+			m_frenzywarPhase: "Initial Map Phase",
+
+			frenzywar_timer: "FRENZY TIMER",
+			frenzywar_health: "HEALTH POINTS",
+
+			frenzywar_ready: "Get Ready!",
+			frenzywar_start: "Frenzy Blast!",
+
+			frenzywar_lose: "All Damaged...",
+
+			onevone_pwin: `${_input} has won!`,
+			onevone_pwinres: 'Yeah!'
 		},
 		fil: {
 			initializeGtris: "Pumindot ng anumang key o i-click kahit saan upang simulan ang Gachatris Tetraplus.",
-			
+
 			splash1: 'Hatid ni EricLenovo - ELSQPPH...',
 			splash2: 'Nagsimulang buuin noong Mayo 5, 2022',
 			splash3: `Gachatris Tetraplus, v${_input}`,
 
 			title: 'Gachatris Tetraplus Alpha',
 
-   loadingText: "Naglo-load...",	
+			loadingText: "Naglo-load...",
 
 			play: 'Maglaro',
 			startGame: 'Magsimula ng Laro',
@@ -321,7 +321,7 @@ function gtris_transText(name, input) {
 			line3: 'Triple',
 			line4: 'Gachatris',
 			line5: 'Gachatris Plus',
-			
+
 			b2bcounter: `Back-to-back X${_input}`,
 
 			combo: `${_input} REN`,
@@ -360,7 +360,7 @@ function gtris_transText(name, input) {
 			rp_enterCodePlease: "pakilagay ang iyong Replay Code!",
 			rp_modeError: `nawawalang parameter ng mode ${_input}`,
 			rp_modeParameterError: `nawawala ang ${_input[0] == 1 ? "isang" : "mga sumusunod na"} sub-parameter ng mode:<br><br>${_input[1]}`,
-			rp_nameError: "Hindi maaaring lumampas sa 20 mga karakter ang haba ng Pangalan ng Manlalaro. Nabigo ang pag-parse ng replay data.",
+			rp_nameError: "Hindi maaaring lumampas sa 25 mga karakter ang haba ng Pangalan ng Manlalaro. Nabigo ang pag-parse ng replay data.",
 
 			rp_replayFailedNoInpErr: `Walang nakitang mga error sa input syntax sa iyong replay data ngunit ang data mismo ay hindi ma-parse dahil maaaring nawawala o mali ang ilang parameter.`,
 			rp_uploadFailedFileExt: `Ang pangalan ng isang file na iyong na-upload (${_input}) ay hindi nagtatapos sa ".gttp-json". Kailangan mong suriin muna ang dulo ng pangalan ng file bago ito i-upload sa Laro.`,
@@ -428,74 +428,75 @@ function gtris_transText(name, input) {
 			m_survivalNoLimit: "Normal (Walang limitasyon)",
 
 			survival_apm: `MGA LINYANG NA-SEND, ${_input}/min`,
-			
+
 			m_levelrun: "Kursong Antasan",
-				m_levelrunDesc:"Ang kursong ito ay nagbibigay sa iyo ng gawain upang i-clear ang bilang ng mga linya. Ito ay tulad ng mode na <gtris-tYellow>Linyang Pabilisan</gtris-tYellow> ngunit kasama ang leveling system. Magagawa mong walang katapusan ang larong ito sa pamamagitan ng pagbabago ng parameter ng maximum mga linya. Ang mas mataas na antas ay mas mabilis at nagpapabilis ng gravity ng piraso. Ang mga opisyal na parameter para sa mode na ito ay 150 linya, antas 1, 10 linya bawat antas, walang pagkaantala, at ang limitasyon ng antas 15.",				m_levelrunLevel: "Level",
-				m_levelrunLines: "Mga Linya para I-clear",
-				m_levelrunLineReq: "Mga linya sa bawat lebel",
-				m_levelrunAreType: "Pagkaantala mg mga Piraso (ARE)",
-				m_levelrunAreType0: "Walang Pagkaantala",
-				m_levelrunAreType1: "Maikli",
-				m_levelrunAreType2: "Mahaba",
-				m_levelrunLevelCap: "Limitasyon ng Antas",
-				m_levelrunEndless: "Wakang Katapusan",
-				m_levelrunInfinity: "Walang Limitasyon",
-			
-				levelrun_lines: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA`,
-				levelrun_lineReq: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA NG LEBEL`,
-				levelrun_success: "Tagumpay!!",
-			
-				m_area20: "Area 20",
-				m_area20Desc: "Ang mode na ito ay nagbibigay sa iyo ng isang gawain upang i-clear ang bilang ng mga linya. Ito ay tulad ng mode na <gtris-tYellow>Linyang Pabilisan</gtris-tYellow> ngunit may leveling system pati na rin ang pinakamabilis na gravity ng piraso, ang 20G, na agad na dumapo ang piraso sa mga bloke. Magagawa mong walang katapusan ang larong ito sa pamamagitan ng pagpapalit ng parameter ng maximum na mga linya. Kung mas mataas ang antas ay mas maikli ang pagkaantala ng piraso gayundin ang pagkaantala ng lock. Ang mga opisyal na parameter para sa mode na ito ay 300 linya, antas 1, 10 linya bawat antas, at ang limitasyon ng antas 30.",
-				m_area20Level: "Antas",
-				m_area20Lines: "Mga Linya para I-clear",
-				m_area20LineReq: "Mga linya sa bawat Antas",
-				m_area20LevelCap: "Kapasidad ng antas",
-				m_area20Endless: "Walang Katapusan",
-				m_area20Infinity: "Walang Limitasyon",
-			
-				area20_lines: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA`,
-				area20_lineReq: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA NG LEBEL`,
-				area20_success: "Tagumpay!!",
-			
-			 m_amogus: "Amogus",
-			 	m_amogusDesc1: "Ang mode na ito ay may kakayahang makita ang SUS sa bawat 7 pirasong inilagay. Pagkatapos ng bawat 7 piraso, nire-reset ang board, ang pilahan ng mga SUMUSUNOD na piraso, at lalagyan ng isang ITINABING HAWAK na piraso, at kung mayroong SUS opener sa board, nagdaragdag ito ng isa sa bilangan ng mga SUS. Ito ay inspirasyon ng larong <gtris-tYellow>Among Us</gtris-tYellow> ng Innersloth, mula sa isang meme ng Among Us, ang Amogus, at ng mga manlalarong Tetris na gumawa ng SUS opener. Ang mas maraming SUS na ginawa sa loob ng ibinigay na oras ay mas mabuti. Kailangan mong buuin ang mapa ng SUS na ito na halos ganito sa ibaba sa isang paraan hangga't ito ay may sapat na bisa upang mabilang bilang isang SUS sa bilangan ng mga SUS.",   
-			 	m_amogusDesc2: "Kung i-block/lock out mo, halatadong talo ka. Ang opisyal na tagal ng timer sa mode na ito ay 2 minuto.",
-			 	m_amogusTimer: "Orasan ng Sus",
-			 
-			 	amogus_suscounter: "BILANG NG MGA SUS",
-			 	amogus_sustimer: "ORASAN NG SUS",
-			  
-			  ai_parameter: "Mga Parameter ng A.I.",
-			  	ai_kpdi: "Tagal na Pagitan ng Pagkaantala ng Keypress (120 mga Frame ay katumbas ng 1 segundo)",
-			  	ai_name: "Pangalan ng A.I.",
-			  	ai_character: "Karakter",
-			  	ai_changeCharacter: "Palitan ng isang Karakter",
-			  	ai_characteruse: "Hinayaan mo nang gamitin ng A.I. si:",
-			  	h_characterAI: "Pumili ng Karakter para sa A.I.",
-			  
-			  	m_onevonegarb: "Garbage 1V1",
-m_onevonegarbDesc: `Ginagamit nito ang "One Versus One" Battlefield System na may paggamit ng sarili nitong Artificial Intelligence (A.I., Gachatris bot) bilang pangalawang manlalaro. Maaari mong i-customize ang bilis ng keypress ng A.I., ang nameplate nito, at isang Gacha character na gagamitin nito. Ginagamit ng ganitong uri ng mode ang orihinal na sistema ng basura, tulad ng sa mode na <gtris-tYellow>Survival</gtris-tYellow>. Ang default na parameter ng pagtanggap ng basura ay 0.`,	
-m_onevonegarbGarbageReceptionLimit: "Limitasyon sa Pagtanggap ng Basura (Walang limitasyon kung 0)",
-			  
-			  	onevonegarb_apm: `MGA LINYANG NA-SEND, ${_input}/min`,
-			  
-			  	m_frenzywar: "Digmaang Frenzy",
-m_frenzywarDesc: `Ginagamit nito ang "One Versus One" Battlefield System na may paggamit ng sarili nitong Artificial Intelligence (A.I., Gachatris bot) bilang pangalawang manlalaro. Maaari mong i-customize ang bilis ng keypress ng A.I., ang nameplate nito, at isang Gacha character na gagamitin nito. Ginagamit ng mode na ito ang <gtris-tRainbow>Frenzy</gtris-tRainbow> state system para sa dalawang manlalaro. Nagsisimula ito sa isang <gtris-tRainbow>Frenzy</gtris-tRainbow> round sa mode na ito kung saan pupunta ang dalawang manlalaro sa kanilang <gtris-tRainbow>Frenzy</gtris-tRainbow> na estado; pagkatapos ng orasan ng <gtris-tRainbow>Frenzy</gtris-tRainbow>, nagaganap ang pagsusuri kung saan inihahambing nito kung gaano karaming pinsalang puntos ang naiambag ng dalawang manlalaro; kung ang isa sa kanila ay nag-aambag ng mas mababang bilang ng mga puntos ng pinsala, makakatanggap sila ng pinsala mula sa kanilang kalaban. Ang lahat ng mga pinsala ay ipapataw sa HP bar ng isa sa mga manlalaro at maaaring kontrahin. Gayunpaman, kung ang isa sa kanila o pareho ay nag-aambag ng walang pinsalang puntos, ang bahaging "Frenzy Blast" ay paiikliin o lalaktawan. Ang isa, kasama ang kanilang kalaban na umabot sa 0% HP, ay mananalo sa laro. Ang proseso ay paulit-ulit hanggang sa umabot ang isa sa kanila ng 0% HP. Ang mga opisyal na parameter para sa mode na ito ay 150 HP, 1 minuto (60 segundo), at paunang yugto 1.`,
-m_frenzywarHealthBar: "Kalusugan",
-			  	m_frenzywarTimer: "Orasan ng Frenzy",
-			  	m_frenzywarPhase: "Pasimulang Yugto ng Mapa",
-			  
-			  	frenzywar_timer: "ORASAN NG FRENZY",
-			  	frenzywar_health: "PUNTOS NG KALUSUGAN",
-			  
-			  	frenzywar_ready: "Magsihanda na!",
-			  	frenzywar_start: "Frenzy Blast!",
-			  
-			  	frenzywar_lose: "Nawasak<br>na...",
-			  
-			  	onevone_pwin: `Panalo si ${_input}!`,
-			  	onevone_pwinres: 'Ayos!'
+			m_levelrunDesc: "Ang kursong ito ay nagbibigay sa iyo ng gawain upang i-clear ang bilang ng mga linya. Ito ay tulad ng mode na <gtris-tYellow>Linyang Pabilisan</gtris-tYellow> ngunit kasama ang leveling system. Magagawa mong walang katapusan ang larong ito sa pamamagitan ng pagbabago ng parameter ng maximum mga linya. Ang mas mataas na antas ay mas mabilis at nagpapabilis ng gravity ng piraso. Ang mga opisyal na parameter para sa mode na ito ay 150 linya, antas 1, 10 linya bawat antas, walang pagkaantala, at ang limitasyon ng antas 15.",
+			m_levelrunLevel: "Level",
+			m_levelrunLines: "Mga Linya para I-clear",
+			m_levelrunLineReq: "Mga linya sa bawat lebel",
+			m_levelrunAreType: "Pagkaantala mg mga Piraso (ARE)",
+			m_levelrunAreType0: "Walang Pagkaantala",
+			m_levelrunAreType1: "Maikli",
+			m_levelrunAreType2: "Mahaba",
+			m_levelrunLevelCap: "Limitasyon ng Antas",
+			m_levelrunEndless: "Wakang Katapusan",
+			m_levelrunInfinity: "Walang Limitasyon",
+
+			levelrun_lines: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA`,
+			levelrun_lineReq: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA NG LEBEL`,
+			levelrun_success: "Tagumpay!!",
+
+			m_area20: "Area 20",
+			m_area20Desc: "Ang mode na ito ay nagbibigay sa iyo ng isang gawain upang i-clear ang bilang ng mga linya. Ito ay tulad ng mode na <gtris-tYellow>Linyang Pabilisan</gtris-tYellow> ngunit may leveling system pati na rin ang pinakamabilis na gravity ng piraso, ang 20G, na agad na dumapo ang piraso sa mga bloke. Magagawa mong walang katapusan ang larong ito sa pamamagitan ng pagpapalit ng parameter ng maximum na mga linya. Kung mas mataas ang antas ay mas maikli ang pagkaantala ng piraso gayundin ang pagkaantala ng lock. Ang mga opisyal na parameter para sa mode na ito ay 300 linya, antas 1, 10 linya bawat antas, at ang limitasyon ng antas 30.",
+			m_area20Level: "Antas",
+			m_area20Lines: "Mga Linya para I-clear",
+			m_area20LineReq: "Mga linya sa bawat Antas",
+			m_area20LevelCap: "Kapasidad ng antas",
+			m_area20Endless: "Walang Katapusan",
+			m_area20Infinity: "Walang Limitasyon",
+
+			area20_lines: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA`,
+			area20_lineReq: `${_input} ${['4','6','9'].indexOf(_input.toString().split('')[_input.toString().length - 1]) !== -1 ? 'NA':''} ${_input >= 2 ? "MGA" : ""} LINYA NG LEBEL`,
+			area20_success: "Tagumpay!!",
+
+			m_amogus: "Amogus",
+			m_amogusDesc1: "Ang mode na ito ay may kakayahang makita ang SUS sa bawat 7 pirasong inilagay. Pagkatapos ng bawat 7 piraso, nire-reset ang board, ang pilahan ng mga SUMUSUNOD na piraso, at lalagyan ng isang ITINABING HAWAK na piraso, at kung mayroong SUS opener sa board, nagdaragdag ito ng isa sa bilangan ng mga SUS. Ito ay inspirasyon ng larong <gtris-tYellow>Among Us</gtris-tYellow> ng Innersloth, mula sa isang meme ng Among Us, ang Amogus, at ng mga manlalarong Tetris na gumawa ng SUS opener. Ang mas maraming SUS na ginawa sa loob ng ibinigay na oras ay mas mabuti. Kailangan mong buuin ang mapa ng SUS na ito na halos ganito sa ibaba sa isang paraan hangga't ito ay may sapat na bisa upang mabilang bilang isang SUS sa bilangan ng mga SUS.",
+			m_amogusDesc2: "Kung i-block/lock out mo, halatadong talo ka. Ang opisyal na tagal ng timer sa mode na ito ay 2 minuto.",
+			m_amogusTimer: "Orasan ng Sus",
+
+			amogus_suscounter: "BILANG NG MGA SUS",
+			amogus_sustimer: "ORASAN NG SUS",
+
+			ai_parameter: "Mga Parameter ng A.I.",
+			ai_kpdi: "Tagal na Pagitan ng Pagkaantala ng Keypress (120 mga Frame ay katumbas ng 1 segundo)",
+			ai_name: "Pangalan ng A.I.",
+			ai_character: "Karakter",
+			ai_changeCharacter: "Palitan ng isang Karakter",
+			ai_characteruse: "Hinayaan mo nang gamitin ng A.I. si:",
+			h_characterAI: "Pumili ng Karakter para sa A.I.",
+
+			m_onevonegarb: "Garbage 1V1",
+			m_onevonegarbDesc: `Ginagamit nito ang "One Versus One" Battlefield System na may paggamit ng sarili nitong Artificial Intelligence (A.I., Gachatris bot) bilang pangalawang manlalaro. Maaari mong i-customize ang bilis ng keypress ng A.I., ang nameplate nito, at isang Gacha character na gagamitin nito. Ginagamit ng ganitong uri ng mode ang orihinal na sistema ng basura, tulad ng sa mode na <gtris-tYellow>Survival</gtris-tYellow>. Ang default na parameter ng pagtanggap ng basura ay 0.`,
+			m_onevonegarbGarbageReceptionLimit: "Limitasyon sa Pagtanggap ng Basura (Walang limitasyon kung 0)",
+
+			onevonegarb_apm: `MGA LINYANG NA-SEND, ${_input}/min`,
+
+			m_frenzywar: "Digmaang Frenzy",
+			m_frenzywarDesc: `Ginagamit nito ang "One Versus One" Battlefield System na may paggamit ng sarili nitong Artificial Intelligence (A.I., Gachatris bot) bilang pangalawang manlalaro. Maaari mong i-customize ang bilis ng keypress ng A.I., ang nameplate nito, at isang Gacha character na gagamitin nito. Ginagamit ng mode na ito ang <gtris-tRainbow>Frenzy</gtris-tRainbow> state system para sa dalawang manlalaro. Nagsisimula ito sa isang <gtris-tRainbow>Frenzy</gtris-tRainbow> round sa mode na ito kung saan pupunta ang dalawang manlalaro sa kanilang <gtris-tRainbow>Frenzy</gtris-tRainbow> na estado; pagkatapos ng orasan ng <gtris-tRainbow>Frenzy</gtris-tRainbow>, nagaganap ang pagsusuri kung saan inihahambing nito kung gaano karaming pinsalang puntos ang naiambag ng dalawang manlalaro; kung ang isa sa kanila ay nag-aambag ng mas mababang bilang ng mga puntos ng pinsala, makakatanggap sila ng pinsala mula sa kanilang kalaban. Ang lahat ng mga pinsala ay ipapataw sa HP bar ng isa sa mga manlalaro at maaaring kontrahin. Gayunpaman, kung ang isa sa kanila o pareho ay nag-aambag ng walang pinsalang puntos, ang bahaging "Frenzy Blast" ay paiikliin o lalaktawan. Ang isa, kasama ang kanilang kalaban na umabot sa 0% HP, ay mananalo sa laro. Ang proseso ay paulit-ulit hanggang sa umabot ang isa sa kanila ng 0% HP. Ang mga opisyal na parameter para sa mode na ito ay 150 HP, 1 minuto (60 segundo), at paunang yugto 1.`,
+			m_frenzywarHealthBar: "Kalusugan",
+			m_frenzywarTimer: "Orasan ng Frenzy",
+			m_frenzywarPhase: "Pasimulang Yugto ng Mapa",
+
+			frenzywar_timer: "ORASAN NG FRENZY",
+			frenzywar_health: "PUNTOS NG KALUSUGAN",
+
+			frenzywar_ready: "Magsihanda na!",
+			frenzywar_start: "Frenzy Blast!",
+
+			frenzywar_lose: "Nawasak<br>na...",
+
+			onevone_pwin: `Panalo si ${_input}!`,
+			onevone_pwinres: 'Ayos!'
 
 		}
 	} [{
