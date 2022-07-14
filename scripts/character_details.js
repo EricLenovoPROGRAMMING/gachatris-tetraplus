@@ -74,6 +74,24 @@ function gtris_character_details(name) {
       	description: "She is an adventurer, an attorney and a therapist who can let people know what might be a mystery behind a controversial topic.",
       	versions: ['Original']
       },
+      kawaiigirlanna: {
+      	name: "Anna",
+      	gender: "Female",
+      	date_existed: "July 15, 2022",
+      	date_version: "0.1.143 Alpha",
+      	author: "• K a w a i i G i r l A n n a •",
+      	description: "After turning into her Princess form, she aims to dominate the Starlight Dimension using her manipulation skills.",
+      	versions: ['Original']
+      },
+      elishdimensions: {
+      	name: "Elisha",
+      	gender: "Female",
+      	date_existed: "July 15, 2022",
+      	date_version: "0.1.143 Alpha",
+      	author: "ElishDimensions",
+      	description: "Fire and Darkness are her domain. Pyrokinetic blasts, dark shots, and various mixed abilities happen in Dimensions she is in.",
+      	versions: ['Original']
+      },
     },
     fil: {
       ericlenovo: {
@@ -109,7 +127,7 @@ function gtris_character_details(name) {
         date_existed: "Mayo 18, 2022",
         date_version: "0.0.021 Alpha",
         author: "Pikumon10",
-        description: "Isa siyang babaeng manlalakbay ng spring na nakilala dahil sa kaniyang mga lapag-kainan.",
+        description: "Isa siyang babaeng manlalakbay ng spring na nakilala dahil sa kaniyang mga piknik.",
         versions: ['Original']
       },
       forest: {
@@ -148,6 +166,24 @@ function gtris_character_details(name) {
       	description: "Siya ay isang adventurer, isang abogado at isang therapist na maaaring ipaalam sa mga tao kung ano ang maaaring isang misteryo sa likod ng isang kontrobersyal na paksa.",
       	versions: ['Original']
       },
+      kawaiigirlanna: {
+      	name: "Anna",
+      	gender: "Babae",
+      	date_existed: "Hulyo 15, 2022",
+      	date_version: "0.1.143 Alpha",
+      	author: "• K a w a i i G i r l A n n a •",
+      	description: "Pagkatapos maging kanyang Prinsesa na anyo, nilalayon niyang dominahin ang Dimensyong Starlight gamit ang kanyang mga kasanayan sa pagmamanipula.",
+      	versions: ['Original']
+      },
+            elishdimensions: {
+            	name: "Elisha",
+            	gender: "Babae",
+            	date_existed: "Hulyo 15, 2022",
+            	date_version: "0.1.143 Alpha",
+            	author: "ElishDimensions",
+            	description: "Ang kanyang domain ay Apoy at Kadiliman. Mga pagsabog ng Pyrokineis, mga dark shot, at iba't ibang halo-halong mga kakayahan ang nangyayari sa mga Dimensyong kanyang ginagalawan.",
+            	versions: ['Original']
+            },
     },
 
   } [{

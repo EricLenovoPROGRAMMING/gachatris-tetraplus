@@ -1,5 +1,6 @@
 function SoundLoader() {
 	this.se = {}
+	this.seUsed = {}
 	this.ren = {}
 	this.selected = {
 		se: 0
@@ -18,6 +19,7 @@ function SoundLoader() {
 		try {
 			if (this.selected.se != this.current.se) {
 				this.current.se = this.selected.se
+				this.ALL_LOADED = false
 				for (let LOAD of this.soundNamesArrayNoLoop) {
 					this.se[LOAD] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/${LOAD}.ogg`, preload: false })
 				}
@@ -59,7 +61,8 @@ function SoundLoader() {
 					})
 					if (i > 0)
 						this.se[`mini${i}`].once("loaderror", () => {
-							this.se[`mini${i}`] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/tspin.ogg`, preload: true })
+							this.se[`mini${i}`] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/tspin.ogg`, preload: false })
+							this.se[`mini${i}`].load()
 						})
 				}
 
@@ -78,19 +81,43 @@ function SoundLoader() {
 				this.se.hurry2.once('loaderror', () => {
 					this.se.hurry2 = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/hurry.ogg`, preload: true })
 				})
-
-				for (var load in this.se) {
+    this.SFX_LENGTH = Object.keys(this.se).length
+				for (let load in this.se) {
 					this.se[load].load()
+					this.seUsed[load] = 0
+					for(let Y of ['load', 'loaderror']){
+						this.se[load].once(Y, ()=>{
+							this.SFX_LOADED++
+							this.checkLoaded()
+						})
+					}
 				}
-
+    
 			}
 		} catch (e) {}
 	}
+	this.SFX_LOADED = 0
+	this.SFX_LENGTH = 0
+	this.ALL_LOADED = false
+	this.checkLoaded = function(){
+		if(this.SFX_LOADED >= this.SFX_LENGTH){
+			this.ALL_LOADED = true
+		} else {
+			this.ALL_LOADED = false
+		}
+	}
+	this.resetUsed = function(){
+		for(var e in this.seUsed){
+			if(this.seUsed[e] > 0)
+			this.seUsed[e] = 0
+		}
+	}
 	this.playse = function(name) {
-		if (selectedSettings.Volume.SFX > 0) {
+		if (selectedSettings.Volume.SFX > 0 && this.seUsed[name] == 0) {
 			this.se[name].stop()
 			this.se[name].volume(selectedSettings.Volume.SFX / 100)
 			this.se[name].play()
+			this.seUsed[name] = 1
 		}
 	}
 	this.stopse = function(name) {
@@ -116,6 +143,7 @@ function SoundLoader() {
 	this.custom = new class {
 		constructor() {
 			this.sfx = {}
+			this.loadLength = 0
 		}
 		load(arr) {
 			for (var s of arr.files) {
@@ -127,6 +155,7 @@ function SoundLoader() {
 						preload: false
 					});
 					this.sfx[`${arr.dir}/${s}`].load()
+					
 				} else if (this.sfx[`${arr.dir}/${s}`]._src !== directory) {
 					this.sfx[`${arr.dir}/${s}`].unload()
 					this.sfx[`${arr.dir}/${s}`] = new Howl({
@@ -155,4 +184,4 @@ function SoundLoader() {
 	}()
 }
 
-var soundPlayer = new SoundLoader()
+const soundPlayer = new SoundLoader()

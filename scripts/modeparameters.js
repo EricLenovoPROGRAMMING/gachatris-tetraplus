@@ -38,7 +38,20 @@ var modeParameters = {
 		amogus: {
 			TIMER: range(60 * 120, 3610 * 120, 10 * 120)
 		},
+		onevonegarb: {
+   GRLIMIT: range(0, 16),
+		},
+		frenzywar: {
+			TIMER: range(60 * 120, 3610 * 120, 10 * 120),
+			HP: range(50, 1150, 50),
+			PHASE: range(1, 14)
+		},
 	},
+	AI: {
+		main: {
+		KPDI: range(1, 411),
+		}
+	}
 
 }
 modeParameters.texts.levelrun.LEVELCAP.push(gtris_transText("m_levelrunInfinity"))
@@ -67,6 +80,28 @@ function modeParameterChange(varia, mode, varObj, varObjText) {
 			}
 		}
 }
+function aiParameterChange(varia, mode, varObj, varObjText) {
+	var value = varia
+	var val = bool => bool ? value : ~~(value)
+	var t = modeParameters.AI[mode][varObj]
+	selectedSettings.AI[varObj] = val(false)
+	if (typeof varObjText == "object")
+		switch (varObjText.type) {
+			case 'arrStr': {
+				$iH(`0x327496-${varObjText.id}`, t[val(false)])
+				break
+			}
+			case 'number': {
+				$iH(`0x327496-${varObjText.id}`, val(true))
+				break
+			}
+			case 'timer': {
+				$iH(`0x327496-${varObjText.id}`, returnStatistics(t[val(false)]))
+				break
+			}
+		}
+}
+
 
 function modeParamSwitch(mode, name) {
 	//try {
@@ -264,11 +299,11 @@ function modeParamSwitch(mode, name) {
                      ${gtris_transText('m_levelrunDesc')}
                      </gtris-text>
                       </gtris-listCell>
-                      ${makeParaneterSlider("levelrun", "Lines", "levelrun", "LINE", "arrStr")}
-                      ${makeParaneterSlider("levelrun", "Level", "levelrun", "LEVEL", "arrStr")}
-                      ${makeParaneterSlider("levelrun", "LineReq", "levelrun", "LINEREQ", "arrStr")}
-                      ${makeParaneterSlider("levelrun", "AreType", "levelrun", "ARETYPE", "arrStr")}
-                      ${makeParaneterSlider("levelrun", "LevelCap", "levelrun", "LEVELCAP", "arrStr")}
+                      ${makeParaneterSlider("m_levelrun", "Lines", "levelrun", "LINE", "arrStr")}
+                      ${makeParaneterSlider("m_levelrun", "Level", "levelrun", "LEVEL", "arrStr")}
+                      ${makeParaneterSlider("m_levelrun", "LineReq", "levelrun", "LINEREQ", "arrStr")}
+                      ${makeParaneterSlider("m_levelrun", "AreType", "levelrun", "ARETYPE", "arrStr")}
+                      ${makeParaneterSlider("m_levelrun", "LevelCap", "levelrun", "LEVELCAP", "arrStr")}
 
                           <gtris-listCell>
                           <gtris-button onclick="gameStart(7)">${gtris_transText('startGame').toUpperCase()}</gtris-button>
@@ -292,10 +327,10 @@ function modeParamSwitch(mode, name) {
 		                     ${gtris_transText('m_area20Desc')}
 		                     </gtris-text>
 		                      </gtris-listCell>
-		                      ${makeParaneterSlider("area20", "Lines", "area20", "LINE", "arrStr")}
-		                      ${makeParaneterSlider("area20", "Level", "area20", "LEVEL", "arrStr")}
-		                      ${makeParaneterSlider("area20", "LineReq", "area20", "LINEREQ", "arrStr")}
-		                      ${makeParaneterSlider("area20", "LevelCap", "area20", "LEVELCAP", "arrStr")}
+		                      ${makeParaneterSlider("m_area20", "Lines", "area20", "LINE", "arrStr")}
+		                      ${makeParaneterSlider("m_area20", "Level", "area20", "LEVEL", "arrStr")}
+		                      ${makeParaneterSlider("m_area20", "LineReq", "area20", "LINEREQ", "arrStr")}
+		                      ${makeParaneterSlider("m_area20", "LevelCap", "area20", "LEVELCAP", "arrStr")}
 		
 		                          <gtris-listCell>
 		                          <gtris-button onclick="gameStart(8)">${gtris_transText('startGame').toUpperCase()}</gtris-button>
@@ -313,11 +348,11 @@ function modeParamSwitch(mode, name) {
 		          <gtris-listCell>
 		          <div style = "display:table; padding: 1em 1em 1em 1em">
 		          ${(function(){
-		          let a=2,
+		          let a=3,
 		          b= 7,
 		          c= 6,
 		          d= 5,
-		          e = 3,
+		          e = 2,
 		          bcolors = ["#222", "#0ff", "#00f", "#a60", "#ff0", "#0f0", "#f0f", "#f00"]
 		          var grid = [
 		          	[0, 0, 0, 0, 0, 0, a],
@@ -343,10 +378,10 @@ function modeParamSwitch(mode, name) {
 		          		          <div style = "display:table; padding: 1em 1em 1em 1em">
 		          ${(function(){
 		          let a=7,
-		          b= 2,
+		          b= 3,
 		          c= 6,
 		          d= 5,
-		          e = 3,
+		          e = 2,
 		          bcolors = ["#222", "#0ff", "#00f", "#a60", "#ff0", "#0f0", "#f0f", "#f00"]
 		          var grid = [
 		          	[0, 0, a, a, 0, 0, b],
@@ -374,32 +409,94 @@ function modeParamSwitch(mode, name) {
 		          		         ${gtris_transText('m_amogusDesc2')}
 		          		         </gtris-text>
 		          		         </gtris-listCell>
-		          		${makeParaneterSlider("amogus", "Timer", "amogus", "TIMER", "timer")}
+		          		${makeParaneterSlider("m_amogus", "Timer", "amogus", "TIMER", "timer")}
 		              <gtris-listCell>
 		              <gtris-button onclick="gameStart(9)">${gtris_transText('startGame').toUpperCase()}</gtris-button>
 		            </gtris-listCell>
 		      `)
 			break
 		}
+		case 10: {
+			a(`
+		        <gtris-listCell style="height: auto; display: flex; width: 100%;padding-bottom:0.5em">
+		         <gtris-text style='text-align:center'>
+		         ${gtris_transText('m_onevonegarbDesc')}
+		         </gtris-text>
+		          </gtris-listCell>
+		                 ${makeAIParameter()}
+		                 ${makeParaneterSlider("m_onevonegarb", "GarbageReceptionLimit", "onevonegarb", "GRLIMIT", "number")}
+		              <gtris-listCell>
+		              <gtris-button onclick="gameStart(10)">${gtris_transText('startGame').toUpperCase()}</gtris-button>
+		            </gtris-listCell>
+		      `)
+			break
+		}
+				case 11: {
+			a(`
+		        <gtris-listCell style="height: auto; display: flex; width: 100%;padding-bottom:0.5em">
+		         <gtris-text style='text-align:center'>
+		         ${gtris_transText('m_frenzywarDesc')}
+		         </gtris-text>
+		          </gtris-listCell>
+		                 ${makeAIParameter()}
+		                 ${makeParaneterSlider("m_frenzywar", "HealthBar", "frenzywar", "HP", "arrStr")}
+		                 ${makeParaneterSlider("m_frenzywar", "Timer", "frenzywar", "TIMER", "timer")}
+		                 ${makeParaneterSlider("m_frenzywar", "Phase", "frenzywar", "PHASE", "arrStr")}
+		              <gtris-listCell>
+		              <gtris-button onclick="gameStart(11)">${gtris_transText('startGame').toUpperCase()}</gtris-button>
+		            </gtris-listCell>
+		      `)
+			break
+		}
+
 	}
 	switchMenu(11, true, name)
 	RESIZE()
-	/*  } catch (e) {
-	    alert(e)
-	  }*/
 }
 
-const makeParaneterSlider = function(name, nametype, mode, param, type) {
+const makeAIParameter = function(){
+	return `${makeParaneterSliderAI("ai_","kpdi", "main", "KPDI", "arrStr")}
+			          		         ${makeParaneterTextbox("ai_","name","Names", "AI", 1 ,25)}
+			          		         <gtris-listCell>
+			          		         <gtris_normaltext>${gtris_transText("ai_character")}:&nbsp<gtris_normaltext id = ai-characteruse>${gtris_character_details(settingsList.NonIterable.Character[selectedSettings.AI.Character]).name}</gtris-normaltext></gtris_normaltext>
+			          		         </gtris-listCell>
+			          		         <gtris-listCell>
+			          		         <gtris-button onclick="aiCharacterSettings()">${gtris_transText('ai_changeCharacter').toUpperCase()}</gtris-button>
+			          		         </gtris-listCell>`
+},
+
+makeParaneterSlider = function(name, nametype, parentOBJ, param, type) {
 	var randId = (Math.random() * 2147483647).toFixed(8)
 	return ` <gtris-listCell style = "height: 10%; display: table; width: 100%;" >
 			<div style="display: flex;">
-	           <gtris_normaltext style="width: auto; height: 100%;">${gtris_transText(`m_${name}${nametype}`)}:&nbsp</gtris_normaltext>
-	            <gtris_normaltext id=0x327496-${randId} style="width: auto; height: 100%;">${type.toUpperCase() == "TIMER" ? returnStatistics(modeParameters.texts[mode][param][selectedSettings.Modes[mode][param]]) : modeParameters.texts[mode][param][selectedSettings.Modes[mode][param]]}</gtris_normaltext>
-	          </div> <div style = "display: flex;" > <input type="range" onchange="saveSTORAGE()" min="0" max="${modeParameters.texts[mode][param].length - 1}" value="${selectedSettings.Modes[mode][param]}" oninput="modeParameterChange(this.value,'${mode}','${param}',{id:'${randId}',type:'${type}'})" style="height: 100%;"></div>
+	           <gtris_normaltext style="width: auto; height: 100%;">${gtris_transText(`${name}${nametype}`)}:&nbsp</gtris_normaltext>
+	            <gtris_normaltext id=0x327496-${randId} style="width: auto; height: 100%;">${type.toUpperCase() == "TIMER" ? returnStatistics(modeParameters.texts[parentOBJ][param][selectedSettings.Modes[parentOBJ][param]]) : modeParameters.texts[parentOBJ][param][selectedSettings.Modes[parentOBJ][param]]}</gtris_normaltext>
+	          </div> <div style = "display: flex;" > <input type="range" onchange="saveSTORAGE()" min="0" max="${modeParameters.texts[parentOBJ][param].length - 1}" value="${selectedSettings.Modes[parentOBJ][param]}" oninput="modeParameterChange(this.value,'${parentOBJ}','${param}',{id:'${randId}',type:'${type}'})" style="height: 100%;"></div>
+	        </gtris-listCell>
+	`
+},
+makeParaneterSliderAI = function(name, nametype, parentOBJ, param, type) {
+	var randId = (Math.random() * 2147483647).toFixed(8)
+	return ` <gtris-listCell style = "height: 10%; display: table; width: 100%;" >
+			<div style="display: flex;">
+	           <gtris_normaltext style="width: auto; height: 100%;">${gtris_transText(`${name}${nametype}`)}:&nbsp</gtris_normaltext>
+	            <gtris_normaltext id=0x327496-${randId} style="width: auto; height: 100%;">${type.toUpperCase() == "TIMER" ? returnStatistics(modeParameters.AI[parentOBJ][param][selectedSettings.Modes[parentOBJ][param]]) : modeParameters.AI[parentOBJ][param][selectedSettings.AI[param]]}</gtris_normaltext>
+	          </div> <div style = "display: flex;" > <input type="range" onchange="saveSTORAGE()" min="0" max="${modeParameters.AI[parentOBJ][param].length - 1}" value="${selectedSettings.AI[param]}" oninput="aiParameterChange(this.value,'main','${param}',{id:'${randId}',type:'${type}'})" style="height: 100%;"></div>
 	        </gtris-listCell>
 	`
 }
 
+const makeParaneterTextbox = function(name, nametype, mode, param, size, length) {
+	var randId = (Math.random() * 2147483647).toFixed(8)
+	return `	        
+	         <gtris-listCell>
+	         <gtris_normaltext>${gtris_transText(`${name}${nametype}`)}</gtris_normaltext>
+	         </gtris-listCell>
+	         <gtris-listCell style = "padding-bottom: 1em">
+		            <textarea onchange="selectedSettings.${mode}.${param} = this.value; saveSTORAGE();" spellcheck="false" maxlength=${length} style="width:80%;height:${size}.1em;resize:none;background:#232323;color:#fff;font-size:${size}em">${selectedSettings.Names.AI}</textarea>
+		         </gtris-listCell>
+		         `
+}
 function modeButtons() {
 	var f = []
 

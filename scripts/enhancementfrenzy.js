@@ -1,13 +1,6 @@
-class Frenzy {
- constructor() {
-this.fails = 0
- }
+const frenzy = new function(REF) {
 
- init(obj) {
-this.fails = obj.fails || 5
- }
-
- putMap(phase,aA,bB,cC) {
+ this.putMap = function(phase,aA,bB,cC) {
 var clr = Math.round(aA * 6)
 var mp = Math.round(bB * 2)
 var flp = cC / 0.5 > 1 ? true : false
@@ -1952,9 +1945,5 @@ field.modifyGrid(20, e, flp)
 		/**/
 	}
 }
-
-console.log(`${phase} ${clr} ${mp} ${flp}`)
  }
-}
-
-const frenzy = new Frenzy()
+}()

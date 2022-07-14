@@ -3,12 +3,16 @@ function gtris_transText(name, input) {
 	var _input = typeof input !== 'object' ? [input].toString() : input
 	return {
 		en: {
+			initializeGtris: "Press any key or click anywhere to initialize Gachatris Tetraplus.",
+			
 			splash1: 'EricLenovo - ELSQPPH presents...',
 			splash2: 'Development started on May 5, 2022',
 			splash3: `Gachatris Tetraplus, v${_input}`,
-
+   
 			title: 'Gachatris Tetraplus Alpha',
-
+   
+   loadingText: "Now Loading...",
+   
 			play: 'Play',
 			startGame: 'Start',
 			settings: 'Settings',
@@ -64,11 +68,15 @@ function gtris_transText(name, input) {
 			line3: 'Triple',
 			line4: 'Gachatris',
 			line5: 'Gachatris Plus',
+			
+			b2bcounter: `Back-to-back X${_input}`,
 
-			combo: `${_input} ren`,
+			combo: `${_input} REN`,
 
 			spin: 'T-Spin',
 			mini: 'T-Spin Mini',
+			spinAnimated: '<span class="tspin">T</span>-Spin',
+			miniAnimated: '<span class="tspin">T</span>-Spin Mini',
 			pc: 'PERFECT<br>CLEAR',
 
 			blockout: 'Blocked Out!',
@@ -211,14 +219,48 @@ function gtris_transText(name, input) {
     
     amogus_suscounter: "SUS COUNTER",
     amogus_sustimer: "SUS TIMER",
-
+    
+    ai_parameter: "A.I. Parameters",
+    	ai_kpdi: "Keypress Delay Interval (120 Frames = 1 second)",
+    	ai_name: "A.I. Nameplate",
+    	ai_character: "Character",
+    	ai_changeCharacter: "Change Character",
+    	ai_characteruse: "You let the A.I. now use:",
+    	h_characterAI: "Select a Character for the A.I.",
+    
+    m_onevonegarb: "Garbage 1V1",
+			  m_onevonegarbDesc: `This utilizes the "One Versus One" Battlefield System with the utilization of its own Artificial Intelligence (A.I., Gachatris bot) as the second player. You can customize the keypress speed of the AI, its nameplate, and a Gacha character it is going to use. This type of mode uses the original garbage system, just like in the <gtris-tYellow>Survival</gtris-tYellow> mode.`,
+    m_onevonegarbGarbageReceptionLimit: "Garbage Reception Limit",
+    
+    onevonegarb_apm: `LINES SENT, ${_input}/min`,
+    
+    m_frenzywar: "Frenzy War",
+			  m_frenzywarDesc: `This utilizes the "One Versus One" Battlefield System with the utilization of its own Artificial Intelligence (A.I., Gachatris bot) as the second player. You can customize the keypress speed of the AI, its nameplate, and a Gacha character it is going to use. This mode uses the <gtris-tRainbow>Frenzy</gtris-tRainbow> state system for two players. It starts with a <gtris-tRainbow>Frenzy</gtris-tRainbow> round in this mode where two players go into their <gtris-tRainbow>Frenzy</gtris-tRainbow> state; after the <gtris-tRainbow>Frenzy</gtris-tRainbow> timer is up, evaluation takes place where it compares how much damage points two players have contributed; if one of them contributes the lower number of damage points, they receive damage from their opponent. All damages are inflicted to the HP bar of one of the players and can be countered. However, if one of them or both contribute zero damage points, either the "Frenzy Blast" part will be shortened or skipped. The one, with their opponent who reaches 0% HP, wins the game. The process loops over and over again until one of them reaches 0% HP. The official parameters for this mode are 150 HP, 1 minute (60 seconds), and initial phase 1.`,
+    m_frenzywarHealthBar: "Health",
+     m_frenzywarTimer: "Frenzy Timer",
+      m_frenzywarPhase: "Initial Map Phase",
+      
+      frenzywar_timer: "FRENZY TIMER",
+      frenzywar_health: "HEALTH POINTS",
+      
+      frenzywar_ready: "Get Ready!",
+      frenzywar_start: "Frenzy Blast!",
+      
+      frenzywar_lose: "All Damaged...",
+    
+	onevone_pwin: `${_input} has won!`,
+	onevone_pwinres: 'Yeah!'
 		},
 		fil: {
+			initializeGtris: "Pumindot ng anumang key o i-click kahit saan upang simulan ang Gachatris Tetraplus.",
+			
 			splash1: 'Hatid ni EricLenovo - ELSQPPH...',
 			splash2: 'Nagsimulang buuin noong Mayo 5, 2022',
 			splash3: `Gachatris Tetraplus, v${_input}`,
 
 			title: 'Gachatris Tetraplus Alpha',
+
+   loadingText: "Naglo-load...",	
 
 			play: 'Maglaro',
 			startGame: 'Magsimula ng Laro',
@@ -279,6 +321,8 @@ function gtris_transText(name, input) {
 			line3: 'Triple',
 			line4: 'Gachatris',
 			line5: 'Gachatris Plus',
+			
+			b2bcounter: `Back-to-back X${_input}`,
 
 			combo: `${_input} REN`,
 
@@ -389,10 +433,10 @@ function gtris_transText(name, input) {
 				m_levelrunDesc:"Ang kursong ito ay nagbibigay sa iyo ng gawain upang i-clear ang bilang ng mga linya. Ito ay tulad ng mode na <gtris-tYellow>Linyang Pabilisan</gtris-tYellow> ngunit kasama ang leveling system. Magagawa mong walang katapusan ang larong ito sa pamamagitan ng pagbabago ng parameter ng maximum mga linya. Ang mas mataas na antas ay mas mabilis at nagpapabilis ng gravity ng piraso. Ang mga opisyal na parameter para sa mode na ito ay 150 linya, antas 1, 10 linya bawat antas, walang pagkaantala, at ang limitasyon ng antas 15.",				m_levelrunLevel: "Level",
 				m_levelrunLines: "Mga Linya para I-clear",
 				m_levelrunLineReq: "Mga linya sa bawat lebel",
-				m_levelrunAreType: "Pagkaantala mg mga Piraso(ARE)",
+				m_levelrunAreType: "Pagkaantala mg mga Piraso (ARE)",
 				m_levelrunAreType0: "Walang Pagkaantala",
 				m_levelrunAreType1: "Maikli",
-				m_levelrunAreType2: "Mataad",
+				m_levelrunAreType2: "Mahaba",
 				m_levelrunLevelCap: "Limitasyon ng Antas",
 				m_levelrunEndless: "Wakang Katapusan",
 				m_levelrunInfinity: "Walang Limitasyon",
@@ -421,7 +465,38 @@ function gtris_transText(name, input) {
 			 
 			 	amogus_suscounter: "BILANG NG MGA SUS",
 			 	amogus_sustimer: "ORASAN NG SUS",
-			
+			  
+			  ai_parameter: "Mga Parameter ng A.I.",
+			  	ai_kpdi: "Tagal na Pagitan ng Pagkaantala ng Keypress (120 mga Frame ay katumbas ng 1 segundo)",
+			  	ai_name: "Pangalan ng A.I.",
+			  	ai_character: "Karakter",
+			  	ai_changeCharacter: "Palitan ng isang Karakter",
+			  	ai_characteruse: "Hinayaan mo nang gamitin ng A.I. si:",
+			  	h_characterAI: "Pumili ng Karakter para sa A.I.",
+			  
+			  	m_onevonegarb: "Garbage 1V1",
+m_onevonegarbDesc: `Ginagamit nito ang "One Versus One" Battlefield System na may paggamit ng sarili nitong Artificial Intelligence (A.I., Gachatris bot) bilang pangalawang manlalaro. Maaari mong i-customize ang bilis ng keypress ng A.I., ang nameplate nito, at isang Gacha character na gagamitin nito. Ginagamit ng ganitong uri ng mode ang orihinal na sistema ng basura, tulad ng sa mode na <gtris-tYellow>Survival</gtris-tYellow>. Ang default na parameter ng pagtanggap ng basura ay 0.`,	
+m_onevonegarbGarbageReceptionLimit: "Limitasyon sa Pagtanggap ng Basura (Walang limitasyon kung 0)",
+			  
+			  	onevonegarb_apm: `MGA LINYANG NA-SEND, ${_input}/min`,
+			  
+			  	m_frenzywar: "Digmaang Frenzy",
+m_frenzywarDesc: `Ginagamit nito ang "One Versus One" Battlefield System na may paggamit ng sarili nitong Artificial Intelligence (A.I., Gachatris bot) bilang pangalawang manlalaro. Maaari mong i-customize ang bilis ng keypress ng A.I., ang nameplate nito, at isang Gacha character na gagamitin nito. Ginagamit ng mode na ito ang <gtris-tRainbow>Frenzy</gtris-tRainbow> state system para sa dalawang manlalaro. Nagsisimula ito sa isang <gtris-tRainbow>Frenzy</gtris-tRainbow> round sa mode na ito kung saan pupunta ang dalawang manlalaro sa kanilang <gtris-tRainbow>Frenzy</gtris-tRainbow> na estado; pagkatapos ng orasan ng <gtris-tRainbow>Frenzy</gtris-tRainbow>, nagaganap ang pagsusuri kung saan inihahambing nito kung gaano karaming pinsalang puntos ang naiambag ng dalawang manlalaro; kung ang isa sa kanila ay nag-aambag ng mas mababang bilang ng mga puntos ng pinsala, makakatanggap sila ng pinsala mula sa kanilang kalaban. Ang lahat ng mga pinsala ay ipapataw sa HP bar ng isa sa mga manlalaro at maaaring kontrahin. Gayunpaman, kung ang isa sa kanila o pareho ay nag-aambag ng walang pinsalang puntos, ang bahaging "Frenzy Blast" ay paiikliin o lalaktawan. Ang isa, kasama ang kanilang kalaban na umabot sa 0% HP, ay mananalo sa laro. Ang proseso ay paulit-ulit hanggang sa umabot ang isa sa kanila ng 0% HP. Ang mga opisyal na parameter para sa mode na ito ay 150 HP, 1 minuto (60 segundo), at paunang yugto 1.`,
+m_frenzywarHealthBar: "Kalusugan",
+			  	m_frenzywarTimer: "Orasan ng Frenzy",
+			  	m_frenzywarPhase: "Pasimulang Yugto ng Mapa",
+			  
+			  	frenzywar_timer: "ORASAN NG FRENZY",
+			  	frenzywar_health: "PUNTOS NG KALUSUGAN",
+			  
+			  	frenzywar_ready: "Magsihanda na!",
+			  	frenzywar_start: "Frenzy Blast!",
+			  
+			  	frenzywar_lose: "Nawasak<br>na...",
+			  
+			  	onevone_pwin: `Panalo si ${_input}!`,
+			  	onevone_pwinres: 'Ayos!'
+
 		}
 	} [{
 		0: 'en',

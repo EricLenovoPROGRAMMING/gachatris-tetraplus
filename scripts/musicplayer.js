@@ -2,9 +2,12 @@ function MusicPlayer() {
   this.current = null
   this.mfx = {}
   this.VOL = 100
-
+  this.loadedMFX = 0
+  this.loadLength = 0
+  this.allLoaded = true
   this.loadMfx = function(string) {
     if(typeof this.mfx[string] == "undefined"){
+    	this.allLoaded = false
     this.mfx[string] = {
       start: new Howl({
         src: `assets/mfx/${string}/start.ogg`,
@@ -21,11 +24,21 @@ function MusicPlayer() {
         preload: false
       })
     }
+    this.loadLength += 2
     
     for(let a in this.mfx[string]){
       this.mfx[string][a].load()
+      for(let Y of ["load", "loaderror"])
+      this.mfx[string][a].once(Y, ()=>{
+      	this.loadedMFX++
+      	this.checkLoad()
+      })
     }
     }
+  }
+ 
+  this.checkLoad = function(){
+  		this.allLoaded =	this.loadedMFX >= this.loadLength
   }
 
   this.playMfx = function(string) {

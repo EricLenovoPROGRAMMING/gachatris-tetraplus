@@ -168,7 +168,7 @@ const garbageSurvival = new class {
 	}
 	returnGarb() {
 		return {
-			garbageRow: Math.floor(this.random.next() * 10),
+			garbageRow: Math.floor(this.random.next() * 9.99999	),
 			count: Math.floor(this.random.next() * this.strength[this.selectedLevel - 1]),
 		}
 	}
@@ -215,7 +215,7 @@ const amogusSus = new class extends UltraScoreAttack {
 			this.pieceLimit += 7
 			var sus = 0
 			for (var e = 0; e < this.arrayDetect.length; e++) {
-				for (var x /*= 0; x < grid.length - this.arrayDetect[e].length ; x++/**/ of[0,1,2,3,4,5]) {
+				for (var x of [0,1,2,3,4,5]) {
 					for (var y = grid[0].length - this.arrayDetect[e][0].length; y >= grid[0].length - this.arrayDetect[e][0].length - 3; y--) {
 						let blanks = 0,
 							detects = 0
@@ -240,6 +240,23 @@ const amogusSus = new class extends UltraScoreAttack {
 			} else {
 				result("no")
 			}
+		}
+	}
+}()
+
+const frenzyWar = new class{
+	constructor() {
+		this.timer = 120 * 15
+	}
+	init(){
+		this.timer = 120 * 15
+	}
+	run(bool, func) {
+		if(bool == true){
+			this.timer--
+			func(this.timer)
+		} else {
+			this.timer = 120*15.1
 		}
 	}
 }()

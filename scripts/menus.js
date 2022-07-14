@@ -1,7 +1,10 @@
-var menuClass = $CN('menuClass')
+const menuClass = $CN('menuClass')
 var settingKey = undefined
+var titleTemplate = null
+
 
 var keysText = {
+	0: `Error`,
   8: 'Backspace',
   9: 'Tab',
   13: 'Enter',
@@ -463,6 +466,7 @@ function loadCharacterSettingss() {
     listCell.appendChild(input)
     controllersDIV.appendChild(listCell)
   }
+    $iH("guiText-characterUse", gtris_transText("characteruse"))
   setCharacterTest()
 }
 loadMiscSettingss()
@@ -502,7 +506,7 @@ function initSetNameWindow(){
 	           <gtris-text style="text-align:center">${gtris_transText("nameChangeDesc")}</gtris-text>
 	         </gtris-listCell>
 	         <gtris-listCell>
-	            <textarea id="replayCenterBox" onchange="changePlayerName('Main',this.value)" spellcheck="false" maxlength=25 style="width:80%;height:1em;resize:none;background:#232323;color:#fff;font-size:2em">${selectedSettings.Names.Main}</textarea>
+	            <textarea onchange="changePlayerName('Main',this.value)" spellcheck="false" maxlength=25 style="width:80%;height:1em;resize:none;background:#232323;color:#fff;font-size:2em">${selectedSettings.Names.Main}</textarea>
 	         </gtris-listCell>
 	         `
 }
@@ -517,4 +521,54 @@ function setKey(NAME, variable, id, $iH) {
   let list = variable
   let result = ~~($CN(`gtrisParameter_values ${NAME}`, 0).value)
   $CN(`gtrisParameter ${id}`, 0).innerHTML = `${$iH}: ${list[result]}`
+}
+
+function aiCharacterSettings() {
+  var controllersDIV = docId('character-cells')
+  controllersDIV.innerHTML = ''
+  for (let LOADING = 0; LOADING < settingsList.NonIterable.Character.length; LOADING++) {
+    let listDetail = LOADING !== 0 ? gtris_character_details(settingsList.NonIterable.Character[LOADING]) : void 0
+    var listCell = document.createElement('div')
+    var input = document.createElement('gtris-button-list')
+    listCell.style = `height:10%;display:flex;justify-content:center;width:100%`
+    listCell.className = `gtrisParameter-charlist-${settingsList.NonIterable.Character[LOADING].replace(' ', '%20')}`
+
+    input.className = `gtrisParameter-charSelectList`
+    input.innerHTML = `${LOADING !== 0 ? listDetail.name:'----'}`
+    input.onclick = () => {
+      selectedSettings.AI.Character = LOADING
+      try{
+      	$iH("ai-characteruse", listDetail.name)
+      }catch(e){}
+      saveSTORAGE()
+      setCharacterTest2()
+    }
+    listCell.appendChild(input)
+    controllersDIV.appendChild(listCell)
+  }
+  setCharacterTest2()
+  $iH("guiText-characterUse", gtris_transText("ai_characteruse"))
+  switchMenu(6,true,'h_characterAI');
+}
+function setCharacterTest2() {
+  var main = $CN('gtrisParameter-charSelectList')
+  var charDetailPrepare = gtris_character_details(settingsList.NonIterable.Character[selectedSettings.AI.Character])
+  if (selectedSettings.AI.Character == 0) { docId('characterImage').style.opacity = 0;
+    $iH('characterFurtherDetail', '') } else {
+    docId('characterImage').style.opacity = 1
+    $iH('characterFurtherDetail', gtris_transText('characterdetail', [
+      charDetailPrepare.gender,
+      charDetailPrepare.author,
+      charDetailPrepare.date_existed,
+      charDetailPrepare.date_version,
+      charDetailPrepare.description
+      ]))
+  }
+  for (let t = 0; t < main.length; t++)
+    try {
+      main[t].classList.remove('aichar-ACTIVE')
+    } catch (e) {}
+  main[selectedSettings.AI.Character].classList.add('aichar-ACTIVE')
+  docId("characterImage").src = `assets/characters/${settingsList.NonIterable.Character[selectedSettings.AI.Character]}/icon.png`
+  $iH('characterName', selectedSettings.AI.Character == 0 ? '---' : charDetailPrepare.name)
 }

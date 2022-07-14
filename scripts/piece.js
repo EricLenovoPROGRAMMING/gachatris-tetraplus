@@ -1,95 +1,92 @@
-var gravityUnit = 1 / 512
-var gravityArr = (function() {
-	var array = []
-	array.push(0);
-	for (var i = 1; i < 128; i++) array.push(i / 128);
-	for (var i = 1; i <= 20; i++) array.push(i);
-	return array;
-})()
+var gravityUnit = 1 / 512,
+	gravityArr = (function() {
+		var array = []
+		array.push(0);
+		for (var i = 1; i < 128; i++) array.push(i / 128);
+		for (var i = 1; i <= 20; i++) array.push(i);
+		return array;
+	})()
 
-
-const piece = new class {
-	constructor() {
-		this.x;
-		this.y;
-		this.pos = 0;
-		this.tetro;
-		this.index;
-		this.kickData;
-		this.lockDelay = 0;
-		this.gravity = gravityUnit * 4
-		this.currentGravity = 0
-		this.shiftDelay = 0;
-		this.shiftDir
-		this.shiftReleased
-		this.arrDelay = 0
-		this.held = false;
-		this.finesse = 0;
-		this.dirty = false;
-		this.landed = false
-		this.rotateFail = false
-		this.spinX = 0
-		this.spinY = 0
-		this.canHold = false
-		this.initial = {
-			rot: 0,
-			hold: 0
-		}
-		this.lockCap = {
-			move: 0,
-			rotate: 0
-		}
-		this.lockLimit = {
-			move: 15,
-			rotate: 15,
-			delay: 60
-		}
-		this.stsd = {
-			x: 0,
-			y: 0
-		}
-		this.last = {
-			x: 0,
-			y: 0,
-			pos: 0
-		}
-		this.lockoutActive = false
-		this.hardDropEnabled = false
-		this.rng = new ParkMillerPRNG()
-		this.levelGravityArr = [1, 2, 3, 4, 5, 6, 7, 8, 10, 14, 16, 19, 25, 31,41, 59, 89, 139, 142, 148]
+const gachamino = new function() {
+	this.x;
+	this.y;
+	this.pos = 0;
+	this.tetro;
+	this.index;
+	this.kickData;
+	this.lockDelay = 0;
+	this.gravity = gravityUnit * 4
+	this.currentGravity = 0
+	this.shiftDelay = 0;
+	this.shiftDir
+	this.shiftReleased
+	this.arrDelay = 0
+	this.held = false;
+	this.finesse = 0;
+	this.dirty = false;
+	this.landed = false
+	this.rotateFail = false
+	this.spinX = 0
+	this.spinY = 0
+	this.canHold = false
+	this.initial = {
+		rot: 0,
+		hold: 0
 	}
-	restrictDelay(level) {
+	this.lockCap = {
+		move: 0,
+		rotate: 0
+	}
+	this.lockLimit = {
+		move: 15,
+		rotate: 15,
+		delay: 60
+	}
+	this.stsd = {
+		x: 0,
+		y: 0
+	}
+	this.last = {
+		x: 0,
+		y: 0,
+		pos: 0
+	}
+	this.lockoutActive = false
+	this.hardDropEnabled = false
+	this.rng = new ParkMillerPRNG()
+	this.levelGravityArr = [1, 2, 3, 4, 5, 6, 7, 8, 10, 14, 16, 19, 25, 31, 41, 59, 89, 139, 142, 148]
+	this.restrictDelay = function(level) {
 		if (field.isGravityType == "marathon") {
 			return Math.max(0, (level - 21) * 10)
 		} else if (field.isGravityType == "master") {
 			return Math.max(0, level * 2)
 		} else return 0
 	}
-	restrictLock(level) {
+	this.restrictLock = function(level) {
 		if (field.isGravityType == "marathon") {
 			return (Math.max(1, ((level) - 21) * 0.2 * 0.45))
 		} else if (field.isGravityType == "master") {
-			return (Math.max(1, ((level) - 6) * 0.5))
+			return Math.min(Math.max(1, ((level) - 6) * 0.086), 2.8)
 		} else return 1
 	}
-	reset() {
+	this.reset = function() {
 		this.initial.hold = 0
 		this.initial.rot = 0
 		soundPlayer.fadese('topoutwarning', 0, 0, 0)
 		soundPlayer.stopse("topoutwarning")
-		$iH('TEXT_next', gtris_transText('next'))
-		$iH('TEXT_hold', gtris_transText('hold'))
+		$iH(field.mainAssets['TEXT_next'], gtris_transText('next'))
+		$iH(field.mainAssets.TEXT_hold, gtris_transText('hold'))
 		this.x = 'reset'
 		this.y = -1000
 		this.index = 'reset'
 		this.tetro = [[]]
 		this.shiftReleased = true
 		this.shiftDir = 0
-		this.currentGravity = pieceSettings.GRAV
-		this.lockLimit.delay = pieceSettings.LCK
+		this.currentGravity = field.pieceSettings.GRAV
+		this.lockLimit.delay = field.pieceSettings.LCK
 		this.openHold(true)
 	}
-	openHold(bool) {
+	this.openHold = function(bool) {
 		var e = docId('holdDiv')
 		switch (bool) {
 			case true: {
@@ -104,7 +101,7 @@ const piece = new class {
 			}
 		}
 	}
-	new(ind) {
+	this.new = function(ind) {
 		if (field.isGravityType) {
 			switch (field.isGravityType) {
 				case "marathon": {
@@ -116,7 +113,7 @@ const piece = new class {
 					break
 				}
 			}
-		} else this.currentGravity = pieceSettings.GRAV
+		} else this.currentGravity = field.pieceSettings.GRAV
 		if (this.injectPiece(ind)) {
 			if (this.initial.hold > 0) {
 				while (this.initial.hold > 0 && this.canHold) {
@@ -124,7 +121,7 @@ const piece = new class {
 					if (!this.held) {
 						if (hold.piece !== void 0) {
 							hold.piece = this.index;
-							soundPlayer.playse('hold')
+							soundPlayer.playse(field.mainAssets.hold)
 							this.injectPiece(temp)
 						} else {
 							hold.piece = this.index;
@@ -139,11 +136,11 @@ const piece = new class {
 				}
 				soundPlayer.playse('ihs')
 				this.initial.hold = 0
-				$iH('TEXT_hold', gtris_transText('hold'))
+				$iH(field.mainAssets.TEXT_hold, gtris_transText(field.mainAssets.hold))
 			}
 			if (this.initial.rot !== 0) {
 				soundPlayer.playse('irs')
-				$iH('TEXT_next', gtris_transText('next'))
+				$iH(field.mainAssets.TEXT_next, gtris_transText('next'))
 				while (this.initial.rot !== 0) {
 					if (this.initial.rot > 0) {
 						this.rotate(1)
@@ -158,7 +155,7 @@ const piece = new class {
 			this.y += this.getDrop(this.currentGravity !== 0 ? gravityArr[this.currentGravity - 1] : this.gravity)
 		}
 	}
-	injectPiece(index) {
+	this.injectPiece = function(index) {
 		this.pos = 0;
 		this.tetro = [];
 		this.held = false;
@@ -183,16 +180,19 @@ const piece = new class {
 		this.y += this.index !== 0 ? 20 : 19;
 		if (!this.checkPieceValidation(0, 0, this.tetro)) {
 			if (field.isTSDOnly == true) {
-				if (this.statistics.tsd >= 20) {
+				if (field.statistics.tsd >= 20) {
 					field.fieldResult({ name: 'tsd_reached', array: field.statistics.tsd }, 'win', 'win')
-					endGame({ name: 'tsd_reached_result', array: field.statistics.tsd }, 'win')
+					if (!field.is1v1 && field.is1v1 !== "garbage")
+						endGame({ name: 'tsd_reached_result', array: field.statistics.tsd }, 'win')
 				} else {
 					field.fieldResult('blockout', true, 'lose')
-					endGame('blockout', 'lose')
+					if (!field.is1v1 && field.is1v1 !== "garbage")
+						endGame('blockout', 'lose')
 				}
 			} else {
 				field.fieldResult('blockout', true, 'lose')
-				endGame('blockout', 'lose')
+				if (!field.is1v1 && field.is1v1 !== "garbage")
+					endGame('blockout', 'lose')
 			}
 			soundPlayer.playse('ko')
 			this.y = -3737
@@ -211,7 +211,7 @@ const piece = new class {
 
 		return true
 	}
-	rotate(direction) {
+	this.rotate = function(direction) {
 		if (this.y > -20 && this.index !== 'reset') {
 			var rotated = [];
 			this.rotateFail = true
@@ -280,32 +280,32 @@ const piece = new class {
 			this.initial.rot += direction
 			if (this.initial.rot == 4 || this.initial.rot == -4 || this.initial.rot == 0) {
 				this.initial.rot = 0
-				$iH('TEXT_next', gtris_transText('next'))
+				$iH(field.mainAssets.TEXT_next, gtris_transText('next'))
 			} else if (this.initial.rot == 2 || this.initial.rot == -2) {
-				$iH('TEXT_next', `180`)
+				$iH(field.mainAssets.TEXT_next, `180`)
 			} else {
 				switch (this.initial.rot) {
 					case 1: {
-						$iH('TEXT_next', `CW x1`)
+						$iH(field.mainAssets.TEXT_next, `CW x1`)
 						break
 					}
 					case 3: {
-						$iH('TEXT_next', `CW x3`)
+						$iH(field.mainAssets.TEXT_next, `CW x3`)
 						break
 					}
 					case -1: {
-						$iH('TEXT_next', `CCW x1`)
+						$iH(field.mainAssets.TEXT_next, `CCW x1`)
 						break
 					}
 					case -3: {
-						$iH('TEXT_next', `CCW x3`)
+						$iH(field.mainAssets.TEXT_next, `CCW x3`)
 						break
 					}
 				}
 			}
 		}
 	}
-	rotate180() {
+	this.rotate180 = function() {
 		if (this.y > -20 && this.index !== 'reset') {
 			var rotated = [];
 			var temp = this.tetro
@@ -370,25 +370,25 @@ const piece = new class {
 				this.initial.rot++
 				if (this.initial.rot == 4 || this.initial.rot == -4 || this.initial.rot == 0) {
 					this.initial.rot = 0
-					$iH('TEXT_next', gtris_transText('next'))
+					$iH(field.mainAssets.TEXT_next, gtris_transText('next'))
 				} else if (this.initial.rot == 2 || this.initial.rot == -2) {
-					$iH('TEXT_next', `180`)
+					$iH(field.mainAssets.TEXT_next, `180`)
 				} else {
 					switch (this.initial.rot) {
 						case 1: {
-							$iH('TEXT_next', `CW x1`)
+							$iH(field.mainAssets.TEXT_next, `CW x1`)
 							break
 						}
 						case 3: {
-							$iH('TEXT_next', `CW x3`)
+							$iH(field.mainAssets.TEXT_next, `CW x3`)
 							break
 						}
 						case -1: {
-							$iH('TEXT_next', `CCW x1`)
+							$iH(field.mainAssets.TEXT_next, `CCW x1`)
 							break
 						}
 						case -3: {
-							$iH('TEXT_next', `CCW x3`)
+							$iH(field.mainAssets.TEXT_next, `CCW x3`)
 							break
 						}
 					}
@@ -396,7 +396,7 @@ const piece = new class {
 			}
 		}
 	}
-	DASPreloadAndCheckShift(keysDown, lastKeys) {
+	this.DASPreloadAndCheckShift = function(keysDown, lastKeys) {
 		// Shift key pressed event.
 		if (keysDown & flags.LEFT && !(lastKeys & flags.LEFT)) {
 			this.shiftDelay = 0;
@@ -457,22 +457,22 @@ const piece = new class {
 				this.shift(this.shiftDir);
 				this.shiftDelay++;
 				this.shiftReleased = false;
-			} else if (this.shiftDelay < pieceSettings.DAS) {
+			} else if (this.shiftDelay < field.pieceSettings.DAS) {
 				this.shiftDelay++;
-			} else if (this.shiftDelay === pieceSettings.DAS && pieceSettings.DAS !== 0) {
+			} else if (this.shiftDelay === field.pieceSettings.DAS && field.pieceSettings.DAS !== 0) {
 				this.shift(this.shiftDir);
-				if (pieceSettings.ARR !== 0) this.shiftDelay++;
-			} else if (this.arrDelay < pieceSettings.ARR) {
+				if (field.pieceSettings.ARR !== 0) this.shiftDelay++;
+			} else if (this.arrDelay < field.pieceSettings.ARR) {
 				this.arrDelay++;
-			} else if (this.arrDelay === pieceSettings.ARR && pieceSettings.ARR !== 0) {
+			} else if (this.arrDelay === field.pieceSettings.ARR && field.pieceSettings.ARR !== 0) {
 				this.shift(this.shiftDir);
 			}
 		}
 	}
-	shift(direction) {
+	this.shift = function(direction) {
 		this.arrDelay = 0;
 		if (this.y > -20 && this.index !== 'reset') {
-			if (pieceSettings.ARR === 0 && this.shiftDelay === pieceSettings.DAS) {
+			if (field.pieceSettings.ARR === 0 && this.shiftDelay === field.pieceSettings.DAS) {
 				for (var i = 1; i < 10; i++) {
 					if (!this.moveValid(i * direction, 0, this.tetro)) {
 						this.x += i * direction - direction;
@@ -498,27 +498,27 @@ const piece = new class {
 			}
 		}
 	}
-	shiftDown() {
+	this.shiftDown = function() {
 		if (this.y > -20 && this.index !== 'reset') {
 			if (this.moveValid(0, 1, this.tetro)) {
 				field.spinCheckCount = -869
 				field.spinCheck()
-				var grav = gravityArr[pieceSettings.SFT + 1];
+				var grav = gravityArr[field.pieceSettings.SFT + 1];
 				if (grav > 1) {
-					if(gravityArr[this.currentGravity - 1] !== 20)
-					field.score += this.getDrop(grav)
+					if (gravityArr[this.currentGravity - 1] !== 20)
+						field.score += this.getDrop(grav)
 					soundPlayer.playse('softdrop')
 					this.y += this.getDrop(grav);
 				}
 				else if (grav == 1) {
 					this.y += this.getDrop(1)
 					soundPlayer.playse('softdrop')
-					if(gravityArr[this.currentGravity - 1] !== 20)
-					field.score++
+					if (gravityArr[this.currentGravity - 1] !== 20)
+						field.score++
 				} else {
 					if (this.y >= Math.round(this.y) - grav && this.y <= Math.round(this.y)) {
-						if(gravityArr[this.currentGravity - 1] !== 20)
-						field.score++
+						if (gravityArr[this.currentGravity - 1] !== 20)
+							field.score++
 						soundPlayer.playse('softdrop')
 					}
 					this.y += grav;
@@ -526,31 +526,47 @@ const piece = new class {
 			}
 		}
 	}
-	hardDrop() {
+	this.hardDrop = function() {
 		if (this.y > -20 && this.index !== 'reset') {
 			for (var i = 1; this.checkPieceValidation(0, i, this.tetro); i++)
-				if(gravityArr[this.currentGravity - 1] !== 20)
-				field.score += 2
+				if (gravityArr[this.currentGravity - 1] !== 20)
+					field.score += 2
 			this.y += this.getDrop(89)
 			soundPlayer.playse('harddrop')
+			for (let x = 0, len = this.tetro.length; x < len; x++)
+				for (let y = 0, len2 = this.tetro[x].length; y < len2; y++)
+					if (selectedSettings.Other.Particle >= 2 && this.tetro[x][y])
+						for (let e = 0; e < 2; e++)
+							GTRISParticleManagement.addParticle(
+								0,
+								this.index + 1,
+								getElemPos(field.mainAssets.playField, "x") + ((this.x + x) * cellSize),
+								getElemPos(field.mainAssets.playField, "y") + ((this.y - 20.4 + y) * cellSize),
+								getElemPos(field.mainAssets.playField, "x") + ((this.x + (Math.random() * 6) + (Math.random() * -6)) * cellSize),
+								getElemPos(field.mainAssets.playField, "y") + ((this.y - 35.4 + y + (Math.random() * 6)) * cellSize),
+								80,
+								1,
+								"hardDrop"
+							)
+
 			this.hardDropEnabled = true
-			this.lockDelay = 929 * pieceSettings.LCK;
+			this.lockDelay = 929 * field.pieceSettings.LCK;
 		}
 	}
-	getDrop(distance) {
+	this.getDrop = function(distance) {
 		for (var i = 1; i <= distance; i++) {
 			if (!this.checkPieceValidation(0, i, this.tetro)) return i - 1;
 		}
 		return i - 1;
 	}
-	hold() {
+	this.hold = function() {
 		if (this.canHold) {
 			if (this.y > -44 && this.index !== 'reset') {
 				var temp = hold.piece;
 				if (!this.held) {
 					if (hold.piece !== void 0) {
 						hold.piece = this.index;
-						soundPlayer.playse('hold')
+						soundPlayer.playse(field.mainAssets.hold)
 						this.new(temp)
 					} else {
 						hold.piece = this.index;
@@ -563,16 +579,16 @@ const piece = new class {
 			} else if (this.y < -10) {
 				if (this.initial.hold == 0) {
 					this.initial.hold = 1
-					$iH('TEXT_hold', `INITIAL`)
+					$iH(field.mainAssets.TEXT_hold, `INITIAL`)
 				}
 				else if (this.initial.hold == 1) {
 					this.initial.hold = 0
-					$iH('TEXT_hold', gtris_transText('hold'))
+					$iH(field.mainAssets.TEXT_hold, gtris_transText(field.mainAssets.hold))
 				}
 			}
 		}
 	}
-	moveValid(cx, cy, tetro) {
+	this.moveValid = function(cx, cy, tetro) {
 		cx = cx + this.x;
 		cy = Math.floor(cy + this.y);
 		for (var x = 0, e = 0; x < tetro.length && e < 30; x++, e++) {
@@ -596,7 +612,7 @@ const piece = new class {
 		}
 		return true;
 	}
-	checkPieceValidation(cx, cy, tetro) {
+	this.checkPieceValidation = function(cx, cy, tetro) {
 		cx = cx + this.x;
 		cy = Math.floor(cy + this.y)
 		for (var x = 0; x < tetro.length; x++) {
@@ -614,7 +630,7 @@ const piece = new class {
 		}
 		return true;
 	}
-	checkIfGTrisLocksAtExosphere(cy, tetro) {
+	this.checkIfGTrisLocksAtExosphere = function(cy, tetro) {
 		cy = Math.floor(cy + this.y);
 		var range = []
 		var lockout = false
@@ -641,7 +657,7 @@ const piece = new class {
 			this.lockoutActive = true
 		}
 	}
-	update() {
+	this.update = function() {
 		if (this.y > -20 && this.index !== 'reset') {
 
 			if (this.moveValid(0, 1, this.tetro)) {
@@ -662,7 +678,7 @@ const piece = new class {
 			} else this.tryLand()
 		}
 	}
-	tryLand() {
+	this.tryLand = function() {
 		if (this.y > -20 && this.index !== 'reset') {
 			{
 				if (!this.landed) {
@@ -688,7 +704,7 @@ const piece = new class {
 					}
 					field.spinCheck()
 					field.addPiece(this.tetro)
-							this.held = false
+					this.held = false
 					this.y > -2039
 					if (field.are.add.piece > 0)
 						field.are.piece = field.are.add.piece
@@ -706,7 +722,7 @@ const piece = new class {
 								break
 							}
 						}
-					} else this.currentGravity = pieceSettings.GRAV
+					} else this.currentGravity = field.pieceSettings.GRAV
 					this.checkIfGTrisLocksAtExosphere(0, this.tetro)
 					if (field.valid && field.are.line <= 0 && field.are.piece <= 0 && field.are.del <= 0 && field.are.next <= 0 &&
 						field.are.frenzyExt <= 0 && field.are.frenzyEnt <= 0 && field.are.failing <= 0) {
@@ -721,20 +737,20 @@ const piece = new class {
 						hold.draw()
 				} else {
 					if (field.isSpin) {
-						_CTX.active.globalCompositeOperation = 'source-atop';
-						if (Math.round(this.lockDelay % 5) == 0) {
-							draw(this.tetro, this.x, this.y - (19.6), 'active', 9, 0);
+						_CTX[field.mainAssets.active].globalCompositeOperation = 'source-atop';
+						if (Math.round(this.lockDelay % 3) == 0) {
+							draw(this.tetro, this.x, this.y - (19.6), field.mainAssets.active, 9, 0);
 						} else {
-							draw(this.tetro, this.x, this.y - (19.6), 'active', 10, 0);
+							draw(this.tetro, this.x, this.y - (19.6), field.mainAssets.active, 10, 0);
 						}
-						_CTX.active.globalCompositeOperation = 'source-over';
+						_CTX[field.mainAssets.active].globalCompositeOperation = 'source-over';
 					}
 					if (field.isMini) {
-						_CTX.active.globalCompositeOperation = 'source-atop';
-						_CTX.active.globalAlpha = 0.06
-						draw(this.tetro, this.x, this.y - (19.6), 'active', 10, 0);
-						_CTX.active.globalCompositeOperation = 'source-over';
-						_CTX.active.globalAlpha = 1
+						_CTX[field.mainAssets.active].globalCompositeOperation = 'source-atop';
+						_CTX[field.mainAssets.active].globalAlpha = 0.06
+						draw(this.tetro, this.x, this.y - (19.6), field.mainAssets.active, 9, 0);
+						_CTX[field.mainAssets.active].globalCompositeOperation = 'source-over';
+						_CTX[field.mainAssets.active].globalAlpha = 1
 					}
 					this.lockDelay += this.restrictLock(field.level);
 				}
@@ -742,14 +758,14 @@ const piece = new class {
 			}
 		}
 	}
-	simulateDraw() {
+	this.simulateDraw = function() {
 		if (
 			(this.x !== this.last.x ||
 				Math.floor(this.y) !== this.last.y ||
 				this.pos !== this.last.pos ||
 				this.dirty == true)
 		) {
-			clear(_CTX.active);
+			clear(_CTX[field.mainAssets.active]);
 			this.drawGhost();
 			this.draw();
 			this.checkIfGTrisLocksAtExosphere(0, this.tetro)
@@ -759,60 +775,88 @@ const piece = new class {
 		this.last.pos = this.pos;
 		this.dirty = false;
 	}
-	draw() {
-		draw(this.tetro, this.x, Math.floor(this.y) - 19.6, 'active', void 0, 0);
+	this.draw = function() {
+		draw(this.tetro, this.x, Math.floor(this.y) - 19.6, field.mainAssets.active, void 0, 0);
 	}
-	drawGhost() {
-		if (pieceSettings.Ghost == 1 && !this.landed) {
-			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), 'active', void 0, 1)
-		} else if (pieceSettings.Ghost === 2 && !this.landed) {
-			_CTX.active.globalAlpha = 0.7
-			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), 'active', 0, 0)
-			_CTX.active.globalAlpha = 1
-		} else if (pieceSettings.Ghost === 3 && !this.landed) {
-			_CTX.active.globalAlpha = 0.6
-			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), 'active', void 0, 0)
-			_CTX.active.globalAlpha = 1
-		} else if (pieceSettings.Ghost === 4 && !this.landed) {
-			_CTX.active.globalAlpha = 0.2
+	this.drawGhost = function() {
+		if (field.pieceSettings.Ghost == 1 && !this.landed) {
+			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), field.mainAssets.active, void 0, 1)
+		} else if (field.pieceSettings.Ghost === 2 && !this.landed) {
+			_CTX[field.mainAssets.active].globalAlpha = 0.7
+			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), field.mainAssets.active, 0, 0)
+			_CTX[field.mainAssets.active].globalAlpha = 1
+		} else if (field.pieceSettings.Ghost === 3 && !this.landed) {
+			_CTX[field.mainAssets.active].globalAlpha = 0.6
+			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), field.mainAssets.active, void 0, 0)
+			_CTX[field.mainAssets.active].globalAlpha = 1
+		} else if (field.pieceSettings.Ghost === 4 && !this.landed) {
+			_CTX[field.mainAssets.active].globalAlpha = 0.2
 			for (let cy = Math.floor(0), l = 0; this.checkPieceValidation(0, cy, this.tetro) && l < 40; cy++, l++) {
-				draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(cy), 'active', void 0, 0)
+				draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(cy), field.mainAssets.active, void 0, 0)
 			}
-			_CTX.active.globalAlpha = 0.6
-			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), 'active', void 0, 0)
-			_CTX.active.globalAlpha = 1
+			_CTX[field.mainAssets.active].globalAlpha = 0.6
+			draw(this.tetro, this.x, Math.floor(this.y) - 19.6 + this.getDrop(222), field.mainAssets.active, void 0, 0)
+			_CTX[field.mainAssets.active].globalAlpha = 1
 		}
 	}
-	checkSpintoSound() {
+	this.checkSpintoSound = function() {
 		{
 			if (field.miniSpinCount >= 1 && field.spinCheckCount >= 0.7 && this.spinX == this.x && this.spinY == this.y) {
 				if (field.miniSpinCount == 2) {
 					soundPlayer.playse('prespin')
+				this.checkSpinParticle(2)
 				}
 				else
 				if (this.stsd.y == -2) {
 					if (this.stsd.x == 1) {
 						soundPlayer.playse('prespin')
+						this.checkSpinParticle(2)
 					}
 					if (this.stsd.x == -1) {
 						soundPlayer.playse('prespin')
+	  			this.checkSpinParticle(1)
+					}
+					if (this.stsd.x == 0) {
+						soundPlayer.playse('prespinmini')
+						this.checkSpinParticle(1)
 					}
 				} else
 				if (field.miniSpinCount == 1 && field.spinCheckCount >= 1) {
 					soundPlayer.playse('prespinmini')
+				this.checkSpinParticle(1)
 				}
 			} else
 			if (field.miniSpinCount == 1 && field.spinCheckCount >= 1 && field.mini2SpinCount <= 1 && this.spinX == this.x && this.spinY == this.y) {
 				soundPlayer.playse('prespinmini')
+				this.checkSpinParticle(1)
 			}
 		}
-		if (this.stsd.y == -2) {
+		if (this.stsd.y == -2 && this.index == 5) {
 			if (this.stsd.x == 1) {
 				soundPlayer.playse('prespin')
+				this.checkSpinParticle(2)
 			}
 			if (this.stsd.x == -1) {
 				soundPlayer.playse('prespin')
+				this.checkSpinParticle(2)
 			}
 		}
+	}
+	this.checkSpinParticle = function(num) {
+		for (let x = 0, len = this.tetro.length; x < len; x++)
+			for (let y = 0, len2 = this.tetro[x].length; y < len2; y++)
+				if (selectedSettings.Other.Particle >= 2 && this.tetro[x][y])
+					for (let e = 0; e < num; e++)
+						GTRISParticleManagement.addParticle(
+							0.00000,
+							6,
+							getElemPos(field.mainAssets.playField, "x") + ((this.x + 1) * cellSize),
+							getElemPos(field.mainAssets.playField, "y") + ((this.y - 20.4 + 1) * cellSize),
+							getElemPos(field.mainAssets.playField, "x") + ((this.x + 1 + (Math.random() * 15) + (Math.random() * -15)) * cellSize),
+ 						getElemPos(field.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * cellSize),
+							150,
+							1,
+							"fallField"
+						)
 	}
 }()
