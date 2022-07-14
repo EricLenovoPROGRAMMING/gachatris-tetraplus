@@ -11,7 +11,7 @@ Uploaded as a private repository on May 14, 2022
 
 Published on May 18, 2022, 3:30PM GMT +8:00
 
-### NOTE: This game is under Alpha build, 0.0.134
+### NOTE: This game is under Alpha build, 0.1.143
 ### Features:
 - Fully-working 3-corner T-Spin detection
 - Soundbanks
@@ -22,6 +22,7 @@ Published on May 18, 2022, 3:30PM GMT +8:00
 - Localizations: English, Filipino
 - UI sounds and button animations
 - Various modes to play on
+- Tetraplus AI
 ### Planned features to come
-- 1V1 mode
+- Piece Skins
 - ...more to come...
