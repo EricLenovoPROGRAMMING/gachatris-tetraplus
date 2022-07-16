@@ -4,7 +4,7 @@
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '0.1.149 Alpha';
+var gtris_version = '0.1.153 Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
@@ -1809,7 +1809,7 @@ function placeStats(array) {
 function G_ACTIVITY() {
 	switch (gameMode) {
 		default: {
-			$iH('stats1', `${gachamino.x}`)
+			$iH('stats1', `${field.pieces}`)
 			$iH('TEXT_stats1', gtris_transText('pieces', (field.pieces / ((frame - (120 * 3)) / 120)).toFixed(3)))
 			docId('stats2').innerHTML = field.lineTotal
 			break

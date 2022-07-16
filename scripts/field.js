@@ -806,13 +806,13 @@ Field.prototype = {
 							this.isMini = false
 							this.spinrecogmini = this.isMini
 
-
 						}
 						if (this.miniSpinCount == 1 && this.spinCheckCount >= 1) {
 							this.isSpin = false;
 							this.spinrecog = this.isSpin
 							this.isMini = true
 							this.spinrecogmini = this.isMini
+
 						}
 					}
 					if (this.miniSpinCount == 1 && this.spinCheckCount >= 1 && this.mini2SpinCount <= 1 && gachamino.spinX == gachamino.x && gachamino.spinY == gachamino.y) {
@@ -820,6 +820,7 @@ Field.prototype = {
 						this.spinrecog = this.isSpin
 						this.isMini = true
 						this.spinrecogmini = this.isMini
+
 					}
 					if (gachamino.stsd.y == -2 && this.spinCheckCount >= 0.7 && this.miniSpinCount >= 1) {
 						if (gachamino.stsd.x == 1) {
