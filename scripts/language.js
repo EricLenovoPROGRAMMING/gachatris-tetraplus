@@ -26,6 +26,8 @@ function gtris_transText(name, input) {
 			tuning: 'Handling/Tuning',
 			character: 'Characters',
 			miscellaneous: 'Miscellaneous',
+			
+			ai_ai_type: "AI System Type",
 
 			h_audvol: 'Audio and Volume',
 			h_tuning: 'Handling and Tuning',
@@ -114,7 +116,7 @@ function gtris_transText(name, input) {
 			rp_modeError: `missing mode parameter ${_input}`,
 			rp_modeParameterError: `missing mode sub-parameter${_input[0] == 1 ? "" : "s"}:<br><br>${_input[1]}`,
 			rp_nameError: "the length of the Player Name must not exceed 20 characters. Please shorten the value of such paraneter!",
-
+			
 
 			rp_replayFailedNoInpErr: `No input syntax errors have been found in your replay data but the data itself cannot be parsed because some parameters might be missing or wrong.`,
 			rp_uploadFailedFileExt: `The name of a file you have uploaded (<eee style="color:#f0a">${_input}</eee>) does not end with ".gttp-json". You need to check first the end of a file's name before uploading it to the Game.`,
@@ -281,6 +283,7 @@ function gtris_transText(name, input) {
 			h_miscellaneous: 'Sari-saring mga Setting',
 			h_playmodes: 'Maglaro ng isang mode',
 
+			ai_ai_type: "Uri ng Sistema ng AI",
 
 			h_controls: 'Itakda ang Control Mapping',
 			h_setkey: 'Pindutin ang Kahit Anong Key',

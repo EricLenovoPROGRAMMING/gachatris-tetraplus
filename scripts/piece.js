@@ -55,6 +55,9 @@ const gachamino = new function() {
 	this.hardDropEnabled = false
 	this.rng = new ParkMillerPRNG()
 	this.levelGravityArr = [1, 2, 3, 4, 5, 6, 7, 8, 10, 14, 16, 19, 25, 31, 41, 59, 89, 139, 142, 148]
+	this.checkBlockoutArr = [];
+	
+	
 	this.restrictDelay = function(level) {
 		if (field.isGravityType == "marathon") {
 			return Math.max(0, (level - 21) * 10)
@@ -85,6 +88,7 @@ const gachamino = new function() {
 		this.currentGravity = field.pieceSettings.GRAV
 		this.lockLimit.delay = field.pieceSettings.LCK
 		this.openHold(true)
+this.held = false
 	}
 	this.openHold = function(bool) {
 		var e = docId('holdDiv')
@@ -114,7 +118,7 @@ const gachamino = new function() {
 				}
 			}
 		} else this.currentGravity = field.pieceSettings.GRAV
-		if (this.injectPiece(ind)) {
+		if (this.injectPiece(ind, this.held)) {
 			if (this.initial.hold > 0) {
 				while (this.initial.hold > 0 && this.canHold) {
 					var temp = hold.piece;
@@ -122,18 +126,18 @@ const gachamino = new function() {
 						if (hold.piece !== void 0) {
 							hold.piece = this.index;
 							soundPlayer.playse(field.mainAssets.hold)
-							this.injectPiece(temp)
+							this.injectPiece(temp, true)
 						} else {
 							hold.piece = this.index;
 							soundPlayer.playse('firsthold')
-							this.injectPiece(preview.next());
+							this.injectPiece(preview.next(), true);
 						}
-						this.held = true;
 						hold.draw();
 						this.initial.hold--
 					}
 					this.initial.hold = 0
 				}
+						this.held = true;
 				soundPlayer.playse('ihs')
 				this.initial.hold = 0
 				$iH(field.mainAssets.TEXT_hold, gtris_transText(field.mainAssets.hold))
@@ -155,10 +159,10 @@ const gachamino = new function() {
 			this.y += this.getDrop(this.currentGravity !== 0 ? gravityArr[this.currentGravity - 1] : this.gravity)
 		}
 	}
-	this.injectPiece = function(index) {
+	this.injectPiece = function(index, o) {
 		this.pos = 0;
 		this.tetro = [];
-		this.held = false;
+		this.held = o;
 		this.finesse = 0;
 		this.dirty = true;
 		this.landed = false;
@@ -177,7 +181,7 @@ const gachamino = new function() {
 		this.checkIfGTrisLocksAtExosphere(0, this.tetro)
 		this.moved = false
 		this.rotateFail = false
-		this.y += this.index !== 0 ? 20 : 19;
+		this.y += this.index !== 0 ? 20 : 20;
 		if (!this.checkPieceValidation(0, 0, this.tetro)) {
 			if (field.isTSDOnly == true) {
 				if (field.statistics.tsd >= 20) {
@@ -232,32 +236,33 @@ const gachamino = new function() {
 			}
 			var dir;
 			switch (direction) {
-				case 1:
+				case -1:
 					dir = 'left'
 					break;
-				case -1:
+				case 1:
 					dir = 'right'
 					break;
 			}
 			var curPos = this.pos.mod(4);
 			var newPos = (this.pos + direction).mod(4);
 
-			for (var x = 0, len = this.kickData[dir][0].length; x < len; x++) {
+			for (var x = 0, len = this.kickData[dir][curPos].length; x < len; x++) {
 				if (
 					this.moveValid(
-						this.kickData[dir][curPos][x][0] - this.kickData[dir][newPos][x][0],
-						this.kickData[dir][curPos][x][1] - this.kickData[dir][newPos][x][1],
+						this.kickData[dir][curPos][x][0],
+						this.kickData[dir][curPos][x][1],
 						rotated,
 					)
 				) {
-					this.x += this.kickData[dir][curPos][x][0] - this.kickData[dir][newPos][x][0];
-					this.y += this.kickData[dir][curPos][x][1] - this.kickData[dir][newPos][x][1];
+					this.x += this.kickData[dir][curPos][x][0];
+					this.y += this.kickData[dir][curPos][x][1];
 					this.stsd.x = this.kickData[dir][newPos][x][0]
 					this.stsd.y = this.kickData[dir][newPos][x][1]
 					this.tetro = rotated;
 					this.pos = newPos;
 					this.moved = false
 					this.rotateFail = false
+					this.checkIfGTrisLocksAtExosphere(0, this.tetro)
 					soundPlayer.playse('rotate')
 					if (!this.moveValid(
 							0,
@@ -331,22 +336,23 @@ const gachamino = new function() {
 
 			var curPos = this.pos.mod(4);
 			var newPos = (this.pos + 2).mod(4);
-			for (var x = 0, len = this.kickData['double'][0].length; x < len; x++) {
+			for (var x = 0, len = this.kickData['double'][curPos].length; x < len; x++) {
 				if (
 					this.moveValid(
-						this.kickData['double'][curPos][x][0] - this.kickData['double'][newPos][x][0],
-						this.kickData['double'][curPos][x][1] - this.kickData['double'][newPos][x][1],
+						this.kickData['double'][curPos][x][0],
+						this.kickData['double'][curPos][x][1],
 						rotated,
 					)
 				) {
-					this.x += this.kickData['double'][curPos][x][0] - this.kickData['double'][newPos][x][0];
-					this.y += this.kickData['double'][curPos][x][1] - this.kickData['double'][newPos][x][1];
+					this.x += this.kickData['double'][curPos][x][0];
+					this.y += this.kickData['double'][curPos][x][1];
 					this.stsd.x = this.kickData['double'][newPos][x][0]
 					this.stsd.y = this.kickData['double'][newPos][x][1]
 					this.tetro = rotated;
 					this.pos = newPos;
 					this.moved = false
-					this.rotateFail = false
+					this.rotateFail = false;
+					this.checkIfGTrisLocksAtExosphere(0, this.tetro)
 					soundPlayer.playse('rotate')
 					if (!this.moveValid(
 							0,
@@ -540,10 +546,10 @@ const gachamino = new function() {
 							GTRISParticleManagement.addParticle(
 								0,
 								this.index + 1,
-								getElemPos(field.mainAssets.playField, "x") + ((this.x + x) * cellSize),
-								getElemPos(field.mainAssets.playField, "y") + ((this.y - 20.4 + y) * cellSize),
-								getElemPos(field.mainAssets.playField, "x") + ((this.x + (Math.random() * 6) + (Math.random() * -6)) * cellSize),
-								getElemPos(field.mainAssets.playField, "y") + ((this.y - 35.4 + y + (Math.random() * 6)) * cellSize),
+								getElemPos(field.mainAssets.playField, "x") + ((this.x + x) * totalTetrionSize),
+								getElemPos(field.mainAssets.playField, "y") + ((this.y - 20.4 + y) * totalTetrionSize),
+								getElemPos(field.mainAssets.playField, "x") + ((this.x + (Math.random() * 6) + (Math.random() * -6)) * totalTetrionSize),
+								getElemPos(field.mainAssets.playField, "y") + ((this.y - 35.4 + y + (Math.random() * 6)) * totalTetrionSize),
 								80,
 								1,
 								"hardDrop"
@@ -564,16 +570,16 @@ const gachamino = new function() {
 			if (this.y > -44 && this.index !== 'reset') {
 				var temp = hold.piece;
 				if (!this.held) {
+					this.held = true;
 					if (hold.piece !== void 0) {
 						hold.piece = this.index;
 						soundPlayer.playse(field.mainAssets.hold)
-						this.new(temp)
+						this.new(temp, this.held)
 					} else {
 						hold.piece = this.index;
 						soundPlayer.playse('firsthold')
-						this.new(preview.next());
+						this.new(preview.next(), this.held);
 					}
-					this.held = true;
 					hold.draw();
 				}
 			} else if (this.y < -10) {
@@ -630,22 +636,22 @@ const gachamino = new function() {
 		}
 		return true;
 	}
-	this.checkIfGTrisLocksAtExosphere = function(cy, tetro) {
-		cy = Math.floor(cy + this.y);
+	this.checkIfGTrisLocksAtExosphere = function(c, tetro) {
 		var range = []
-		var lockout = false
+		var nolockout = false
 		for (var x = 0, r = 0; x < tetro.length && r < 30; x++, r++) {
 			for (var y = 0; y < tetro[x].length; y++) {
 				if (tetro[x][y] && !this.checkPieceValidation(0, 1, this.tetro)) {
 					if (range.indexOf(y + this.y) === -1) {
 						range.push(y + this.y);
+						if (y + this.y > 21) { nolockout = true }
 					}
 				}
 			}
 		}
 		range.sort(function(a, b) { return a - b })
-		if (range[0] < 21) { lockout = true }
-		if (!lockout) {
+		if(!this.landed || c == "deactivate") nolockout = true;
+		if (nolockout) {
 			if (this.lockoutActive) {
 				soundPlayer.stopse('topoutwarning')
 				soundPlayer.fadese('topoutwarning', 0, 0, 0)
@@ -659,7 +665,7 @@ const gachamino = new function() {
 	}
 	this.update = function() {
 		if (this.y > -20 && this.index !== 'reset') {
-
+			this.checkIfGTrisLocksAtExosphere(0, this.tetro)
 			if (this.moveValid(0, 1, this.tetro)) {
 				field.isSpin = false
 				field.isMini = false
@@ -707,9 +713,10 @@ const gachamino = new function() {
 					this.held = false
 					this.y > -2039
 					if (field.are.add.piece > 0)
-						field.are.piece = field.are.add.piece
+					field.are.piece = field.are.add.piece;
 					field.are.piece = Math.max(-1, field.are.piece - this.restrictDelay(field.level))
 					field.are.line = Math.max(-1, field.are.line - this.restrictDelay(field.level))
+					if(field.are.piece == 0) field.are.piece = -1;
 					if (field.are.line == -1) field.removeLines()
 					if (field.isGravityType) {
 						switch (field.isGravityType) {
@@ -723,14 +730,14 @@ const gachamino = new function() {
 							}
 						}
 					} else this.currentGravity = field.pieceSettings.GRAV
-					this.checkIfGTrisLocksAtExosphere(0, this.tetro)
+					this.checkIfGTrisLocksAtExosphere("deactivate", [[]])
 					if (field.valid && field.are.line <= 0 && field.are.piece <= 0 && field.are.del <= 0 && field.are.next <= 0 &&
 						field.are.frenzyExt <= 0 && field.are.frenzyEnt <= 0 && field.are.failing <= 0) {
 						this.new(preview.next())
 					}
 					else {
 						this.y = -3738
-						this.checkIfGTrisLocksAtExosphere(0, [[]])
+						this.checkIfGTrisLocksAtExosphere("deactivate", [[]])
 					}
 					if (field.valid == false) field.checkWarning('stop')
 					if (hold.piece !== void 0)
@@ -768,7 +775,6 @@ const gachamino = new function() {
 			clear(_CTX[field.mainAssets.active]);
 			this.drawGhost();
 			this.draw();
-			this.checkIfGTrisLocksAtExosphere(0, this.tetro)
 		}
 		this.last.x = this.x;
 		this.last.y = Math.floor(this.y);
@@ -850,10 +856,10 @@ const gachamino = new function() {
 						GTRISParticleManagement.addParticle(
 							0.00000,
 							6,
-							getElemPos(field.mainAssets.playField, "x") + ((this.x + 1) * cellSize),
-							getElemPos(field.mainAssets.playField, "y") + ((this.y - 20.4 + 1) * cellSize),
-							getElemPos(field.mainAssets.playField, "x") + ((this.x + 1 + (Math.random() * 15) + (Math.random() * -15)) * cellSize),
- 						getElemPos(field.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * cellSize),
+							getElemPos(field.mainAssets.playField, "x") + ((this.x + 1) * totalTetrionSize),
+							getElemPos(field.mainAssets.playField, "y") + ((this.y - 20.4 + 1) * totalTetrionSize),
+							getElemPos(field.mainAssets.playField, "x") + ((this.x + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
+ 						getElemPos(field.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * totalTetrionSize),
 							150,
 							1,
 							"fallField"

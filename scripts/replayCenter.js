@@ -81,43 +81,43 @@ class ReplayCenter
 					}
 				switch (this.testReplayString.mode) {
 					case 1: {
-						this.checkModeParameters("lineRun", ['lines', 'type'])
+						this.checkModeParameters("lineRun", [['lines', "number"], ['type',"number"]])
 						break
 					}
 					case 2: {
-						this.checkModeParameters("scoreAtk", ['timer'])
+						this.checkModeParameters("scoreAtk", [['timer', "number"]])
 						break
 					}
 					case 3: {
-						this.checkModeParameters("fourWide", ['timer'])
+						this.checkModeParameters("fourWide", [['timer',"number"]])
 						break
 					}
 					case 5: {
-						this.checkModeParameters("dsFrenzy", ['timer', 'phase', 'fails'])
+						this.checkModeParameters("dsFrenzy", [['timer'], ['phase'], ['fails']])
 						break
 					}
 					case 6: {
-						this.checkModeParameters("garbageSurvival", ['autolevel', 'receptioncount', 'initduration'])
+						this.checkModeParameters("garbageSurvival", [['autolevel','number'], ['receptioncount',"number"], ['initduration',"number"]])
 						break
 					}
 					case 7: {
-						this.checkModeParameters("levelrun", ['level', 'lines', 'aretype', 'linestorequire', 'levelcap'])
+						this.checkModeParameters("levelrun", [['level',"number"], ['lines',"both"], ['aretype',"number"], ['linestorequire',"number"], ['levelcap',"both"]])
 						break
 					}
 					case 8: {
-						this.checkModeParameters("area20", ['level', 'lines', 'linestorequire', 'levelcap'])
-						break
+						this.checkModeParameters("area20", [['level', "number"], ['lines', "both"], ['linestorequire', "number"], ['levelcap', "both"]])
+						break;
 					}
 					case 9: {
-						this.checkModeParameters("amogus", ['timer'])
+						this.checkModeParameters("amogus", [['timer', "number"]])
 						break
 					}
 					case 10: {
-						this.checkModeParameters("versusGarbage", ['receptioncount'])
+						this.checkModeParameters("versusGarbage", [['receptioncount', "number"]])
 						break
 					}
 					case 11: {
-						this.checkModeParameters("frenzyWar", ['timer', 'phase', 'health'])
+						this.checkModeParameters("frenzyWar", [['timer', "number"], ['phase', "number"], ['health', "number"]])
 						break
 					}
 				}
@@ -180,8 +180,8 @@ class ReplayCenter
 			isModeError = n
 		} else {
 			for (var h of parameters) {
-				if (typeof this.testReplayString[n][h] !== "number") {
-					errors.push(h)
+				if ((h[1] == "both" && (typeof this.testReplayString[n][h[0]] !== "number" && typeof this.testReplayString[n][h[0]] !== "string")) || (typeof this.testReplayString[n][h[0]] !== h[1])) {
+					errors.push(h[0]);
 				}
 			}
 		}
@@ -201,9 +201,10 @@ class ReplayCenter
 	}
 
 	generateReplay() {
-		this.openReplayCenter()
-		this.replayString = JSON.stringify(replayData)
-		this.replayBox.innerHTML = this.replayString
+		this.openReplayCenter();
+		this.replayString = JSON.stringify(replayData);
+		this.replayStringSession = this.replayString;
+		this.replayBox.innerHTML = this.replayString;
 	}
 	openReplayCenter() {
 		switchMenu(12, true, "rp_center")

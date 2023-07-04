@@ -39,6 +39,7 @@ function MusicPlayer() {
  
   this.checkLoad = function(){
   		this.allLoaded =	this.loadedMFX >= this.loadLength
+		 	//for (var g in this.mfx) for(var f in this.mfx[g]) this.mfx[g][f].rate(0.8)
   }
 
   this.playMfx = function(string) {

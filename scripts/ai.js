@@ -1,4 +1,5 @@
 /* Beta v0.44 Gachatris AI for Gachatris Tetraplus (maintained by EricLenovo) improved obtained from Gachatris JavaScriptus*/
+// Injected Gachatris Sapphirus AI Code
 function GTTP_AI() {
 	this.counter = 0
 	this.KPSCap = 20
@@ -19,13 +20,28 @@ function GTTP_AI() {
 	this.controllerMovements = ""
 	this.customControllerMovements = []
 	this.canUseControllerMovements = false
+	this.aiMode = "sapphirus";
+ this.ai = {
+   tspinDetected: {
+    tslot: [],
+    bottom: [],
+    tuck: [],
+
+    tLines: [],
+    tBlock: [],
+    tSlot: [],
+    tAvoidColumn: []
+
+
+   }
+ }
 }
 GTTP_AI.prototype = {
 	run: function() {
 		this.counter--
 		if (keysPressed2 == 0 && this.counter <= 1 && gachamino2.y > 10) {
 			if ((!field2.isFrenzy || field2.frenzy.phase < 7) || (this.controllerMovements.length == 0 || typeof this.controllerMovements === "string")) {
-				if (this.customControllerMovements.length == 0) {
+				if (this.customControllerMovements.length == 0 && this.aiMode === "tetraplus") {
 					if (!this.imaginary.hold) {
 
 					}
@@ -35,9 +51,33 @@ GTTP_AI.prototype = {
 					} else
 					if (this.imaginary.x > Math.round(gachamino2.x) && gachamino2.checkPieceValidation(1, 0, gachamino2.tetro) /**/ ) {
 						keysPressed2 |= flags.RIGHT
+						if (this.imaginary.rot == 1) {
+						keysPressed2 |= flags.CW
+						this.imaginary.rot = 0
+					} else
+					if (this.imaginary.rot == 2) {
+						keysPressed2 |= flags[`180DEG`]
+						this.imaginary.rot = 0
+					} else
+					if (this.imaginary.rot == 3) {
+						keysPressed2 |= flags.CCW
+						this.imaginary.rot = 0
+					}
 					}
 					else if (this.imaginary.x < Math.round(gachamino2.x) && gachamino2.checkPieceValidation(-1, 0, gachamino2.tetro) /**/ ) {
 						keysPressed2 |= flags.LEFT
+						if (this.imaginary.rot == 1) {
+						 keysPressed2 |= flags.CW
+						 this.imaginary.rot = 0
+						} else
+						if (this.imaginary.rot == 2) {
+						 keysPressed2 |= flags[`180DEG`]
+						 this.imaginary.rot = 0
+						} else
+						if (this.imaginary.rot == 3) {
+						 keysPressed2 |= flags.CCW
+						 this.imaginary.rot = 0
+						}
 					}
 
 					else
@@ -79,11 +119,11 @@ GTTP_AI.prototype = {
 							}
 							break
 						}
-						case 3: {
+						case 4: {
 							keysPressed2 |= flags.LEFT
 							break
 						}
-						case 4: {
+						case 3: {
 							keysPressed2 |= flags.RIGHT
 							break
 						}
@@ -147,13 +187,14 @@ GTTP_AI.prototype = {
 					}
 				}
 			}
-			this.counter = !(keysPressed2 & flags.SDROP) ? selectedSettings.AI.KPDI : 0
+			this.counter = !(keysPressed2 & flags.SDROP) ? (selectedSettings.AI.KPDI /*+ (field2.grid.toString().replace(/,/gm, "").replace(/0/gm,"").length * -0.5)*/) : 0
 		}
 		else {
 			keysPressed2 = 0
 		}
 	},
-	eval: function(index, held) {
+	eval: function(index, held, combo, b2b, grid, px, py, hx, hy, prot) {
+	 if (this.aiMode == "tetraplus"){
 		gtrisAIPredictor.eval(index)
 		gtrisAIPredictor2.eval(preview2.grabBag[0])
 		if (hold2.piece !== void 0) {
@@ -193,6 +234,43 @@ GTTP_AI.prototype = {
 
 		/**/
 	}
+	if (this.aiMode == "sapphirus"){
+  if (held) return;
+  
+  
+  let gd = [0,1,2,3,4,5,6];//[4, 5, 1, 2, 3, 6, 0];
+	   let jsobj = {
+   grid: grid,
+   b2b: b2b,
+   isWarning: field2.warning,
+   width: 10,
+   height: 42,
+   hiddenHeight: 22,
+   visibleHeight: 20,
+   combo: combo,
+   isEnable180: true,
+   piecesCount: 999,
+   tFulfill: this.ai.tspinDetected.tFulfill || [],
+   tPrevent: this.ai.tspinDetected.tPrevent || [],
+   tLines: this.ai.tspinDetected.tLines || [],
+   tAvoidColumn: this.ai.tspinDetected.tAvoidColumn || [],
+   
+   
+   
+  };
+  this.customControllerMovements = [];
+  requestAnimationFrame(async () => {
+   let args = [gd[index], hold2.piece !== void 0 ? gd[hold2.piece] : void 0, gd[preview2.grabBag[0]], jsobj, px, py, hx, hy, prot];
+   let best = await SapphirusAI.evaluate(args);
+   this.customControllerMovements = best.move;
+   this.ai.tspinDetected.tLines = best.tl;
+   this.ai.tspinDetected.tAvoidColumn = best.ta;
+   this.ai.tspinDetected.tPrevent = best.tp;
+   this.ai.tspinDetected.tFulfill = best.tf;
+   draw(best.g, best.x, best.y - 19.6, field2.mainAssets.field, 3, 0);
+  });
+	}
+}
 }
 /* This is the beta version of this support function for the Gachatris AI, I cannot overcome the problems regarding T-SPINS*/
 function GTTP_AIPredict() {
@@ -232,7 +310,7 @@ function GTTP_AIPredict() {
 	this.testSFT = 0
 	this.addRot = 0
 	this.pos = 0
-	this.canTSPIN = false
+	this.canTSPIN = false;
 	this.heuristicsWeight = {
 		aggregateHeight: -0.510066,
 		bumpiness: -0.184483,
@@ -415,7 +493,7 @@ GTTP_AIPredict.prototype = {
 					}
 
 
-					if (this.canTSPIN && this.index == 5 && tSpinPrep > 3/* && tSX == this.x && tSY <= this.y/**/ ) {
+					if (this.canTSPIN && this.index == 5 && tSpinPrep > 2  && tSX == this.x && tSY >= this.y/**/ ) {
 						if (rot == 1) {
 							{
 								const direction = 1
@@ -487,60 +565,60 @@ GTTP_AIPredict.prototype = {
 						this.tSpin += 73
 						this.testSFT++
 						this.controllerMovementsAvailable = []
-						
-						
-							if(rot==1){
-								this.controllerMovementsAvailable.push(6)
-							}
-							else if(rot == 3){
-								this.controllerMovementsAvailable.push(5)
-							}
-						
+
+
+						if (rot == 1) {
+							this.controllerMovementsAvailable.push(6)
+						}
+						else if (rot == 3) {
+							this.controllerMovementsAvailable.push(5)
+						}
+
 						let thisX = this.x
-							if(thisX == 0){
-								for (var i = 0; i < 3; i++) {
-									this.controllerMovementsAvailable.push(3)
-								}
+						if (thisX == 0) {
+							for (var i = 0; i < 3; i++) {
+								this.controllerMovementsAvailable.push(3)
 							}
-							else if(thisX == 1){
-								for (var i = 0; i < 2; i++) {
-									this.controllerMovementsAvailable.push(3)
-								}
+						}
+						else if (thisX == 1) {
+							for (var i = 0; i < 2; i++) {
+								this.controllerMovementsAvailable.push(3)
 							}
-							else if(thisX == 2){
-								for (var i = 0; i < 1; i++) {
-									this.controllerMovementsAvailable.push(3)
-								}
+						}
+						else if (thisX == 2) {
+							for (var i = 0; i < 1; i++) {
+								this.controllerMovementsAvailable.push(3)
 							}
-							else if(thisX == 4){
-								for (var i = 0; i < 1; i++) {
-									this.controllerMovementsAvailable.push(4)
-								}
+						}
+						else if (thisX == 4) {
+							for (var i = 0; i < 1; i++) {
+								this.controllerMovementsAvailable.push(4)
 							}
-							else if(thisX == 5){
-								for (var i = 0; i < 2; i++) {
-									this.controllerMovementsAvailable.push(4)
-								}
+						}
+						else if (thisX == 5) {
+							for (var i = 0; i < 2; i++) {
+								this.controllerMovementsAvailable.push(4)
 							}
-							else if(thisX == 6){
-								for (var i = 0; i < 3; i++) {
-									this.controllerMovementsAvailable.push(4)
-								}
+						}
+						else if (thisX == 6) {
+							for (var i = 0; i < 3; i++) {
+								this.controllerMovementsAvailable.push(4)
 							}
-							else if(thisX == 7){
-								for (var i = 0; i < 4; i++) {
-									this.controllerMovementsAvailable.push(4)
-								}
+						}
+						else if (thisX == 7) {
+							for (var i = 0; i < 4; i++) {
+								this.controllerMovementsAvailable.push(4)
 							}
-						
+						}
+
 						this.controllerMovementsAvailable.push(2)
-						
-if (rot == 1) {
-	this.controllerMovementsAvailable.push(6)
-}
-else if (rot == 3) {
-	this.controllerMovementsAvailable.push(5)
-}						
+
+						if (rot == 1) {
+							this.controllerMovementsAvailable.push(6)
+						}
+						else if (rot == 3) {
+							this.controllerMovementsAvailable.push(5)
+						}
 						this.controllerMovementsAvailable.push(1)
 						this.canUseControllerMovements = true
 					}
@@ -672,7 +750,22 @@ else if (rot == 3) {
 					}
 					this.blockades = count;
 				}
-				this.score = (this.heuristicsWeight.failedTSpin * this.failedTSpin) + ((this.heuristicsWeight.aggregateHeight * (this.aggregateHeight))) + (this.heuristicsWeight.completeLines * (this.completeLines)) + (this.heuristicsWeight.holes * (this.holes)) + (this.heuristicsWeight.bumpiness * (this.bumpiness)) + (this.heuristicsWeight.blockades * (this.blockades)) + (this.heuristicsWeight.tSpin * (this.tSpin))
+				let tryEmpty = 0;
+				for (var x = 0; x < this.tetro.length; x++) {
+      for (var y = 0; y < this.tetro[x].length; y++) {
+       if (this.x + x > 8 && this.y + y > 10) tryEmpty+=0;
+      }
+     };
+     let maxHeightReached = false;
+     for (var x = 0; x < field2.width; x++) {
+      for (var y = 0; y < field2.height - 14; y++) {
+       if (this.grid[x][y]) maxHeightReached = true;
+      }
+     };
+     if(field2.warning || field2.renInteger > -1) tryEmpty = 0;
+
+				
+				this.score = (tryEmpty * -94999.9999999) + (this.heuristicsWeight.failedTSpin * this.failedTSpin) + ((this.heuristicsWeight.aggregateHeight * (this.aggregateHeight))) + (this.heuristicsWeight.completeLines * (this.completeLines)) + (this.heuristicsWeight.holes * (this.holes)) + (this.heuristicsWeight.bumpiness * (this.bumpiness)) + (this.heuristicsWeight.blockades * (this.blockades)) + (this.heuristicsWeight.tSpin * (this.tSpin))
 				{
 					this.prediction.push({
 						index: this.predictionCount,
@@ -688,8 +781,8 @@ else if (rot == 3) {
 						y: this.y,
 						sft: this.testSFT,
 						addRot: this.addRot,
-						canUseControllerMovements: this.canUseControllerMovements,
-						controllerMovements: this.controllerMovementsAvailable
+						canUseControllerMovements: $copy(this.canUseControllerMovements),
+						controllerMovements: $copy(this.controllerMovementsAvailable)
 					})
 					this.predictionCount++
 				}
@@ -746,3 +839,117 @@ var gtrisAIPredictor3 = new GTTP_AIPredict()
 
 
 var gtrisAI = new GTTP_AI()
+
+
+
+
+
+const workerManager = new class {
+
+ #importScripts = `
+importScripts("<{IMPORT_URL}>");
+
+onmessage = (d) => {
+ let result = _eval(d.data);
+ postMessage(result);
+}
+ `;
+ 
+ #workers = {};
+ 
+ #$BTOBASE64(blob, call) {
+    var reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = function() {
+     var base64 = reader.result;
+     call(base64);
+    }
+   }
+
+ constructor() {
+  //this.#workers = {};
+ }
+ engageWorker(name, impscrtext, on) {
+  
+  if (this.#workers?.[name]) {
+   if (this.#workers[name].worker instanceof Worker) {
+    this.#workers[name].worker.terminate();
+   }
+   
+  }
+  
+  this.#workers[name] = {
+   worker: {
+    postMessage: () => {},
+   },
+   base64: ""
+  };
+
+
+  let f = new Blob([impscrtext], { type: 'text/plain' });
+  this.#$BTOBASE64(f, blobA => {
+   //console.log(blobA);
+   let blobABlob = new Blob([blobA], { type: 'text/plain' });
+   let blobAURL = URL.createObjectURL(f);
+   let blobAText = this.#importScripts.replace("<{IMPORT_URL}>", blobAURL);
+
+   let fw = new Blob([blobAText], { type: 'text/plain' });
+   let fwe = URL.createObjectURL(fw);
+   this.#workers[name].base64 = blobA;
+   this.#workers[name].worker = new Worker(fwe);
+   on(this.#workers[name]);
+   ////console.log(this.#worker);
+   //this.#worker.postMessage("he")
+
+
+
+   ////console.log(blobAText, this.#worker);
+  });
+  
+  //let base64, worker;
+  return this.#workers[name];
+
+ }
+ 
+ 
+ stopAll() {
+  for (let w in this.#workers) {
+   this.#workers[w].worker.terminate();
+  }
+ }
+}
+
+const SapphirusAI = new class {
+ #worker;
+ #base64;
+ constructor(name) {
+  let h;
+  fetch("./scripts/sapphirus_ai/worker.js").then(y => y.text()).then(j => {
+   h = j;
+  this.#worker = workerManager.engageWorker(name || "AAAAIIIII", h, (worker) => {
+   this.#worker = worker.worker;
+  }).worker;
+  this.#worker.onerror = (u) => {
+   console.error(u + "NOOO")
+  }
+  });
+
+ }
+
+ evaluate(jsobj) {
+  try {
+   this.#worker.postMessage(jsobj);
+  } catch (e) {
+   //console.log(e);
+  }
+
+  return new Promise((res) => {
+   this.#worker.addEventListener("message", (te) => {
+    res(te.data);
+   }, { once: true });
+  });
+ }
+
+
+
+}(); /**/

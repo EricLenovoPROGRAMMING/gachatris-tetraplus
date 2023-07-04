@@ -50,6 +50,7 @@ var modeParameters = {
 	AI: {
 		main: {
 		KPDI: range(1, 411),
+		AI: ["Tetraplus", "Sapphirus" ]
 		}
 	}
 
@@ -456,6 +457,7 @@ function modeParamSwitch(mode, name) {
 
 const makeAIParameter = function(){
 	return `${makeParaneterSliderAI("ai_","kpdi", "main", "KPDI", "arrStr")}
+			          		         ${makeParaneterSliderAI("ai_", "ai_type", "main", "AI", "arrStr")} 
 			          		         ${makeParaneterTextbox("ai_","name","Names", "AI", 1 ,25)}
 			          		         <gtris-listCell>
 			          		         <gtris_normaltext>${gtris_transText("ai_character")}:&nbsp<gtris_normaltext id = ai-characteruse>${gtris_character_details(settingsList.NonIterable.Character[selectedSettings.AI.Character]).name}</gtris-normaltext></gtris_normaltext>

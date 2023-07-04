@@ -1,5 +1,5 @@
 const preview2 = new function() {
-  this.bag = [0, 1, 2, 3, 4, 5, 6];
+  this.bag = [0]//[0, 1, 2, 3, 4, 5, 6];
 
   this.init = function() {
     this.grabBag = this.gen();

@@ -512,6 +512,7 @@ Field.prototype = {
 	playVoice: function(name) {
 		var vol = selectedSettings.Volume.Character / 100
 		if (vol !== 0) {
+		 for (let b in this.character.voices) this.character.voices[b].stop()
 			this.character.voices[name].volume(vol)
 			//this.character.voices[name].stop()
 			this.character.voices[name].play()
@@ -527,14 +528,14 @@ Field.prototype = {
 		text.style.animationName = "none"
 		if (bool == 'hide') {
    [show.style.opacity, text.style.opacity] = [0, 0]
-			show.style.transform = `translateY(${cellSize*16}px)`
+			show.style.transform = `translateY(${totalTetrionSize*16}px)`
 		}
 		text.innerHTML = str
 		if (bool == 'win') {
 			img.src = this.character.anim.win
-			show.style.transform = `translateY(${cellSize*16}px)`
+			show.style.transform = `translateY(${totalTetrionSize*16}px)`
 			show.style.opacity = 0
-			text.style.transform = `translateY(-${cellSize*16}px)`
+			text.style.transform = `translateY(-${totalTetrionSize*16}px)`
 			text.style.opacity = 0
 			setTimeout(function() {
 				show.style.transform = `translateY(0px)`
@@ -547,9 +548,9 @@ Field.prototype = {
 		}
 		if (bool == 'lose') {
 			img.src = this.character.anim.lose
-			show.style.transform = `translateY(-${cellSize*16}px)`
+			show.style.transform = `translateY(-${totalTetrionSize*16}px)`
 			show.style.opacity = 0
-			text.style.transform = `translateY(${cellSize*16}px)`
+			text.style.transform = `translateY(${totalTetrionSize*16}px)`
 			text.style.opacity = 0
 			setTimeout(function() {
 				show.style.transform = `translateY(0px)`
@@ -598,7 +599,6 @@ Field.prototype = {
 				ren: this.renInteger,
 				prev: $copy(preview.grabBag),
 			}
-			console.table(this.temp)
 		}
 		if (r == "receive") {
 			this.modifyGrid(0, $copy(this.temp.grid), false)
@@ -904,13 +904,22 @@ Field.prototype = {
 		}
 		this.rectanim.clear()
 	},
+	doStartup: function(e) {
+	  this.mainAssets["gtris-body"].offsetHeight;
+	  this.mainAssets["gtris-body"].style.opacity = "1"
+	  this.mainAssets["gtris-body"].style.animationName = 'tetrionEntranceAnimation'
+	  this.mainAssets["gtris-body"].style.animationDuration = '0.5s'
+	  this.mainAssets["gtris-body"].style.animationTimingFunction = 'linear';
+	},
 	addGarbageToField: function(limit) {
 		var _limit = this.garbageLimit !== 0 ? this.garbageLimit : 42
 		var numLimit = 1
-		if (this.garbageArray.length > 0) {
-			while (this.garbageArray.length > 0) {
+		var garb = this.garbageArray.filter((i) => i.frame <= frame);
+		if (garb.length > 0) {
+		 
+			while (garb.length > 0) {
 				numLimit++
-				let num = this.garbageArray.shift()
+				let num = garb.shift().row
 				for (var x = 0; x < this.width; x++) {
 					for (var y = 0; y < this.height; y++) {
 						this.grid[x][y] = this.grid[x][y + 1]
@@ -919,6 +928,7 @@ Field.prototype = {
 				for (var x = 0; x < this.width; x++) {
 					this.grid[x][this.height - 1] = 8
 				}
+				this.garbageArray.shift();
 				this.grid[num][this.height - 1] = 0
 				if (numLimit > _limit)
 					break
@@ -937,7 +947,10 @@ Field.prototype = {
 	addGarbageToArray: function(count, row) {
 		var _count = count || 0
 		for (var e = 0; e < _count; e++)
-			this.garbageArray.push(row)
+			this.garbageArray.push({
+			 row: row,
+			 frame: frame + 60
+			})
 		if (this.canCheckGarbageBar && this.canCheckGarbageBar !== "custom")
 			this.checkGarbageBar()
 	},
@@ -949,8 +962,8 @@ Field.prototype = {
 				GTRISParticleManagement.addParticle(
 					0.00000,
 					gachamino.index + 1,
-					getElemPos(this.mainAssets.playField, "x") + (gachamino.x * cellSize),
-					getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4) * cellSize),
+					getElemPos(this.mainAssets.playField, "x") + (gachamino.x * totalTetrionSize),
+					getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4) * totalTetrionSize),
 					getElemPos(this.mainAssets.meterBarRight, "x"),
 					getElemPos(this.mainAssets.meterBarRight, "y") + (getElemPos(this.mainAssets.meterBarRight, "height") / 2),
 					this.isFrenzy ? 20 : 70,
@@ -962,8 +975,8 @@ Field.prototype = {
 				GTRISParticleManagement.addParticle(
 					0.00000,
 					gachamino.index + 1,
-					getElemPos(this.mainAssets.playField, "x") + (gachamino.x * cellSize),
-					getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4) * cellSize),
+					getElemPos(this.mainAssets.playField, "x") + (gachamino.x * totalTetrionSize),
+					getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4) * totalTetrionSize),
 					getElemPos(field2.mainAssets.meterBarRight, "x"),
 					getElemPos(field2.mainAssets.meterBarRight, "y") + (getElemPos(field2.mainAssets.meterBarRight, "height") / 2),
 					this.isFrenzy ? 20 : 70,
@@ -994,10 +1007,10 @@ Field.prototype = {
 	},
 	checkGarbageBar: function(change, color) {
 		if (this.canCheckGarbageBar == true) {
-			docId(this.mainAssets.meter_A).style.marginTop = docId(this.mainAssets["meter_A-under"]).style.marginTop = `${Math.max(0,(cellSize*20.4)-(cellSize * this.garbageArray.length))}px`
+			docId(this.mainAssets.meter_A).style.marginTop = docId(this.mainAssets["meter_A-under"]).style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * this.garbageArray.length))}px`
 			this.checkWarning(this.valid ? void 0 : 'stop')
 		} else if (this.canCheckGarbageBar == "custom") {
-			docId(this.mainAssets.meter_A).style.marginTop = docId(this.mainAssets["meter_A-under"]).style.marginTop = `${Math.max(0,(cellSize*20.4)-(cellSize * (change || 0) * 20.4))}px`
+			docId(this.mainAssets.meter_A).style.marginTop = docId(this.mainAssets["meter_A-under"]).style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * (change || 0) * 20.4))}px`
 			if (color !== void 0) {
 				docId(this.mainAssets.meter_A).style.background = typeof color === "object" ? `rgba(${color.r},${color.g},${color.b},${color.a})` : color
 			}
@@ -1027,7 +1040,7 @@ Field.prototype = {
 	},
 	checkFrenzyBar: function() {
 		if (this.isFrenzy) {
-			meterBar.frenzy.style.marginTop = `${Math.max(0,(cellSize*20.4)-(cellSize * ((this.frenzy.timer / this.frenzy.maxTimer)*20.4)))}px`
+			meterBar.frenzy.style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * ((this.frenzy.timer / this.frenzy.maxTimer)*20.4)))}px`
 			$iH(this.mainAssets.frenzyTimerText, Math.max(0, Math.ceil(this.frenzy.timer / 120)))
 		}
 	},
@@ -1056,6 +1069,7 @@ Field.prototype = {
 	},
 	offsetGarbageByClear: function(line, spin, ren, pc) {
 		var [renStrength, lineStrength, totalStrength, b2bStrength] = [0, 0, 0, 0]
+		if (false) {
 		switch (pc) {
 			case false: {
 				switch (spin) {
@@ -1097,7 +1111,6 @@ Field.prototype = {
 				break
 			}
 		}
-
 		if (ren < 2) {
 			renStrength = 0
 		}
@@ -1119,7 +1132,36 @@ Field.prototype = {
 		if (this.b2b > 0) {
 			b2bStrength = 1
 		}
-		totalStrength = lineStrength + renStrength + b2bStrength
+		totalStrength = lineStrength + renStrength + b2bStrength;
+		let to_looking4lia = "how about you";
+		
+				} else {
+  var a = 0;
+  var b = 0;
+		     if (line > 3) {
+		      b = 4;
+		     } else if (line == 1) {
+		      b = spin ? 2 : 0;
+		     } else if (line == 2) {
+		      b = spin ? 4 : 1;
+		     } else if (line == 3) {
+		      b = spin ? 6 : 2;
+		     }
+		     if (this.b2b > 0) b += 1; //+ b2blv;
+		     //b *= this.garbMultiplier;
+		 
+		     a = b + ((b / 4) * ren);
+		     if (b == 0) a += [0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3][Math.min(ren, 20)]// * this.garbMultiplier;
+		     if (pc && line > 0) {
+		      a += 10;
+		     }
+		     totalStrength = a;
+		}
+
+
+		
+		
+		
 		this.offsetGarbage(totalStrength, line, pc)
 	},
 	openFrenzy: function(bool) {
@@ -1127,7 +1169,7 @@ Field.prototype = {
 		var b = $CN(`gtris-rainbow-bg-${this.mainAssets.classP}`)
 		var bg = docId(this.mainAssets.bgFrenzyLayout)
 		var spin = docId(this.mainAssets.dynamicFrenzyBg)
-
+  spin.offsetHeight;
 		bg.style.display = "none"
 		spin.style.animationName = "none"
 
@@ -1241,11 +1283,11 @@ Field.prototype = {
 						GTRISParticleManagement.addParticle(
 							2,
 							this.grid[x][row],
-							getElemPos(this.mainAssets.playField, "x") + ((x) * cellSize),
-							getElemPos(this.mainAssets.playField, "y") + ((row - 20.4) * cellSize),
-							getElemPos(this.mainAssets.playField, "x") + ((x + 1 + (Math.random() * 15) + (Math.random() * -15)) * cellSize),
-							getElemPos(this.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * cellSize),
-							150,
+							getElemPos(this.mainAssets.playField, "x") + ((x) * totalTetrionSize),
+							getElemPos(this.mainAssets.playField, "y") + ((row - 20.4) * totalTetrionSize),
+							getElemPos(this.mainAssets.playField, "x") + ((x + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
+							getElemPos(this.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * totalTetrionSize),
+							this.isFrenzy ? 70 : 150,
 							1,
 							"fallField"
 						)
@@ -1390,12 +1432,26 @@ Field.prototype = {
 			}
 
 
-			this.renInteger++
+			this.renInteger ++;
 			if (this.renInteger > 0) {
 				this.showClearTextREN('show', gtris_transText('combo', this.renInteger))
 				this.score += this.renInteger * 50 * this.level
-				if (!this.isFrenzy)
+				if (!this.isFrenzy) {
 					soundPlayer.playse(`ren${Math.min(20,this.renInteger)}`)
+									if (selectedSettings.Other.Particle >= 4)
+									 for (let e = 0; e < Math.min(20,this.renInteger); e++)
+									  GTRISParticleManagement.addParticle(
+									   0,
+									   Math.floor(Math.random() * 6) + 1,
+									   getElemPos(this.mainAssets.playField, "x") + ((gachamino.x + 1) * totalTetrionSize),
+									   getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4 + 1) * totalTetrionSize),
+									   getElemPos(this.mainAssets.playField, "x") + ((gachamino.x + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
+									   getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4 + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
+									   Math.round(Math.random() * 130) + 50,
+									   0.5,
+									   "hardDrop"
+									  )
+				}
 			}
 
 			this.clearLines(linesDetection, this.linespinrecog, this.minispinrecog, this.b2b, perfectClear)
@@ -1488,12 +1544,12 @@ Field.prototype = {
 		$iH(this.mainAssets.regular, "")
 		docid.style.animation = "none"
 		if (compo == 'hide') {
-			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.03}px` }, 0, 'linear')
+			components.animate({ opacity: 0, letterSpacing: `${totalTetrionSize * 0.03}px` }, 0, 'linear')
 		} else if (selectedSettings.Other.ClearText == 1) {
 			$iH(this.mainAssets.regular, text)
-			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.03}px` }, 0, 'linear')
-			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.13}px` }, 1800, 'linear')
-			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.13}px` }, 200, 'linear')
+			components.animate({ opacity: 1, letterSpacing: `${totalTetrionSize * 0.03}px` }, 0, 'linear')
+			components.animate({ opacity: 1, letterSpacing: `${totalTetrionSize * 0.13}px` }, 1800, 'linear')
+			components.animate({ opacity: 0, letterSpacing: `${totalTetrionSize * 0.13}px` }, 200, 'linear')
 		} else if (selectedSettings.Other.ClearText == 2) {
 			if (animation == "outward") {
 				$iH(this.mainAssets.regular, aText ? (isEffect ? (() => {
@@ -1527,12 +1583,12 @@ Field.prototype = {
 		$iH(this.mainAssets.tSpin, "")
 		docid.style.animation = "none"
 		if (compo == 'hide') {
-			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.03}px` }, 0, 'linear')
+			components.animate({ opacity: 0, letterSpacing: `${totalTetrionSize * 0.03}px` }, 0, 'linear')
 		} else if (selectedSettings.Other.ClearText == 1) {
 			$iH(this.mainAssets.tSpin, text)
-			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.03}px` }, 0, 'linear')
-			components.animate({ opacity: 1, letterSpacing: `${cellSize * 0.13}px` }, 1800, 'linear')
-			components.animate({ opacity: 0, letterSpacing: `${cellSize * 0.13}px` }, 200, 'linear')
+			components.animate({ opacity: 1, letterSpacing: `${totalTetrionSize * 0.03}px` }, 0, 'linear')
+			components.animate({ opacity: 1, letterSpacing: `${totalTetrionSize * 0.13}px` }, 1800, 'linear')
+			components.animate({ opacity: 0, letterSpacing: `${totalTetrionSize * 0.13}px` }, 200, 'linear')
 		} else if (selectedSettings.Other.ClearText == 2) {
 			if (animation == "outward") {
 				$iH(this.mainAssets.tSpin, aText ? (isEffect ? (() => {
@@ -1573,7 +1629,7 @@ Field.prototype = {
 			components.style.letterSpacing = '0.5px'
 			components.style.opacity = '100%'
 			setTimeout(function() {
-				components.style.letterSpacing = `${cellSize*0.2}px`
+				components.style.letterSpacing = `${totalTetrionSize*0.2}px`
 				components.style.transition = "letter-spacing 2s ease-out"
 			}, 2)
 		} else {
@@ -1592,7 +1648,7 @@ Field.prototype = {
 			}
 			if (showhide == 'show') {
 				components.style.transition = "letter-spacing 200ms ease-out, opacity 200ms linear"
-				components.style.letterSpacing = `${cellSize*0.2}px`
+				components.style.letterSpacing = `${totalTetrionSize*0.2}px`
 				components.style.opacity = "100%"
 			}
 		} else {
