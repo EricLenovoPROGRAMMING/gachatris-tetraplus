@@ -135,7 +135,7 @@ function gtris_character_details(name) {
       gender: "Male",
       date_existed: "July 4, 2023",
       date_version: "1.0.000 Alpha",
-      author: "YouTube: Dominic Zi",
+      author: "YouTube: Epicman33456",
       description: "He is one of EricLenovo's friends who used to play Gachaminoes. Not only does he play such thing, he also plays blobs. However, he's no better yet than EricLenovo so he needs to have time to practice by himself.",
       versions: ['Original']
      },
@@ -292,7 +292,7 @@ function gtris_character_details(name) {
       gender: "Lalaki",
       date_existed: "Hulyo 4, 2023",
       date_version: "1.0.000 Alpha",
-      author: "YouTube: Dominic Zi",
+      author: "YouTube: Erpicman33456",
       description: "Isa siya sa mga kaibigan ni EricLenovo na dati'y naglalaro ng mga Gachamino. Hindi lang siya naglalaro ng ganoon, naglalaro din siya ng mga blob. Gayunpaman, hindi pa siya mas mahusay kaysa kay EricLenovo kaya kailangan niyang magkaroon ng oras para magsanay.",
       versions: ['Original']
      },
