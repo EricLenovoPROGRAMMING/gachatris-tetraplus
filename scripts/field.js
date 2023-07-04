@@ -1069,7 +1069,7 @@ Field.prototype = {
 	},
 	offsetGarbageByClear: function(line, spin, ren, pc) {
 		var [renStrength, lineStrength, totalStrength, b2bStrength] = [0, 0, 0, 0]
-		if (false) {
+		if (true) {
 		switch (pc) {
 			case false: {
 				switch (spin) {
