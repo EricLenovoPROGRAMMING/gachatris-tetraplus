@@ -4,7 +4,7 @@
  * GPL 3.0 license
  */
 "use strict";
-var gtris_version = '1.0.000 Alpha';
+var gtris_version = '1.0.293 Alpha';
 var syncTime = 0;
 var StartTime = 0
 var syncFrame = 0;
@@ -645,7 +645,7 @@ var settingsList = {
   Music: ['Menu', 'Default Rock']
  },
  NonIterable: {
-  Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest', 'Mars', 'PeterNavea', 'Flotalendy', 'KawaiiGirlAnna', 'ElishDimensions', 'Evelyn', 'Gahmff', 'RubyStudios', 'Mia', 'Dominic Zi', 'Epicman33456', "Lunar Estelle"],
+  Character: ['No Character', 'EricLenovo', 'Betelgeuse Abbygaile', 'Sun Gabbryielle', 'Pikumon10', 'Forest', 'Mars', 'PeterNavea', 'Flotalendy', 'KawaiiGirlAnna', 'ElishDimensions', 'Evelyn', 'Gahmff', 'RubyStudios', 'Mia', 'Dominic Zi', 'Epicman33456', "Lunar Estelle", "Misty Firefox", "Its Aina Gacha", "EdgeBlackSword", "RedBot", "Nyan Yoshi"],
  },
  Other: {
   Skin: ['Default', "Sapphirus"],

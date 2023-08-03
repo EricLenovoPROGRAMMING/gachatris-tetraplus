@@ -519,8 +519,9 @@ function modeButtons() {
 
 function copyn(ai) {
 	/* Get the text field */
-	var copyText = document.getElementById(ai);
-	var ct = copyText.innerHTML.toString()
+	var copyText = document.createElement("hddd");
+	copyText.innerHTML = ai;
+	var ct = copyText.innerHTML.toString();
 
 	navigator.clipboard.writeText(ct);
 

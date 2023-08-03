@@ -3,7 +3,7 @@
  * ----------------------------------
  * Started developing on May 5, 2022
  */
-const eval = () => {
+/*const eval = () => {
   console.warn('JS Console is not usable in this site.')
 } /**/
 "use strict"
@@ -531,7 +531,11 @@ void function() {
 
 	function startup() {
 		sfx.play()
-	}
+		
+			initializeGTris()
+			removeEventListener("click", startup, false)
+			removeEventListener("keydown", startup, false)
+			}
 
 	function sound() {
 		$iH('gtrisSplashText', gtris_transText("initializeGtris"))
@@ -539,17 +543,15 @@ void function() {
 		addEventListener("keydown", startup, false)
 		sfx = new Howl({ src: "assets/se/menu/gtrisstartup.ogg", preload: false, format: "ogg" })
 		sfx.volume(selectedSettings.Volume.SFX / 100)
-		sfx.once('load', function() {
+		/*sfx.once('load', function() {
 			setTimeout(() => {
-				sfx.play()
+				//sfx.play()
 			}, 100)
-		})
-		  mobileButtons.initiateButtons()
-		sfx.once('play', function() {
-			initializeGTris()
-			removeEventListener("click", startup, false)
-			removeEventListener("keydown", startup, false)
-		})
+		})/**/
+		  mobileButtons.initiateButtons();
+		/*sfx.once('play', function() {
+
+		})*/
 		setTimeout(() => {
 			sfx.load()
 		}, 100)

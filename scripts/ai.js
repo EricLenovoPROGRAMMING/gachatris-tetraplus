@@ -267,7 +267,7 @@ GTTP_AI.prototype = {
    this.ai.tspinDetected.tAvoidColumn = best.ta;
    this.ai.tspinDetected.tPrevent = best.tp;
    this.ai.tspinDetected.tFulfill = best.tf;
-   //draw(best.g, best.x, best.y - 19.6, field2.mainAssets.field, 3, 0);
+   draw(best.g, best.x, best.y - 19.6, field2.mainAssets.field, 3, 0);
   });
 	}
 }
