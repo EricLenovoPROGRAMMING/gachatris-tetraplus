@@ -106,7 +106,7 @@ class BinaryReader {
 
 
 const server = new class {
-	#url = "wss://curly-parakeet-9gqqv7xgx442px54-2400.github.dev";
+	#url = "wss://curly-parakeet-9gqqv7xgx442px54-2400.app.github.dev";
 	#socket = {};
 	userID = null;
 	roomID = null;
