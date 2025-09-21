@@ -1,6 +1,6 @@
 const GTRISParticle = {
  Particle: class {
-  constructor(spriteRow, spriteCell, startX, startY, endX, endY, duration, size, type) {
+  constructor(spriteRow, spriteCell, startX, startY, endX, endY, duration, size, type, rotSpeed) {
    this.x = startX;
    this.y = startY;
    this.startX = startX;
@@ -14,6 +14,8 @@ const GTRISParticle = {
    this.maxDuration = duration;
    this.elapsed = 0;
    this.type = type;
+   this.rotSpeed = rotSpeed || 0;
+   this.rotPos = 0;
   };
   update() {
    this.duration--;
@@ -61,6 +63,7 @@ const GTRISParticle = {
      1.5,
      1));
    }
+   this.rotPos += this.rotSpeed;
   };
   getX() {
    return this.x;
@@ -78,28 +81,77 @@ const GTRISParticle = {
  ParticleManagement: class {
   constructor() {
    this.intrv = 10
-  };
+  }
+  
+  dynamicDraw(tctx, x, y, r, cell, size, rotate) {
+   let ctx = _CTX[tctx];
+ x = ~~x;
+ var row
+ var type
+ if (r < 2) {
+  type = _canvasses.spriteParticle
+  row = 0
+ }
+ else {
+  type = _canvasses.sprite
+  row = r - 2
+ }
+// console.log(row*cellSize)
+
+ /*_CTX[ctx].drawImage(
+  type,
+  cell * cellSize,
+  row * cellSize,
+  cellSize,
+  cellSize,
+  x,
+  y,
+  size * totalTetrionSize,
+  size * totalTetrionSize,
+ );*/
+ let tsize = size * totalTetrionSize;
+ ctx.save();
+ ctx.translate(x + tsize / 2, y + tsize / 2);
+
+ctx.rotate((Math.PI / 2) * (rotate / 180));
+ctx.drawImage(type,
+   cell * cellSize,
+    row * cellSize,
+    cellSize,
+    cellSize, -tsize / 2, -tsize / 2, tsize, tsize);
+ctx.restore();
+ 
+};
+
+
+
 
   refresh(context) {
    if (this.intrv < 0) {
-    this.intrv = -1
+    this.intrv = -1;
+    
     if (GTRISParticle.particles.length > 0) {
+     
+     //_CTX[context].save();
+     //_CTX[context].translate(1,1);
      for (let i = 0, len = GTRISParticle.particles.length; i < len; i++) {
       if (typeof GTRISParticle.particles[i] !== "undefined") {
        GTRISParticle.particles[i].update();
-       dynamicDraw(
+       this.dynamicDraw(
         context,
         GTRISParticle.particles[i].getX(),
         GTRISParticle.particles[i].getY(),
         GTRISParticle.particles[i].spriteRow,
         GTRISParticle.particles[i].spriteCell,
-        GTRISParticle.particles[i].duration > 0 ? GTRISParticle.particles[i].size : 0
+        GTRISParticle.particles[i].duration > 0 ? GTRISParticle.particles[i].size : 0,
+        GTRISParticle.particles[i].rotPos
        )
        if (GTRISParticle.particles[i].duration < -30) {
         GTRISParticle.particles.splice(i, 1)
        }
       }
      }
+     //_CTX[context].restore();
      _CTX[context].globalAlpha = 0.09;
      _CTX[context].globalCompositeOperation = "destination-out"
      _CTX[context].fillRect(0, 0, _canvasses[context].width, _canvasses[context].height)
@@ -114,9 +166,9 @@ const GTRISParticle = {
    }
   };
 
-  addParticle(spriteRow, spriteCell, startX, startY, endX, endY, duration, size, type) {
+  addParticle(spriteRow, spriteCell, startX, startY, endX, endY, duration, size, type, rotSpeed) {
    if (selectedSettings.Other.Particle >= 1)
-    GTRISParticle.particles.push(new GTRISParticle.Particle(spriteRow, spriteCell, endX - ((size * totalTetrionSize) / 2), endY - ((size * totalTetrionSize) / 2), startX - ((size * totalTetrionSize) / 2), startY - ((size * totalTetrionSize) / 2), duration, size, type ? type : "ease"))
+    GTRISParticle.particles.push(new GTRISParticle.Particle(spriteRow, spriteCell, endX - ((size * totalTetrionSize) / 2), endY - ((size * totalTetrionSize) / 2), startX - ((size * totalTetrionSize) / 2), startY - ((size * totalTetrionSize) / 2), duration, size, type ? type : "ease", rotSpeed))
   };
  },
 

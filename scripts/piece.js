@@ -1,8 +1,8 @@
-var gravityUnit = 1 / 512,
+var gravityUnit = 1 / 60,
 	gravityArr = (function() {
 		var array = []
 		array.push(0);
-		for (var i = 1; i < 128; i++) array.push(i / 128);
+		for (var i = 1; i < 60; i++) array.push(i / 60);
 		for (var i = 1; i <= 20; i++) array.push(i);
 		return array;
 	})()
@@ -15,7 +15,7 @@ const gachamino = new function() {
 	this.index;
 	this.kickData;
 	this.lockDelay = 0;
-	this.gravity = gravityUnit * 4
+	this.gravity = gravityUnit * 1
 	this.currentGravity = 0
 	this.shiftDelay = 0;
 	this.shiftDir
@@ -54,7 +54,15 @@ const gachamino = new function() {
 	this.lockoutActive = false
 	this.hardDropEnabled = false
 	this.rng = new ParkMillerPRNG()
-	this.levelGravityArr = [1, 2, 3, 4, 5, 6, 7, 8, 10, 14, 16, 19, 25, 31, 41, 59, 89, 139, 142, 148]
+	this.levelGravityArr = [1, 2, 3, 4, 5, 6, 7, 8, 10, 14, 16, 19, 25, 31, 41, 59, 89, 139, 142, 148];
+	
+	let lev = [0];
+  
+  for (let h = 0; h < 29; h++) {
+  	lev.push(1 / (((0.8 - ((h) * 0.007))**(h)) * MAIN_FPS));
+  }
+  
+  this.levelGravityArr = lev;
 	this.checkBlockoutArr = [];
 	
 	
@@ -75,14 +83,13 @@ const gachamino = new function() {
 	this.reset = function() {
 		this.initial.hold = 0
 		this.initial.rot = 0
-		soundPlayer.fadese('topoutwarning', 0, 0, 0)
-		soundPlayer.stopse("topoutwarning")
+		
 		$iH(field.mainAssets['TEXT_next'], gtris_transText('next'))
 		$iH(field.mainAssets.TEXT_hold, gtris_transText('hold'))
 		this.x = 'reset'
 		this.y = -1000
 		this.index = 'reset'
-		this.tetro = [[]]
+		this.tetro = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
 		this.shiftReleased = true
 		this.shiftDir = 0
 		this.currentGravity = field.pieceSettings.GRAV
@@ -125,11 +132,11 @@ this.held = false
 					if (!this.held) {
 						if (hold.piece !== void 0) {
 							hold.piece = this.index;
-							soundPlayer.playse(field.mainAssets.hold)
+							field.playSound("hold")
 							this.injectPiece(temp, true)
 						} else {
 							hold.piece = this.index;
-							soundPlayer.playse('firsthold')
+							field.playSound('firsthold')
 							this.injectPiece(preview.next(), true);
 						}
 						hold.draw();
@@ -138,12 +145,12 @@ this.held = false
 					this.initial.hold = 0
 				}
 						this.held = true;
-				soundPlayer.playse('ihs')
+				field.playSound('ihs')
 				this.initial.hold = 0
 				$iH(field.mainAssets.TEXT_hold, gtris_transText(field.mainAssets.hold))
 			}
 			if (this.initial.rot !== 0) {
-				soundPlayer.playse('irs')
+				field.playSound('irs')
 				$iH(field.mainAssets.TEXT_next, gtris_transText('next'))
 				while (this.initial.rot !== 0) {
 					if (this.initial.rot > 0) {
@@ -171,6 +178,7 @@ this.held = false
 		this.x = pieces[index].x
 		this.y = 0;
 		this.index = index;
+		this.moved = true;
 		this.lockCap = {
 			move: 0,
 			rotate: 0
@@ -179,7 +187,7 @@ this.held = false
 		this.lockDelay = 0
 
 		this.checkIfGTrisLocksAtExosphere(0, this.tetro)
-		this.moved = false
+		//this.moved = true;
 		this.rotateFail = false
 		this.y += this.index !== 0 ? 20 : 20;
 		if (!this.checkPieceValidation(0, 0, this.tetro)) {
@@ -198,7 +206,7 @@ this.held = false
 				if (!field.is1v1 && field.is1v1 !== "garbage")
 					endGame('blockout', 'lose')
 			}
-			soundPlayer.playse('ko')
+			field.playSound('ko')
 			this.y = -3737
 			this.index = 'reset'
 			this.tetro = [[]]
@@ -263,8 +271,8 @@ this.held = false
 					this.moved = false
 					this.rotateFail = false
 					this.checkIfGTrisLocksAtExosphere(0, this.tetro)
-					soundPlayer.playse('rotate')
-					if (!this.moveValid(
+					field.playSound('rotate')
+					if (!this.checkPieceValidation(
 							0,
 							2,
 							rotated))
@@ -278,8 +286,12 @@ this.held = false
 				this.moved = false
 				field.isSpin = false
 				field.isMini = false
-				field.spinCheck()
+				this.landed = this.checkLand();
+				if (this.landed) { field.spinCheck();
+				
 				this.checkSpintoSound()
+				    
+				}
 			}
 		} else if (this.y < -10) {
 			this.initial.rot += direction
@@ -353,7 +365,7 @@ this.held = false
 					this.moved = false
 					this.rotateFail = false;
 					this.checkIfGTrisLocksAtExosphere(0, this.tetro)
-					soundPlayer.playse('rotate')
+					field.playSound('rotate')
 					if (!this.moveValid(
 							0,
 							2,
@@ -368,8 +380,12 @@ this.held = false
 				this.moved = false
 				field.isSpin = false
 				field.isMini = false
-				field.spinCheck()
+				this.landed = this.checkLand();
+				if (this.landed) { field.spinCheck();
+				
 				this.checkSpintoSound()
+				    
+				}
 			}
 		} else if (this.y < -10) {
 			for (var e = 0; e < 2; e++) {
@@ -487,19 +503,19 @@ this.held = false
 
 					if (!this.moveValid(0, 1, this.tetro)) {
 						this.lockCap.move++
-						soundPlayer.playse('step')
+						field.playSound('step')
 					}
-					soundPlayer.playse('move')
+					field.playSound('move')
 					this.moved = true
 				}
 			} else if (this.moveValid(direction, 0, this.tetro)) {
 				this.x += direction;
-				soundPlayer.playse('move')
+				field.playSound('move')
 				this.moved = true
 
 				if (!this.moveValid(0, 1, this.tetro)) {
 					this.lockCap.move++
-					soundPlayer.playse('step')
+					field.playSound('step')
 				}
 			}
 		}
@@ -512,23 +528,25 @@ this.held = false
 				var grav = gravityArr[field.pieceSettings.SFT + 1];
 				if (grav > 1) {
 					if (gravityArr[this.currentGravity - 1] !== 20)
-						field.score += this.getDrop(grav)
-					soundPlayer.playse('softdrop')
-					this.y += this.getDrop(grav);
+						field.score += this.getDrop(grav) * (gameMode == 9 ? -1 : 1);
+						field.playSound('softdrop')
+						this.y += this.getDrop(grav);
 				}
 				else if (grav == 1) {
 					this.y += this.getDrop(1)
-					soundPlayer.playse('softdrop')
+					field.playSound('softdrop')
 					if (gravityArr[this.currentGravity - 1] !== 20)
-						field.score++
+						field.score += 1 * (gameMode == 9 ? -1 : 1);
+			
 				} else {
 					if (this.y >= Math.round(this.y) - grav && this.y <= Math.round(this.y)) {
 						if (gravityArr[this.currentGravity - 1] !== 20)
-							field.score++
-						soundPlayer.playse('softdrop')
+							field.score += 1 * (gameMode == 9 ? -1 : 1);
+						field.playSound('softdrop')
 					}
 					this.y += grav;
 				}
+				if (field.score < 0) field.score = 0;
 			}
 		}
 	}
@@ -536,9 +554,12 @@ this.held = false
 		if (this.y > -20 && this.index !== 'reset') {
 			for (var i = 1; this.checkPieceValidation(0, i, this.tetro); i++)
 				if (gravityArr[this.currentGravity - 1] !== 20)
-					field.score += 2
-			this.y += this.getDrop(89)
-			soundPlayer.playse('harddrop')
+					field.score += 2 * (gameMode == 9 ? -1 : 1);
+			if (field.score < 0) field.score = 0;
+			let dis = this.getDrop(89);
+this.y += dis;
+if (dis > 0) this.moved = true;
+			field.playSound('harddrop') 
 			for (let x = 0, len = this.tetro.length; x < len; x++)
 				for (let y = 0, len2 = this.tetro[x].length; y < len2; y++)
 					if (selectedSettings.Other.Particle >= 2 && this.tetro[x][y])
@@ -556,8 +577,11 @@ this.held = false
 							)
 
 			this.hardDropEnabled = true
-			this.lockDelay = 929 * field.pieceSettings.LCK;
+			this.checkPiece();
 		}
+	}
+	this.checkPiece = function() {
+	 
 	}
 	this.getDrop = function(distance) {
 		for (var i = 1; i <= distance; i++) {
@@ -573,11 +597,11 @@ this.held = false
 					this.held = true;
 					if (hold.piece !== void 0) {
 						hold.piece = this.index;
-						soundPlayer.playse(field.mainAssets.hold)
+						field.playSound("hold")
 						this.new(temp, this.held)
 					} else {
 						hold.piece = this.index;
-						soundPlayer.playse('firsthold')
+						field.playSound('firsthold');
 						this.new(preview.next(), this.held);
 					}
 					hold.draw();
@@ -636,7 +660,7 @@ this.held = false
 		}
 		return true;
 	}
-	this.checkIfGTrisLocksAtExosphere = function(c, tetro) {
+	this.checkIfGTrisLocksAtExosphere = function(c, tetro) {// i sucked in 2022 :')' seen in 2025
 		var range = []
 		var nolockout = false
 		for (var x = 0, r = 0; x < tetro.length && r < 30; x++, r++) {
@@ -653,35 +677,37 @@ this.held = false
 		if(!this.landed || c == "deactivate") nolockout = true;
 		if (nolockout) {
 			if (this.lockoutActive) {
-				soundPlayer.stopse('topoutwarning')
-				soundPlayer.fadese('topoutwarning', 0, 0, 0)
+				
 				this.lockoutActive = false
 			}
 		} else
 		if (!this.lockoutActive) {
-			soundPlayer.playse('topoutwarning')
+			
 			this.lockoutActive = true
 		}
 	}
+	this.checkLand = function(){
+	 return !this.checkPieceValidation(0, 1, this.tetro);
+	}
 	this.update = function() {
 		if (this.y > -20 && this.index !== 'reset') {
-			this.checkIfGTrisLocksAtExosphere(0, this.tetro)
+			this.checkIfGTrisLocksAtExosphere(0, this.tetro);
 			if (this.moveValid(0, 1, this.tetro)) {
 				field.isSpin = false
 				field.isMini = false
 				field.spinCheckCount = -484
 				this.landed = false
 				this.moved = true
-				field.spinCheck()
+				//field.spinCheck()
 				if (this.currentGravity !== 0) {
-					var grav = gravityArr[this.currentGravity - 1];
+					var grav = this.currentGravity;
 					if (grav > 1) this.y += this.getDrop(grav)
 					else if (grav == 1) this.y += this.getDrop(1)
 					else this.y += grav;
 				} else {
 					this.y += this.gravity;
 				}
-			} else this.tryLand()
+			} else this.tryLand();
 		}
 	}
 	this.tryLand = function() {
@@ -691,12 +717,12 @@ this.held = false
 					this.landed = true
 					if (!this.hardDropEnabled) {
 						this.hardDropEnabled = false
-						soundPlayer.playse('land')
+						field.playSound('land')
 					}
 				}
 				this.y = Math.floor(this.y)
 				var yCeil = Math.ceil(this.y)
-				field.spinCheck()
+				//field.spinCheck()
 				if (
 					this.hardDropEnabled ||
 					this.lockDelay >= this.lockLimit.delay ||
@@ -704,11 +730,11 @@ this.held = false
 					this.lockCap.rotate >= this.lockLimit.rotate
 				) {
 					if (!this.hardDropEnabled)
-						soundPlayer.playse('lock')
+						field.playSound('lock')
 					else {
 						this.hardDropEnabled = false
 					}
-					field.spinCheck()
+					if (!this.moved) field.spinCheck();
 					field.addPiece(this.tetro)
 					this.held = false
 					this.y > -2039
@@ -807,46 +833,18 @@ this.held = false
 	}
 	this.checkSpintoSound = function() {
 		{
-			if (field.miniSpinCount >= 1 && field.spinCheckCount >= 0.7 && this.spinX == this.x && this.spinY == this.y) {
-				if (field.miniSpinCount == 2) {
-					soundPlayer.playse('prespin')
+			if (field.isSpin) {
+				
+					field.playSound('prespin')
 				this.checkSpinParticle(2)
-				}
-				else
-				if (this.stsd.y == -2) {
-					if (this.stsd.x == 1) {
-						soundPlayer.playse('prespin')
-						this.checkSpinParticle(2)
-					}
-					if (this.stsd.x == -1) {
-						soundPlayer.playse('prespin')
-	  			this.checkSpinParticle(1)
-					}
-					if (this.stsd.x == 0) {
-						soundPlayer.playse('prespinmini')
-						this.checkSpinParticle(1)
-					}
-				} else
-				if (field.miniSpinCount == 1 && field.spinCheckCount >= 1) {
-					soundPlayer.playse('prespinmini')
-				this.checkSpinParticle(1)
-				}
+				
 			} else
-			if (field.miniSpinCount == 1 && field.spinCheckCount >= 1 && field.mini2SpinCount <= 1 && this.spinX == this.x && this.spinY == this.y) {
-				soundPlayer.playse('prespinmini')
+			if (field.isMini) {
+				field.playSound('prespinmini')
 				this.checkSpinParticle(1)
 			}
 		}
-		if (this.stsd.y == -2 && this.index == 5) {
-			if (this.stsd.x == 1) {
-				soundPlayer.playse('prespin')
-				this.checkSpinParticle(2)
-			}
-			if (this.stsd.x == -1) {
-				soundPlayer.playse('prespin')
-				this.checkSpinParticle(2)
-			}
-		}
+		
 	}
 	this.checkSpinParticle = function(num) {
 		for (let x = 0, len = this.tetro.length; x < len; x++)

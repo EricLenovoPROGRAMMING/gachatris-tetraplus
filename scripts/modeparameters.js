@@ -6,14 +6,14 @@ var modeParameters = {
 			TYPE: [gtris_transText('m_linerunQueueType_0'), gtris_transText('m_linerunQueueType_1'), gtris_transText('m_linerunQueueType_2')]
 		},
 		scoreatk: {
-			TIMER: range(60 * 120, 3610 * 120, 10 * 120)
+			TIMER: range(60 * MAIN_FPS, 3610 * MAIN_FPS, 10 * MAIN_FPS)
 		},
 		fourwide: {
-			TIMER: range(60 * 120, 3610 * 120, 10 * 120)
+			TIMER: range(60 * MAIN_FPS, 3610 * MAIN_FPS, 10 * MAIN_FPS)
 		},
 		tsd: {},
 		dsfrenzy: {
-			TIMER: range(60 * 120, 3610 * 120, 10 * 120),
+			TIMER: range(60 * MAIN_FPS, 3610 * MAIN_FPS, 10 * MAIN_FPS),
 			FAILS: range(0, 51),
 			PHASE: range(1, 14)
 		},
@@ -36,13 +36,13 @@ var modeParameters = {
 			LEVELCAP: range(15, 50),
 		},
 		amogus: {
-			TIMER: range(60 * 120, 3610 * 120, 10 * 120)
+			TIMER: range(60 * MAIN_FPS, 3610 * MAIN_FPS, 10 * MAIN_FPS)
 		},
 		onevonegarb: {
    GRLIMIT: range(0, 16),
 		},
 		frenzywar: {
-			TIMER: range(60 * 120, 3610 * 120, 10 * 120),
+			TIMER: range(60 * MAIN_FPS, 3610 * MAIN_FPS, 10 * MAIN_FPS),
 			HP: range(50, 1150, 50),
 			PHASE: range(1, 14)
 		},
@@ -106,7 +106,13 @@ function aiParameterChange(varia, mode, varObj, varObjText) {
 
 function modeParamSwitch(mode, name) {
 	//try {
-	let a = (iH) => { $iH('mode-parameter-station', iH) }
+	//let str = "\t\""
+	let a = (iH) => {
+		$iH('mode-parameter-station', iH);
+		
+		//str += `${iH}": () => ${iH}`
+	}
+	
 	switch (mode) {
 		case 0: {
 			a(`
@@ -458,7 +464,7 @@ function modeParamSwitch(mode, name) {
 const makeAIParameter = function(){
 	return `${makeParaneterSliderAI("ai_","kpdi", "main", "KPDI", "arrStr")}
 			          		         ${makeParaneterSliderAI("ai_", "ai_type", "main", "AI", "arrStr")} 
-			          		         ${makeParaneterTextbox("ai_","name","Names", "AI", 1 ,25)}
+			          		         
 			          		         <gtris-listCell>
 			          		         <gtris_normaltext>${gtris_transText("ai_character")}:&nbsp<gtris_normaltext id = ai-characteruse>${gtris_character_details(settingsList.NonIterable.Character[selectedSettings.AI.Character]).name}</gtris-normaltext></gtris_normaltext>
 			          		         </gtris-listCell>

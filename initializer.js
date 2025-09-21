@@ -8,95 +8,97 @@
 } /**/
 "use strict"
 var SCREEN_WIDTH = window.innerWidth,
-SCREEN_HEIGHT = window.innerHeight
+ SCREEN_HEIGHT = window.innerHeight
 
 function docId(id) {
-	return document.getElementById(id)
+ return document.getElementById(id)
 }
+
 function $ID(id) {
-	return document.getElementById(id)
+ return document.getElementById(id)
 }
+
 function $CN(id, n) {
-	if (n !== void 0)
-		return document.getElementsByClassName(id)[n]
-	else
-		return document.getElementsByClassName(id)
+ if (n !== void 0)
+  return document.getElementsByClassName(id)[n]
+ else
+  return document.getElementsByClassName(id)
 }
 
 function $QSA(id, n) {
-	if (n !== void 0)
-		return document.querySelectorAll(id)[n]
-	else
-		return document.querySelectorAll(id)
+ if (n !== void 0)
+  return document.querySelectorAll(id)[n]
+ else
+  return document.querySelectorAll(id)
 }
 
 function $tag(id, n) {
-	if (n !== void 0)
-		return document.getElementsByTagName(id)[n]
-	else
-		return document.getElementsByTagName(id)
+ if (n !== void 0)
+  return document.getElementsByTagName(id)[n]
+ else
+  return document.getElementsByTagName(id)
 }
 
 function $create(tag, func) {
-	let a = document.createElement(tag)
-	func(a)
+ let a = document.createElement(tag)
+ func(a)
 }
 
 function $copy(arr) {
-	var ARR = []
-	for (let a = 0, len = arr.length; a < len; a++) {
-		if (typeof arr[a] == "object" && arr[a] instanceof Array) {
-			ARR.push([])
-			for (let b = 0, len2 = arr[a].length; b < len2; b++) {
-				ARR[a].push(arr[a][b])
-			}
-		}
-		else {
-			ARR.push(arr[a])
-		}
-	}
-	return ARR
+ var ARR = []
+ for (let a = 0, len = arr.length; a < len; a++) {
+  if (typeof arr[a] == "object" && arr[a] instanceof Array) {
+   ARR.push([])
+   for (let b = 0, len2 = arr[a].length; b < len2; b++) {
+    ARR[a].push(arr[a][b])
+   }
+  }
+  else {
+   ARR.push(arr[a])
+  }
+ }
+ return ARR
 }
 
 function range(start, end, inc) {
-	inc = inc || 1
-	var array = []
-	for (var i = start; i < end; i += inc) {
-		array.push(i)
-	}
-	return array
+ inc = inc || 1
+ var array = []
+ for (var i = start; i < end; i += inc) {
+  array.push(i)
+ }
+ return array
 }
 
 function $iH(id, innerHTM) {
-	if (innerHTM !== void 0) {
-		//f (docId(id).innerHTML !== innerHTM)
-			docId(id).innerHTML = innerHTM
-	}
-	else return docId(id).innerHTML
-	
+ if (innerHTM !== void 0) {
+  //f (docId(id).innerHTML !== innerHTM)
+  docId(id).innerHTML = innerHTM
+ }
+ else return docId(id).innerHTML
+
 }
 
 
 
 Number.prototype.mod = function(n) {
-	return ((this % n) + n) % n
+ return ((this % n) + n) % n
 };
 
-function getElemPos(doc,pos){
-	if(pos === "x"){
-		return docId(doc).getBoundingClientRect().x
-	}
-	if (pos === "y") {
-		return docId(doc).getBoundingClientRect().y
-	}
-	if (pos === "width") {
-		return docId(doc).getBoundingClientRect().width
-	}
-	if (pos === "height") {
-		return docId(doc).getBoundingClientRect().height
-	}
+function getElemPos(doc, pos) {
+ if (pos === "x") {
+  return docId(doc).getBoundingClientRect().x
+ }
+ if (pos === "y") {
+  return docId(doc).getBoundingClientRect().y
+ }
+ if (pos === "width") {
+  return docId(doc).getBoundingClientRect().width
+ }
+ if (pos === "height") {
+  return docId(doc).getBoundingClientRect().height
+ }
 }
-const  $STYLE = function(id, prop, s) {
+const $STYLE = function(id, prop, s) {
   let d = $ID(id);
   if (d.style[prop] !== s) {
    d.style[prop] = s;
@@ -106,7 +108,8 @@ const  $STYLE = function(id, prop, s) {
   if (id.style[prop] !== s) {
    id.style[prop] = s;
   };
- },  $ELEM = function(tag, func) {
+ },
+ $ELEM = function(tag, func) {
   var a = document.createElement(tag);
   func.bind(a)(a);
  },
@@ -114,22 +117,31 @@ const  $STYLE = function(id, prop, s) {
   return elem.getBoundingClientRect()[pos];
  };
 
- const $BN = (query) => {
+const $BN = (query) => {
  return `${query}`
 };
 
 
 class ParkMillerPRNG {
-	constructor() {
-		this.seed = 1;
-	}
-	next() {
-		return this.gen() / 2147483647
-	}
-	gen() {
-		return (this.seed = (this.seed * 16807) % 2147483647);
-	}
+ #mersenne = Math.pow(2, 32) - 1;
+ constructor() {
+  this.seed = 1;
+ }
+ next() {
+  return this.gen() / this.#mersenne;
+ }
+ gen() {
+  return (this.seed = (this.seed * 16807) % this.#mersenne);
+ }
 }
+
+function bezier(t, start, end, initial, p1, p2, final) {
+ return start + ((end - start) * ((1 - t) * (1 - t) * (1 - t) * initial +
+  3 * (1 - t) * (1 - t) * t * p1 +
+  3 * (1 - t) * t * t * p2 +
+  t * t * t * final));
+}
+
 
 const nativeLDBManager = new class {
  constructor() {
@@ -413,7 +425,21 @@ const assetNLDB = new class {
 
  }
 
-}()
+}();
+
+const $loadimg = function(directory) {
+ return new Promise(async (res) => {
+  
+  let m = await fetch("./" + directory);
+  let g = await m.blob();
+  let a = new Image();
+  a.src = window.URL.createObjectURL(g);
+  a.onload = () => {
+   res(a);
+  }
+ });
+
+}
 
 const cacheManager = new class {
  constructor() {
@@ -430,18 +456,18 @@ const cacheManager = new class {
   let cacheDir = $BN(cach);
   if (this.cacheData?.[cacheDir]) this.cacheData[cacheDir].isLoaded = true;
  }
- 
+
  directLoad(cache) {
   let a = this.cacheData[cache] || {
    value: null,
   };
   return a.value;
  }
- 
+
  directSave(cache, value) {
   this.cacheData[cache] = {
-    isLoaded: false,
-    value: value(cache)
+   isLoaded: false,
+   value: value(cache)
   };
  }
 
@@ -497,115 +523,139 @@ const cacheManager = new class {
  }
 
 }()
+const loadedImages = {};
+const MAIN_FPS = 60;
 
-
-void function() {
-	let array = ['jQuery', 'howler-lib', 'gachatris-data', 'piece', 'field', 'queue_prev', 'pieceHold', 'enhancementfrenzy', 'player2/piece', 'player2/field', 'player2/queue_prev', 'player2/pieceHold', 'player2/enhancementfrenzy', 'ai', 'ai_frenzy', 'soundplayer', 'musicplayer', 'language', 'main', 'gparticle', 'character_details', 'uiSound', 'menus', 'replayCenter', 'modeProto', 'modeparameters','loader']
-	var i = 0
-	var sfx
+function getOnClickAttr(id) { //implement in the next update
+	let h = document.getElementById(id).getElementsByTagName("*");
+	let str = "const HANDLERS = {\n";
+	for (let g of h) if ("onclick" in g.attributes) {
+	 str += `\t"${g.attributes.onclick.value}":() => { ${g.attributes.onclick.value}; },\n`;
+	}
 	
-	nativeLDBManager.initialize(["images"], () => {}, 2);
+}
+getOnClickAttr("menu-viewer")
+void
+function() {
+ let array = ["server/server", 'jQuery', 'howler-lib', 'gachatris-data', 'piece', 'field', 'queue_prev', 'pieceHold', 'enhancementfrenzy', 'player2/piece', 'player2/field', 'player2/queue_prev', 'player2/pieceHold', 'player2/enhancementfrenzy', 'ai', 'ai_frenzy', 'soundplayer', 'musicplayer', 'language', 'background', 'modeProto', 'player_gather', 'main', 'gparticle', 'character_details', 'uiSound', 'menus', 'replayCenter', 'modeparameters', 'loader']
+ var i = 0
+ var sfx
 
-	function loadScript() {
-		$create('script', function(a) {
-			a.src = `scripts/${array[i]}.js`
-			a.id = `script-${array[i]}`
-			a.type = 'text/javascript'
-			$iH('gtrisSplashText', `
+ nativeLDBManager.initialize(["images"], () => {}, 2);
+
+ function loadScript() {
+  $create('script', function(a) {
+   a.src = `scripts/${array[i]}.js`;
+   a.id = `script-${array[i]}`;
+   a.type = 'text/javascript';
+   $iH('gtrisSplashText', `
 			 <div style="width:100%;height:1%;background:#444"><div style="width:${(i / array.length)*100}%;height:100%;background:#fff;"></div></div>
 			`)
-			document.body.appendChild(a)
-			a.onload = () => {
-				if (i < array.length - 1) {
-					i++
-					loadScript();
-				} else {
-					sound();
+   document.body.appendChild(a)
+   a.onload = () => {
+    if (i < array.length - 1) {
+     i++
+     loadScript();
+    } else {
+     loadImages();
 
-		  mobileButtons.showHide(false)
+     mobileButtons.showHide(false);
 
-				}
-			}
-		})
-	}
+    }
+   }
+  })
+ }
 
-	function startup() {
-		sfx.play()
-		
-			initializeGTris()
-			removeEventListener("click", startup, false)
-			removeEventListener("keydown", startup, false)
-			}
+ function loadImages() {
+  $loadimg("assets/tetrion/frenzy.png").then(re => {
+   loadedImages.frenzy = re;
+   //document.write(re.innerHTML)
+   sound();
+  });
+ }
 
-	function sound() {
-		$iH('gtrisSplashText', gtris_transText("initializeGtris"))
-		addEventListener("click", startup, false)
-		addEventListener("keydown", startup, false)
-		sfx = new Howl({ src: "assets/se/menu/gtrisstartup.ogg", preload: false, format: "ogg" })
-		sfx.volume(selectedSettings.Volume.SFX / 100)
-		/*sfx.once('load', function() {
-			setTimeout(() => {
-				//sfx.play()
-			}, 100)
-		})/**/
-		  mobileButtons.initiateButtons();
-		/*sfx.once('play', function() {
+ function startup() {
+  sfx.play()
 
-		})*/
-		setTimeout(() => {
-			sfx.load()
-		}, 100)
-		musicPlayer.loadMfx('menu')
-	}
-	loadScript()
+  {
+   PLAYERS[0].frenzyBg.fetchAsset(_canvasses.frenzy, _CTX.frenzy);
+   PLAYERS[1].frenzyBg.fetchAsset(_canvasses.frenzy2, _CTX.frenzy2);
 
-	function skipWithKey() {
-		var arr = [$('#gtrisSplashText'), $('#splashLogo')]
-		arr.forEach((e) => {
-			e.stop(true, true)
-			e.css({ 'opacity': 0 })
-		})
-		skip()
-		sfx.fade(selectedSettings.Volume.SFX / 100, 0, 500)
-		sfx.on('volume', function() { this.unload() })
-	}
+  }
 
-	function skip() {
-		$('#splash').css('z-index', "-36")
-		activeMenu(true, "100%", true)
-		switchMenu(0, true, 'Gachatris Tetraplus Alpha', true)
-		removeEventListener('keydown', skipWithKey)
-		removeEventListener('click', skipWithKey)
-		musicPlayer.playMfx('menu')
-		addEventListener('keydown', keyUpDown, false)
-		addEventListener('keyup', keyUpDown, false)
-	}
+  initializeGTris()
+  removeEventListener("click", startup, false)
+  removeEventListener("keydown", startup, false)
+ }
 
-	function initializeGTris() {
-		setTimeout(function() {
-			sfx.once('end', function() { sfx.unload() })
-			addEventListener('keydown', skipWithKey, false)
-			addEventListener('click', skipWithKey, false)
-		}, 300)
-		$('#gtrisSplashText').animate({ opacity: 0 }, 0, "linear", function() { this.innerHTML = gtris_transText('splash1') })
-		$('#gtrisSplashText').animate({ opacity: 1 }, 400, "linear")
-		$('#gtrisSplashText').animate({ opacity: 1 }, 2500, "linear")
-		$('#gtrisSplashText').animate({ opacity: 0 }, 400, "linear", function() { this.innerHTML = gtris_transText('splash2') })
-		$('#gtrisSplashText').animate({ opacity: 1 }, 400, "linear")
-		$('#gtrisSplashText').animate({ opacity: 1 }, 2500, "linear")
-		$('#gtrisSplashText').animate({ opacity: 0 }, 400, "linear", function() {
-			this.innerHTML = gtris_transText('splash3', gtris_version)
-			$('#splashLogo').animate({ opacity: 0 }, 0, "linear")
-			$('#splashLogo').animate({ opacity: 1 }, 400, "linear")
-			$('#splashLogo').animate({ opacity: 1 }, 1000, "linear")
-			$('#splashLogo').animate({ opacity: 0 }, 250, "linear")
-		})
-		$('#gtrisSplashText').animate({ opacity: 1 }, 400, "linear")
-		$('#gtrisSplashText').animate({ opacity: 1 }, 1000, "linear")
-		$('#gtrisSplashText').animate({ opacity: 0 }, 250, "linear", function() {
-			skip()
-		})
-	}
+ function sound() {
+  $iH('gtrisSplashText', gtris_transText("initializeGtris"))
+  addEventListener("click", startup, false)
+  addEventListener("keydown", startup, false)
+  sfx = new Howl({ src: "assets/se/menu/gtrisstartup.ogg", preload: false, format: "ogg" })
+  sfx.volume(selectedSettings.Volume.SFX / 100)
+  /*sfx.once('load', function() {
+  	setTimeout(() => {
+  		//sfx.play()
+  	}, 100)
+  })/**/
+  mobileButtons.initiateButtons();
+  /*sfx.once('play', function() {
+
+  })*/
+  setTimeout(() => {
+   sfx.load()
+  }, 100)
+  musicPlayer.loadMfx('menu')
+  musicPlayer.loadMfx('online_lobby')
+ }
+ loadScript()
+
+ function skipWithKey() {
+  var arr = [$('#gtrisSplashText'), $('#splashLogo')]
+  arr.forEach((e) => {
+   e.stop(true, true)
+   e.css({ 'opacity': 0 })
+  })
+  skip()
+  sfx.fade(selectedSettings.Volume.SFX / 100, 0, 500)
+  sfx.on('volume', function() { this.unload() })
+ }
+
+ function skip() {
+  $('#splash').css('z-index', "-36")
+  activeMenu(true, "100%", true)
+  switchMenu(0, true, 'Gachatris Tetraplus 1 Alpha', true)
+  removeEventListener('keydown', skipWithKey)
+  removeEventListener('click', skipWithKey)
+  musicPlayer.playMfx('menu')
+  addEventListener('keydown', keyUpDown, false)
+  addEventListener('keyup', keyUpDown, false)
+ }
+
+ function initializeGTris() {
+  setTimeout(function() {
+   sfx.once('end', function() { sfx.unload() })
+   addEventListener('keydown', skipWithKey, false)
+   addEventListener('click', skipWithKey, false)
+  }, 300)
+  $('#gtrisSplashText').animate({ opacity: 0 }, 0, "linear", function() { this.innerHTML = gtris_transText('splash1') })
+  $('#gtrisSplashText').animate({ opacity: 1 }, 400, "linear")
+  $('#gtrisSplashText').animate({ opacity: 1 }, 2500, "linear")
+  $('#gtrisSplashText').animate({ opacity: 0 }, 400, "linear", function() { this.innerHTML = gtris_transText('splash2') })
+  $('#gtrisSplashText').animate({ opacity: 1 }, 400, "linear")
+  $('#gtrisSplashText').animate({ opacity: 1 }, 2500, "linear")
+  $('#gtrisSplashText').animate({ opacity: 0 }, 400, "linear", function() {
+   this.innerHTML = gtris_transText('splash3', gtris_version)
+   $('#splashLogo').animate({ opacity: 0 }, 0, "linear")
+   $('#splashLogo').animate({ opacity: 1 }, 400, "linear")
+   $('#splashLogo').animate({ opacity: 1 }, 1000, "linear")
+   $('#splashLogo').animate({ opacity: 0 }, 250, "linear")
+  })
+  $('#gtrisSplashText').animate({ opacity: 1 }, 400, "linear")
+  $('#gtrisSplashText').animate({ opacity: 1 }, 1000, "linear")
+  $('#gtrisSplashText').animate({ opacity: 0 }, 250, "linear", function() {
+   skip()
+  })
+ }
 }();
-
-

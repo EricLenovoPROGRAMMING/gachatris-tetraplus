@@ -101,7 +101,7 @@ GTTP_AI.prototype = {
 						}
 					} else
 
-					if ((field2.pieces / ((frame - (120 * 3)) / 120)) < this.PPSLimit || typeof this.PPSLimit !== 'number')
+					if ((field2.pieces / ((frame - (MAIN_FPS * 3)) / MAIN_FPS)) < this.PPSLimit || typeof this.PPSLimit !== 'number')
 					{
 						keysPressed2 |= flags.HDROP
 					}

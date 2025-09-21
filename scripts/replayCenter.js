@@ -13,6 +13,7 @@ class ReplayCenter
       "mode",
       "character",
       "seed",
+            "name"
       ],
 			tuning: [
       "DAS",
@@ -21,7 +22,7 @@ class ReplayCenter
       "SFT",
       "LCK",
       "PREV",
-      "name"
+
       ],
 			AI: {
 				main: [
@@ -185,6 +186,7 @@ class ReplayCenter
 				}
 			}
 		}
+		/*
 		if (isModeError !== "") {
 			throw gtris_transText("rp_modeError", isModeError)
 			return
@@ -198,6 +200,7 @@ class ReplayCenter
 				return str
 			})()])
 		}
+		/**/
 	}
 
 	generateReplay() {

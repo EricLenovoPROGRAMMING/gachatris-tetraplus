@@ -8,6 +8,7 @@ function SoundLoader() {
 	this.current = {
 		se: 'UNUSE'
 	}
+	this.loadedSE = {};
 	this.soundNamesArrayNoLoop = [
   'harddrop', 'move', 'rotate', 'land', 'lock', 'firsthold', 'hold',
   'b2b', 'game-3', 'game-2', 'game-1', 'game-start', 'bravo',
@@ -19,12 +20,16 @@ function SoundLoader() {
 		try {
 			if (this.selected.se != this.current.se) {
 				this.current.se = this.selected.se
-				this.ALL_LOADED = false
+				this.ALL_LOADED = false;
+				/*
 				for (let LOAD of this.soundNamesArrayNoLoop) {
 					this.se[LOAD] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/${LOAD}.ogg`, preload: false })
 				}
 				for (var i = 1; i < 21; i++) {
 					this.se[`ren${i}`] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/ren/ren${i}.ogg`, preload: false })
+				}
+				for (var i = 2; i < 21; i++) {
+					this.se[`ren${i}_power`] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/ren_power/ren${i}_power.ogg`, preload: false })
 				}
 				for (let i = 1; i < 6; i++) {
 					this.se[`line${i}`] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/line${i}.ogg`, preload: false })
@@ -63,6 +68,9 @@ function SoundLoader() {
 						this.se[`mini${i}`].once("loaderror", () => {
 							this.se[`mini${i}`] = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/tspin.ogg`, preload: false })
 							this.se[`mini${i}`].load()
+							this.se[`mini${i}`].once("load", () => {
+							this.se[`mini${i}`] = this.se[`mini${i}`];
+						})
 						})
 				}
 
@@ -81,40 +89,105 @@ function SoundLoader() {
 				this.se.hurry2.once('loaderror', () => {
 					this.se.hurry2 = new Howl({ src: `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/hurry.ogg`, preload: true })
 				})
-    this.SFX_LENGTH = Object.keys(this.se).length
+				this.SFX_LENGTH = Object.keys(this.se).length
 				for (let load in this.se) {
 					this.se[load].load()
 					this.seUsed[load] = 0
-					for(let Y of ['load', 'loaderror']){
-						this.se[load].once(Y, ()=>{
+					for (let Y of ['load', 'loaderror']) {
+						this.se[load].once(Y, () => {
 							this.SFX_LOADED++
-							this.checkLoaded()
+							 this.loadedSE[load] = this.se[load];
+							this.checkLoaded();
 						})
 					}
-				}
-    
+				}/**/
+				
+				//2024 revamp
+				
+				let directory = `assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}`;
+				let storage = {};
+				fetch(`${directory}/init.json`).then(ut => ut.text()).then( ut => {
+					let json = JSON.parse(ut);
+					//console.log(json);
+					let count = 0;
+					let length = 0;
+					//let gh = Object.keys(json.init).length;
+					for (let j in json.init) {
+						let n = json.init[j];
+						if ((n.src in storage)) {
+							this.se[j] = storage[n.src];
+							this.seUsed[j] = 0;
+							//console.log(`${j} has ${n.src}`, storage[n.src]._src)
+							continue;
+						}
+						if (!(n.src in json.sources)) console.log(n.src)
+						//storage[n.src] = {};
+						let jc = new Howl({
+							src: `${directory}/${json.sources[n.src]}`,
+							preload: false,
+							loop: n.loop
+						});
+						storage[n.src] = jc;
+						this.se[j] = storage[n.src];
+						this.seUsed[j] = 0;
+						length++;
+						jc.load();
+						//console.log(jc, j)
+						for (let y of ["load", "loaderror"]) {
+							jc.once(y, () => {
+								//console.log(n.src, y);
+								count++;
+								if (count >= length) {
+									this.ALL_LOADED = true;
+									
+								}
+							});
+						}
+					}
+					
+				});
+				
+
 			}
-		} catch (e) {}
+		} catch (e) {
+			console.error(e.stack)
+		}
 	}
 	this.SFX_LOADED = 0
 	this.SFX_LENGTH = 0
 	this.ALL_LOADED = false
-	this.checkLoaded = function(){
-		if(this.SFX_LOADED >= this.SFX_LENGTH){
-			this.ALL_LOADED = true
+	this.checkLoaded = function() {
+		if (this.SFX_LOADED >= this.SFX_LENGTH) {
+			this.ALL_LOADED = true;
+			let keys = Object.keys(this.loadedSE);
+			let values = Object.values(this.loadedSE).map(u => u._src.replace(`assets/se/game/${settingsList.Sound.SoundBank[this.current.se]}/`, ""));
+			let g = {
+				sources: {},
+				init: {},
+			};
+			
+			for (let k = 0; k < keys.length; k++) {
+				g.sources[keys[k]] = values[k];
+				let value = this.loadedSE[keys[k]];
+				g.init[keys[k]] ={
+					src: keys[k],
+					loop: value._loop,
+				} 
+			}
+			//document.write(JSON.stringify(g.init).replace(/,/gmi, ",<br>"));
 		} else {
 			this.ALL_LOADED = false
 		}
 	}
-	this.resetUsed = function(){
-		for(var e in this.seUsed){
-			if(this.seUsed[e] > 0)
-			this.seUsed[e] = 0
+	this.resetUsed = function() {
+		for (var e in this.seUsed) {
+			if (this.seUsed[e] > 0)
+				this.seUsed[e] = 0
 		}
 	}
 	this.playse = function(name) {
 		if (selectedSettings.Volume.SFX > 0 && this.seUsed[name] == 0) {
-			this.se[name].stop()
+			//this.se[name].stop()
 			this.se[name].volume(selectedSettings.Volume.SFX / 100)
 			this.se[name].play()
 			this.seUsed[name] = 1
@@ -155,7 +228,7 @@ function SoundLoader() {
 						preload: false
 					});
 					this.sfx[`${arr.dir}/${s}`].load()
-					
+
 				} else if (this.sfx[`${arr.dir}/${s}`]._src !== directory) {
 					this.sfx[`${arr.dir}/${s}`].unload()
 					this.sfx[`${arr.dir}/${s}`] = new Howl({
@@ -169,11 +242,11 @@ function SoundLoader() {
 		}
 		playse(name) {
 			if (selectedSettings.Volume.SFX > 0) {
-				try{
-				this.sfx[name].stop()
-				this.sfx[name].volume(selectedSettings.Volume.SFX / 100)
-				this.sfx[name].play()
-				}catch(e){}
+				try {
+					//this.sfx[name].stop()
+					this.sfx[name].volume(selectedSettings.Volume.SFX / 100)
+					this.sfx[name].play()
+				} catch (e) {}
 			}
 		}
 		stopse(name) {

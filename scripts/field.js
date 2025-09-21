@@ -36,7 +36,8 @@ function Field(NUMBER, ASSETS) {
 		tSpin: ASSETS.tSpin,
 		REN: ASSETS.REN,
 		B2B: ASSETS.B2B,
-		frenzyTimerText: ASSETS.frenzyTimerText
+		frenzyTimerText: ASSETS.frenzyTimerText,
+		frenzy: ASSETS.frenzy
 	}
 	this.valid = false
 	this.renInteger = 0;
@@ -48,6 +49,11 @@ function Field(NUMBER, ASSETS) {
 	this.voicestrength = 0;
 	this.garbageLimit = 9
 	this.clearRows = []
+	this.sp = {
+		pc: 0,
+		line: 0,
+		spin: 0
+	}
 	this.b2b = 0;
 	this.linevoice = 0;
 	this.isSpin = false;
@@ -127,11 +133,11 @@ function Field(NUMBER, ASSETS) {
 			lose: '',
 			fwar_enter: '',
 			fwar_send1: '',
-		 fwar_send2: '',
+			fwar_send2: '',
 			fwar_win: '',
-   fwar_receive1: '',
-  	fwar_receive2: '',
-  	fwar_lose: '',
+			fwar_receive1: '',
+			fwar_receive2: '',
+			fwar_lose: '',
 		},
 		fields: {
 			normal: '',
@@ -154,7 +160,7 @@ function Field(NUMBER, ASSETS) {
 	}
 	
 	this.canVoiceFrenzy = false
-
+	
 	this.statistics = {
 		line: {
 			single: 0,
@@ -229,6 +235,7 @@ function Field(NUMBER, ASSETS) {
 		ren: 0,
 		prev: [],
 	}
+	this.isPowerMode = false;
 }
 
 Field.prototype = {
@@ -242,8 +249,10 @@ Field.prototype = {
 		Ghost: 0,
 		OUTL: 0,
 	},
-
-
+	
+	
+	
+	
 	initFrenzySettings: function(obj) {
 		this.initFrenzy = {
 			activatorMax: obj.gMax || 10,
@@ -320,7 +329,7 @@ Field.prototype = {
 				break
 			}
 		}
-
+		
 		if (ren < 2) {
 			renStrength = 0
 			if (ren == 0) {
@@ -421,6 +430,7 @@ Field.prototype = {
 			if (selectedSettings.Other.ClearText >= 1) {
 				for (var e of pc) {
 					e.style.animationName = 'none'
+					e.offsetHeight;
 				}
 				$iH(this.mainAssets.perfectClear1, innerHTML)
 				$iH(this.mainAssets.perfectClear2, innerHTML)
@@ -439,7 +449,7 @@ Field.prototype = {
 			}
 		}
 	},
-
+	
 	loadCharacter: function(number) {
 		var selection = number || selectedSettings.NonIterable.Character
 		if (selection !== this.character.current) {
@@ -449,7 +459,7 @@ Field.prototype = {
 			this.isFieldEnable = true
 			docId(this.mainAssets.characterBackground).style.opacity = '100%'
 			docId(this.mainAssets.showResultCharImg).style.display = 'block'
-   
+			
 			for (let load in this.character.voices) {
 				this.character.voices[load] = new Howl({ src: [`assets/characters/${settingsList.NonIterable.Character[this.character.current]}/voices/${load}.ogg`], preload: false })
 			}
@@ -460,7 +470,7 @@ Field.prototype = {
 				this.gtrisenableplus = false
 			})
 			
-
+			
 			for (let load in this.character.load) {
 				this.character.load[load] = new Image()
 				this.character.load[load].src = this.character.fields[load] = `assets/characters/${settingsList.NonIterable.Character[this.character.current]}/${load}.png`
@@ -480,43 +490,57 @@ Field.prototype = {
 			this.assetsLength = Object.keys(this.character.loadAnim).length + Object.keys(this.character.voices).length
 			this.assetsLoaded = 0
 			this.allAssetsLoaded = false
-			for(let I in this.character.voices){
-				for(let Y of ["load","loaderror"])
-				this.character.voices[I].once(Y, ()=>{
-					this.assetsLoaded++
-					this.checkLoaded()
-				})
+			for (let I in this.character.voices) {
+				for (let Y of ["load", "loaderror"])
+					this.character.voices[I].once(Y, () => {
+						this.assetsLoaded++
+						this.checkLoaded()
+					})
 			}
 			for (let I in this.character.voices) {
-					setTimeout(() => {
-						this.character.voices[I].load()
-					}, 1000 * Math.random())
+				setTimeout(() => {
+					this.character.voices[I].load()
+				}, 1000 * Math.random())
 			}
 			for (let I in this.character.loadAnim) {
 				for (let Y of ["load", "error"])
 					this.character.loadAnim[I].addEventListener(Y, () => {
 						this.assetsLoaded++
 						this.checkLoaded()
-					}, {once: true})
+					}, { once: true })
 			}
 		}
 	},
-	checkLoaded: function(){
-		if(this.assetsLoaded >= this.assetsLength){
+	checkLoaded: function() {
+		if (this.assetsLoaded >= this.assetsLength) {
 			this.allAssetsLoaded = true
 		} else {
 			this.allAssetsLoaded = false
 		}
 	},
 	
-	playVoice: function(name) {
+	playVoice: function(name, im) {
 		var vol = selectedSettings.Volume.Character / 100
 		if (vol !== 0) {
-		 for (let b in this.character.voices) this.character.voices[b].stop()
+			for (let b in this.character.voices) this.character.voices[b].stop()
 			this.character.voices[name].volume(vol)
 			//this.character.voices[name].stop()
 			this.character.voices[name].play()
 		}
+		if (!isReplay && server.isOnline && server.isRunning && !im) {
+			//let g = new TextEncoder.encode(name);
+			let wr = server.createWriter("PLAYER_CHARACTER_SOUND", name.length+1);
+				wr.string(name, 8);
+				server.send(wr.buffer);
+		}
+	},
+	
+	playSound: function(name) {
+		soundPlayer.playse(name);
+		if (!isReplay && server.isOnline && server.isRunning) {
+	//let g = new TextEncoder.encode(name);
+		soundPoolOnline.push(name);
+}
 	},
 	showResultAnimation: function(bool, str) {
 		var img = docId(this.mainAssets.resultCharImg),
@@ -527,7 +551,7 @@ Field.prototype = {
 		show.style.animationName = "none"
 		text.style.animationName = "none"
 		if (bool == 'hide') {
-   [show.style.opacity, text.style.opacity] = [0, 0]
+			[show.style.opacity, text.style.opacity] = [0, 0]
 			show.style.transform = `translateY(${totalTetrionSize*16}px)`
 		}
 		text.innerHTML = str
@@ -564,7 +588,7 @@ Field.prototype = {
 		if (bool == 'frenzy') {
 			img.src = this.character.anim.enhancement
 			requestAnimationFrame(() => {
-      [show.style.animationName, text.style.animationName] = ["frenzyActionCharacter", "frenzyActionText"]
+				[show.style.animationName, text.style.animationName] = ["frenzyActionCharacter", "frenzyActionText"]
 			})
 		}
 	},
@@ -575,7 +599,7 @@ Field.prototype = {
 			i[e] = 0
 		return i
 	},
-
+	
 	modifyGrid: function(cy, gridArr, isFlipped) {
 		if (isFlipped == false) {
 			for (let x = 0; x < this.width; x++) {
@@ -606,7 +630,7 @@ Field.prototype = {
 			this.b2b = this.temp.b2b
 			this.renInteger = this.temp.ren
 			preview.grabBag = $copy(this.temp.prev)
-
+			
 			this.temp = {
 				grid: [],
 				held: 0,
@@ -616,7 +640,7 @@ Field.prototype = {
 			}
 		}
 	},
-
+	
 	clearGrid: function() {
 		var cells = this.makeArrayLength(this.width);
 		for (var i = 0; i < this.width; i++) {
@@ -632,7 +656,7 @@ Field.prototype = {
 			health: max,
 		}
 	},
-
+	
 	new: function(x, y) {
 		var cells = this.makeArrayLength(x)
 		for (var i = 0; i < x; i++) {
@@ -741,7 +765,7 @@ Field.prototype = {
 		this.frenzy.maxTimer = n || this.initFrenzy.maxTimerGauge
 		this.frenzy.timer = this.frenzy.maxTimer
 	},
-
+	
 	testSpace: function(x, y) {
 		if (this.grid[x] !== undefined && this.grid[x] !== 0) {
 			if (y < this.height) {
@@ -757,8 +781,9 @@ Field.prototype = {
 			return true;
 		}
 	},
-
+	
 	spinCheck: function() {
+		/*
 		var booldetect = false
 		var boolline = 0
 		this.isSpin = false;
@@ -843,6 +868,56 @@ Field.prototype = {
 			this.spinrecog = this.isSpin
 			this.spinrecogmini = this.isMini
 		}
+		*/
+		let p = gachamino;
+		let fld = this;
+		let spin = 0;
+		let mini = 0;
+		let x1y2 = 0;
+		let check = 0;
+		let posX = p.x;
+		let posY = ~~(p.y);
+		let rot = p.pos;
+		let a = pieces[p.index].spin;
+		let active = p.index;
+		let isMoveAir = gachamino.landed && !gachamino.moved;
+		if (isMoveAir) {
+			if ((active == 5 || false) && active !== 3) {
+				for (let x = 0, len1 = a.highX[rot].length; x < len1; x++) {
+					if (this.testSpace(posX + a.highX[rot][x], posY + a.highY[rot][x])) {
+						spin++;
+						check++;
+					}
+				}
+				for (let x = 0, len1 = a.lowX[rot].length; x < len1; x++) {
+					if (this.testSpace(posX + a.lowX[rot][x], posY + a.lowY[rot][x])) {
+						mini++;
+						check++;
+					}
+				}
+				if (p.stsd.y == -2 && (p.stsd.x >= 1 || p.stsd.x <= -1)) {
+					x1y2++;
+				}
+			}
+		}
+		
+		fld.isSpin = 0;
+		fld.isMini = 0;
+		//this.piece.spin.x1y2 = 0;
+		
+		if (check >= 3) {
+			if (x1y2 > 0) {
+				fld.isSpin = 1;
+			} else {
+				if (spin > 1) {
+					fld.isSpin = 1;
+				} else if (mini > 1) {
+					fld.isMini = 1;
+				}
+			}
+		}
+		this.spinrecog = this.isSpin;
+		this.spinrecogmini = this.isMini;
 	},
 	removeLines: function() {
 		var doesBlockExist = false
@@ -864,7 +939,7 @@ Field.prototype = {
 		}
 		this.clearRows = []
 		if (doesBlockExist)
-			soundPlayer.playse('collapse')
+			this.playSound('collapse')
 		this.checkWarning()
 		if (this.isFrenzy) {
 			this.speakTest(this.totalStrength, this.frenzy.initVoice, false, 0)
@@ -873,6 +948,7 @@ Field.prototype = {
 		this.draw()
 	},
 	rng: new ParkMillerPRNG(),
+	garbagerng: new ParkMillerPRNG(),
 	fieldResult: function(title, downfall, winlose) {
 		this.checkWarning('stop')
 		if (this.isActive) {
@@ -887,13 +963,20 @@ Field.prototype = {
 				this.mainAssets["gtris-body"].style.animationDuration = '4s'
 				this.mainAssets["gtris-body"].style.animationTimingFunction = 'linear'
 				this.isActive = false
-					setTimeout(()=>this.playVoice("win"), 2000)
+				setTimeout(() => this.playVoice("win", false), 2500)
 			} else if (winlose == 'lose') {
 				this.showResultAnimation('lose', typeof title !== 'object' ? gtris_transText(title) : gtris_transText(title.name, title.array))
 				soundPlayer.playse('game-lose')
 				this.isActive = false
-				setTimeout(()=>this.playVoice("lose"), 500)
+				setTimeout(() => this.playVoice("lose", false), 700);
+				
 				if ((this.is1v1 == "garbage" || this.is1v1 == "frenzywar") && "player2" in replayData) {
+					if (!isReplay && server.isOnline && server.isRunning) {
+						let wr = server.createWriter("MATCH_LOSE", title.length+1);
+						wr.string(title, 8);
+						server.send(wr.buffer);
+						
+					}
 					field2.fieldResult("onevone_pwinres", false, "win")
 					endGame({ name: "onevone_pwin", array: replayData.player2.name == "" ? gtris_character_details(settingsList.NonIterable.Character[field2.character.current]).name : replayData.player2.name }, "lose")
 				}
@@ -905,18 +988,18 @@ Field.prototype = {
 		this.rectanim.clear()
 	},
 	doStartup: function(e) {
-	  this.mainAssets["gtris-body"].offsetHeight;
-	  this.mainAssets["gtris-body"].style.opacity = "1"
-	  this.mainAssets["gtris-body"].style.animationName = 'tetrionEntranceAnimation'
-	  this.mainAssets["gtris-body"].style.animationDuration = '0.5s'
-	  this.mainAssets["gtris-body"].style.animationTimingFunction = 'linear';
+		this.mainAssets["gtris-body"].offsetHeight;
+		this.mainAssets["gtris-body"].style.opacity = "1"
+		this.mainAssets["gtris-body"].style.animationName = 'tetrionEntranceAnimation'
+		this.mainAssets["gtris-body"].style.animationDuration = '0.5s'
+		this.mainAssets["gtris-body"].style.animationTimingFunction = 'linear';
 	},
 	addGarbageToField: function(limit) {
 		var _limit = this.garbageLimit !== 0 ? this.garbageLimit : 42
 		var numLimit = 1
 		var garb = this.garbageArray.filter((i) => i.frame <= frame);
 		if (garb.length > 0) {
-		 
+			
 			while (garb.length > 0) {
 				numLimit++
 				let num = garb.shift().row
@@ -939,24 +1022,34 @@ Field.prototype = {
 				this.playVoice("damage2")
 				this.rectanim.execute("sd")
 			}
-			soundPlayer.playse('lineup')
+			this.playSound('lineup')
 		}
 		if (this.canCheckGarbageBar && this.canCheckGarbageBar !== "custom")
 			this.checkGarbageBar()
 	},
-	addGarbageToArray: function(count, row) {
+	addGarbageToArray: function(count) {
+		
+		
 		var _count = count || 0
+		var row = Math.floor(this.garbagerng.next() * 10);
 		for (var e = 0; e < _count; e++)
 			this.garbageArray.push({
-			 row: row,
-			 frame: frame + 60
-			})
+				row: row,
+				frame: frame + 30
+			});
+		
+		if (_count > 0 && !isReplay) {
+			if (frame in replayData.garbage) {
+				replayData.garbage[frame].push(_count);
+			} else
+			replayData.garbage[frame] = [_count];
+		}
 		if (this.canCheckGarbageBar && this.canCheckGarbageBar !== "custom")
 			this.checkGarbageBar()
 	},
 	offsetGarbage: function(count, line, pc) {
 		var _count = count || 0
-
+		
 		if (this.is1v1 == "garbage" && selectedSettings.Other.Particle >= 1) {
 			if (this.garbageArray.length > 0 && count > 0) {
 				GTRISParticleManagement.addParticle(
@@ -985,22 +1078,31 @@ Field.prototype = {
 				)
 			}
 		}
-
-		if (this.is1v1 == "garbage")
-			var ROW = Math.floor(this.rng.next() * 9.99999);
-
+		
+		
+		
+		
 		if (count > this.garbageArray.length && this.garbageArray.length > 0 && line >= 3 && !pc) {
 			this.counterVoice = true
 		} else this.counterVoice = false
+		let ga = 0;
 		for (var e = 0; e < _count; e++) {
 			if (this.garbageArray.length > 0) {
 				this.garbageArray.shift()
-			} else if (this.is1v1 == "garbage") {
-				field2.addGarbageToArray(1, ROW)
+			} else if (this.is1v1 == "garbage" && !isReplay) {
+				ga++;
 			} else if (this.is1v1 == "frenzywar") {
 				this.frenzyWar.garbageContributed++
 			}
 			this.statistics.atk++
+		}
+		if (ga > 0) {
+			if (server.isOnline && server.isRunning) {
+				let wr = server.createWriter("PLAYER_GARBAGE", 2);
+				wr.u16(ga);
+				server.send(wr.buffer);
+			}
+			else if (!isReplay) field2.addGarbageToArray(ga);
 		}
 		if (this.canCheckGarbageBar && this.canCheckGarbageBar !== "custom")
 			this.checkGarbageBar()
@@ -1041,124 +1143,124 @@ Field.prototype = {
 	checkFrenzyBar: function() {
 		if (this.isFrenzy) {
 			meterBar.frenzy.style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * ((this.frenzy.timer / this.frenzy.maxTimer)*20.4)))}px`
-			$iH(this.mainAssets.frenzyTimerText, Math.max(0, Math.ceil(this.frenzy.timer / 120)))
+			$iH(this.mainAssets.frenzyTimerText, Math.max(0, Math.ceil(this.frenzy.timer / MAIN_FPS)))
 		}
 	},
 	frenzyTimerRun: function() {
 		if (this.isFrenzy == true && this.frenzy.timerEnabled == true && this.isActive) {
 			this.frenzy.timer--
-			if (this.frenzy.timer <= 10 * 120 && this.frenzy.timer > 0) {
-				if (this.frenzy.timer % 120 == 0) {
-					soundPlayer.playse(`hurry${this.frenzy.timer < 120 * 3.1 ? '2' : ''}`)
+			if (this.frenzy.timer <= 10 * MAIN_FPS && this.frenzy.timer > 0) {
+				if (this.frenzy.timer % MAIN_FPS == 0) {
+					this.playSound(`hurry${this.frenzy.timer < MAIN_FPS * 3.1 ? '2' : ''}`)
 				}
 			}
 			switch (this.frenzy.timer) {
-				case 120 * 15: {
-					soundPlayer.playse('hurry')
+				case MAIN_FPS * 15: {
+					this.playSound('hurry')
 					break
 				}
-				case 120 * 30: {
-					soundPlayer.playse('hurry')
+				case MAIN_FPS * 30: {
+					this.playSound('hurry')
 					break
 				}
 			}
 			if (this.frenzy.timer == 0) {
-				soundPlayer.playse('timeup')
+				this.playSound('timeup')
 			}
 		}
 	},
 	offsetGarbageByClear: function(line, spin, ren, pc) {
 		var [renStrength, lineStrength, totalStrength, b2bStrength] = [0, 0, 0, 0]
 		if (true) {
-		switch (pc) {
-			case false: {
-				switch (spin) {
-					case true: {
-						if (line == 1) {
-							lineStrength = 2
+			switch (pc) {
+				case false: {
+					switch (spin) {
+						case true: {
+							if (line == 1) {
+								lineStrength = 2
+							}
+							if (line == 2) {
+								lineStrength = 4
+							}
+							if (line == 3) {
+								lineStrength = 6
+							}
+							break
 						}
-						if (line == 2) {
-							lineStrength = 4
+						case false: {
+							if (line == 1) {
+								lineStrength = 0
+							}
+							if (line == 2) {
+								lineStrength = 1
+							}
+							if (line == 3) {
+								lineStrength = 2
+							}
+							if (line == 4) {
+								lineStrength = 4
+							}
+							if (line > 4) {
+								lineStrength = 5
+							}
+							break
 						}
-						if (line == 3) {
-							lineStrength = 6
-						}
-						break
 					}
-					case false: {
-						if (line == 1) {
-							lineStrength = 0
-						}
-						if (line == 2) {
-							lineStrength = 1
-						}
-						if (line == 3) {
-							lineStrength = 2
-						}
-						if (line == 4) {
-							lineStrength = 4
-						}
-						if (line > 4) {
-							lineStrength = 5
-						}
-						break
-					}
+					break
 				}
-				break
+				case true: {
+					lineStrength = 10
+					break
+				}
 			}
-			case true: {
-				lineStrength = 10
-				break
+			if (ren < 2) {
+				renStrength = 0
 			}
+			if (ren >= 2 && ren < 4) {
+				renStrength = 1
+			}
+			if (ren >= 4 && ren < 6) {
+				renStrength = 2
+			}
+			if (ren >= 6 && ren < 8) {
+				renStrength = 3
+			}
+			if (ren >= 8 && ren < 11) {
+				renStrength = 4
+			}
+			if (ren >= 11) {
+				renStrength = 5
+			}
+			if (this.b2b > 0) {
+				b2bStrength = 1
+			}
+			totalStrength = lineStrength + renStrength + b2bStrength;
+			let to_looking4lia = "how about you";
+			
+		} else {
+			var a = 0;
+			var b = 0;
+			if (line > 3) {
+				b = 4;
+			} else if (line == 1) {
+				b = spin ? 2 : 0;
+			} else if (line == 2) {
+				b = spin ? 4 : 1;
+			} else if (line == 3) {
+				b = spin ? 6 : 2;
+			}
+			if (this.b2b > 0) b += 1; //+ b2blv;
+			//b *= this.garbMultiplier;
+			
+			a = b + ((b / 4) * ren);
+			if (b == 0) a += [0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3][Math.min(ren, 20)] // * this.garbMultiplier;
+			if (pc && line > 0) {
+				a += 10;
+			}
+			totalStrength = a;
 		}
-		if (ren < 2) {
-			renStrength = 0
-		}
-		if (ren >= 2 && ren < 4) {
-			renStrength = 1
-		}
-		if (ren >= 4 && ren < 6) {
-			renStrength = 2
-		}
-		if (ren >= 6 && ren < 8) {
-			renStrength = 3
-		}
-		if (ren >= 8 && ren < 11) {
-			renStrength = 4
-		}
-		if (ren >= 11) {
-			renStrength = 5
-		}
-		if (this.b2b > 0) {
-			b2bStrength = 1
-		}
-		totalStrength = lineStrength + renStrength + b2bStrength;
-		let to_looking4lia = "how about you";
 		
-				} else {
-  var a = 0;
-  var b = 0;
-		     if (line > 3) {
-		      b = 4;
-		     } else if (line == 1) {
-		      b = spin ? 2 : 0;
-		     } else if (line == 2) {
-		      b = spin ? 4 : 1;
-		     } else if (line == 3) {
-		      b = spin ? 6 : 2;
-		     }
-		     if (this.b2b > 0) b += 1; //+ b2blv;
-		     //b *= this.garbMultiplier;
-		 
-		     a = b + ((b / 4) * ren);
-		     if (b == 0) a += [0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3][Math.min(ren, 20)]// * this.garbMultiplier;
-		     if (pc && line > 0) {
-		      a += 10;
-		     }
-		     totalStrength = a;
-		}
-
-
+		
 		
 		
 		
@@ -1168,18 +1270,18 @@ Field.prototype = {
 		var a = $CN(`gtris-rainbow-border-${this.mainAssets.classP}`)
 		var b = $CN(`gtris-rainbow-bg-${this.mainAssets.classP}`)
 		var bg = docId(this.mainAssets.bgFrenzyLayout)
-		var spin = docId(this.mainAssets.dynamicFrenzyBg)
-  spin.offsetHeight;
+		//var spin = docId(this.mainAssets.dynamicFrenzyBg)
+		//spin.offsetHeight;
 		bg.style.display = "none"
-		spin.style.animationName = "none"
-
+		//spin.style.animationName = "none"
+		
 		for (let e of a) {
 			e.style.animationName = "none"
 		}
 		for (let e of b) {
 			e.style.animationName = "none"
 		}
-
+		
 		if (bool == true) {
 			for (let e = 0; e < a.length; e++) {
 				a[e].style.animationName = "frenzyBorder"
@@ -1188,27 +1290,27 @@ Field.prototype = {
 				b[e].style.animationName = "frenzyFill"
 			}
 			bg.style.display = "flex"
-			spin.style.animationName = "bgFrenzyRot"
+			//spin.style.animationName = "bgFrenzyRot"
 		}
-
+		
 	},
-
+	
 	changeFrenzyColor: function(type, col, speed) {
 		var e = docId(this.mainAssets.colorFrenzyOverlay)
-		var d = docId(this.mainAssets.dynamicFrenzyBg)
-		const b = ["#222", "#066", "#006", "#610", "#660", "#060", "#606", "#600"]
+		//var d = docId(this.mainAssets.dynamicFrenzyBg)
+		const b = ["#111", "#0aa", "#00a", "#a50", "#aa0", "#0a0", "#a0a", "#a00"]
 		if (type == "change") {
 			e.style.background = col == "n" ? b[0] : b[gachamino.index + 1]
 		}
 		if (typeof speed !== "undefined") {
-			d.style.animationDuration = speed == "fast" ? "700ms" : "2500ms"
+			//d.style.animationDuration = speed == "fast" ? "700ms" : "2500ms"
 		}
 		if (type == "restore") {
 			e.style.background = b[0]
-			d.style.animationDuration = '2500ms'
+			//d.style.animationDuration = '2500ms'
 		}
 	},
-
+	
 	addPiece: function(tetro) {
 		this.enablespin = this.spinrecog
 		this.enablemini = this.spinrecogmini
@@ -1256,7 +1358,7 @@ Field.prototype = {
 			return a - b;
 		});
 		var row = this.height,
-		len = this.height
+			len = this.height
 		if (this.canClearLines === "normal") {
 			row = 0
 		} else if (this.canClearLines === "zone") {
@@ -1264,57 +1366,59 @@ Field.prototype = {
 			len = row + range.length
 		}
 		for (; row < len; row++) {
+			if (gameMode === 9) break;
 			var count = 0;
 			for (var x = 0; x < this.width; x++) {
 				if (this.testSpace(x, row)) count++;
 			}
 			if (count > 9) {
-				if(this.canClearLines === "normal"){
-				linesDetection++;
-				this.lineTotal++
-				if (typeof this.lineLeft === "number" && this.lineLeft > 0)
-					this.lineLeft--
-				if (this.isFrenzy) {
-					this.frenzy.requireLines--
-				}
-				
-				if (selectedSettings.Other.Particle >= 3)
-					for (var x = 0; x < this.width; x++)
-						GTRISParticleManagement.addParticle(
-							2,
-							this.grid[x][row],
-							getElemPos(this.mainAssets.playField, "x") + ((x) * totalTetrionSize),
-							getElemPos(this.mainAssets.playField, "y") + ((row - 20.4) * totalTetrionSize),
-							getElemPos(this.mainAssets.playField, "x") + ((x + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
-							getElemPos(this.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * totalTetrionSize),
-							this.isFrenzy ? 70 : 150,
-							1,
-							"fallField"
-						)
-				if (this.are.add.line > 0) {
-					this.are.line = this.are.add.line
-					this.clearRows.push(row)
-					for (var y = row; y >= row; y--) {
-						for (var x = 0; x < 10; x++) {
-							this.grid[x][y] = 0
-						}
+				if (this.canClearLines === "normal") {
+					linesDetection++;
+					this.lineTotal++
+					if (typeof this.lineLeft === "number" && this.lineLeft > 0)
+						this.lineLeft--
+					if (this.isFrenzy) {
+						this.frenzy.requireLines--
 					}
-				} else {
-					for (var y = row; y >= 0; y--) {
-						for (var x = 0; x < this.width; x++) {
-							this.grid[x][y] = this.grid[x][y - 1]
-							if (this.isC4W) {
-								for (var cx = 0; cx < 3; cx++) {
-									this.grid[cx][20] = 8
-								}
-								for (var cx = 7; cx < 10; cx++) {
-									this.grid[cx][20] = 8
+					
+					if (selectedSettings.Other.Particle >= 3)
+						for (var x = 0; x < this.width; x++)
+							GTRISParticleManagement.addParticle(
+								2,
+								this.grid[x][row],
+								getElemPos(this.mainAssets.playField, "x") + ((x) * totalTetrionSize),
+								getElemPos(this.mainAssets.playField, "y") + ((row - 20.4) * totalTetrionSize),
+								getElemPos(this.mainAssets.playField, "x") + ((x + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
+								getElemPos(this.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * totalTetrionSize),
+								this.isFrenzy ? 70 : 150,
+								1,
+								"fallField",
+								Math.random() * MAIN_FPS - (Math.random() * MAIN_FPS)
+							)
+					if (this.are.add.line > 0) {
+						this.are.line = this.are.add.line
+						this.clearRows.push(row)
+						for (var y = row; y >= row; y--) {
+							for (var x = 0; x < 10; x++) {
+								this.grid[x][y] = 0
+							}
+						}
+					} else {
+						for (var y = row; y >= 0; y--) {
+							for (var x = 0; x < this.width; x++) {
+								this.grid[x][y] = this.grid[x][y - 1]
+								if (this.isC4W) {
+									for (var cx = 0; cx < 3; cx++) {
+										this.grid[cx][20] = 8
+									}
+									for (var cx = 7; cx < 10; cx++) {
+										this.grid[cx][20] = 8
+									}
 								}
 							}
 						}
 					}
-				}
-				} else if(this.canClearLines == "zone"){
+				} else if (this.canClearLines == "zone") {
 					linesDetection++
 					for (var y = row; y >= 0; y--) {
 						for (var x = 0; x < this.width; x++) {
@@ -1333,17 +1437,17 @@ Field.prototype = {
 				}
 			}
 		}
-		if(this.canClearLines === "zone"){
-		 for(var e = 0; e < linesDetection; e++){
-			for (var x = 0; x < this.width; x++) {
-				for (var y = 0; y < this.height; y++) {
-					this.grid[x][y] = this.grid[x][y + 1]
+		if (this.canClearLines === "zone") {
+			for (var e = 0; e < linesDetection; e++) {
+				for (var x = 0; x < this.width; x++) {
+					for (var y = 0; y < this.height; y++) {
+						this.grid[x][y] = this.grid[x][y + 1]
+					}
+				}
+				for (var x = 0; x < this.width; x++) {
+					this.grid[x][this.height - 1] = 10
 				}
 			}
-			for (var x = 0; x < this.width; x++) {
-				this.grid[x][this.height - 1] = 10
-			}
-		 }
 		}
 		this.pieces++
 		if (["marathon", "master"].indexOf(this.isGravityType) !== -1) {
@@ -1373,12 +1477,21 @@ Field.prototype = {
 			this.spinCheckCount = 0;
 			this.miniSpinCount = 0
 		}
-
+		if (gameMode === 9) {
+			this.linespinrecog = false;
+			this.minispinrecog = false
+			this.enablespin = false;
+			this.spinrecog = false;
+			this.isSpin = false;
+			this.isMini = false
+		}
 		if (linesDetection == 0) {
+			
+			this.isPowerMode = false;
 			if (!this.isFrenzyOngoing && !this.isFrenzy)
 				this.addGarbageToField()
 			if (this.renInteger > 1) {
-				soundPlayer.playse('ren-end')
+				this.playSound('ren-end')
 			}
 			this.renInteger = -1
 			this.showClearTextREN('hide')
@@ -1388,7 +1501,7 @@ Field.prototype = {
 				this.showClearTextTSPIN('', gtris_transText('mini'), "outward", gtris_transText('miniAnimated'))
 				this.statistics.mini.zero++
 				this.score += 100 * this.level
-				soundPlayer.playse('mini0')
+				this.playSound('mini0')
 			}
 			if (this.isSpin) {
 				this.showClearText('hide')
@@ -1396,14 +1509,14 @@ Field.prototype = {
 				this.showClearTextTSPIN('', gtris_transText('spin'), "outward", gtris_transText('spinAnimated'))
 				this.statistics.spin.zero++
 				this.score += 400 * this.level
-				soundPlayer.playse('tspin0')
+				this.playSound('tspin0')
 			}
-
+			
 			if (this.isFrenzy) {
 				this.frenzy.failTrigger = true
 				this.frenzy.fails++
-				this.are.next = 80
-				this.are.del = 70
+				this.are.next = 40
+				this.are.del = 35
 				for (var x = 0; x < this.width; x++) {
 					for (var y = 0; y < this.height; y++) {
 						if (this.grid[x][y] !== 0 && this.testSpace(x, y)) {
@@ -1422,38 +1535,42 @@ Field.prototype = {
 			}
 		}
 		this.checkWarning()
+		
 		if (linesDetection !== 0) {
 			this.showClearText('hide')
 			this.showClearTextTSPIN('hide')
 			if (perfectClear) {
-				soundPlayer.playse('bravo')
+				this.playSound('bravo')
 				this.engagePC(true, gtris_transText("pc"))
 				this.statistics.pc++
 			}
-
-
-			this.renInteger ++;
+			this.renInteger++;
+			if (this.renInteger > 1 && (linesDetection > 3 || (this.linespinrecog && linesDetection > 1))) this.isPowerMode = true;
+			
+			
 			if (this.renInteger > 0) {
-				this.showClearTextREN('show', gtris_transText('combo', this.renInteger))
+				this.showClearTextREN('show', gtris_transText('combo', this.renInteger));
 				this.score += this.renInteger * 50 * this.level
 				if (!this.isFrenzy) {
-					soundPlayer.playse(`ren${Math.min(20,this.renInteger)}`)
-									if (selectedSettings.Other.Particle >= 4)
-									 for (let e = 0; e < Math.min(20,this.renInteger); e++)
-									  GTRISParticleManagement.addParticle(
-									   0,
-									   Math.floor(Math.random() * 6) + 1,
-									   getElemPos(this.mainAssets.playField, "x") + ((gachamino.x + 1) * totalTetrionSize),
-									   getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4 + 1) * totalTetrionSize),
-									   getElemPos(this.mainAssets.playField, "x") + ((gachamino.x + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
-									   getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4 + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
-									   Math.round(Math.random() * 130) + 50,
-									   0.5,
-									   "hardDrop"
-									  )
+					if (!this.isPowerMode) this.playSound(`ren${Math.min(20,this.renInteger)}`);
+					else this.playSound(`ren${Math.min(20,this.renInteger)}_power`);
+					//console.log(this.isPowerMode)
+					if (selectedSettings.Other.Particle >= 4)
+						for (let e = 0; e < Math.min(20, this.renInteger); e++)
+							GTRISParticleManagement.addParticle(
+								0,
+								Math.floor(Math.random() * 6) + 1,
+								getElemPos(this.mainAssets.playField, "x") + ((gachamino.x + 1) * totalTetrionSize),
+								getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4 + 1) * totalTetrionSize),
+								getElemPos(this.mainAssets.playField, "x") + ((gachamino.x + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
+								getElemPos(this.mainAssets.playField, "y") + ((gachamino.y - 20.4 + 1 + (Math.random() * 15) + (Math.random() * -15)) * totalTetrionSize),
+								Math.round(Math.random() * 130) + 50,
+								0.5,
+								"hardDrop"
+							)
 				}
 			}
-
+			
 			this.clearLines(linesDetection, this.linespinrecog, this.minispinrecog, this.b2b, perfectClear)
 			this.offsetGarbageByClear(linesDetection, this.linespinrecog, this.renInteger, perfectClear)
 			if (!this.isFrenzy) {
@@ -1462,11 +1579,13 @@ Field.prototype = {
 				this.totalStrength = 0
 				this.frenzy.initVoice++
 				this.changeFrenzyColor("change", "", "fast")
+				PLAYERS[0].frenzyBg.moveEye(gachamino.x, gachamino.y - (this.height - 20.4), false);
+				
 				if (this.frenzy.requireLines <= 0) {
 					this.frenzy.successTrigger = true
 					this.frenzy.successes++
-					this.are.next = 80
-					this.are.del = 70
+					this.are.next = 40
+					this.are.del = 35
 					if (this.frenzy.phase < 4) {
 						this.totalStrength = 1
 					}
@@ -1493,50 +1612,71 @@ Field.prototype = {
 					if (this.statistics.tsd >= 20) {
 						this.fieldResult({ name: 'tsd_reached', array: this.statistics.tsd }, 'win', 'win')
 						if (!this.is1v1 && this.is1v1 !== "garbage")
-
+							
 							endGame({ name: 'tsd_reached_result', array: this.statistics.tsd }, 'win')
-
+						
 					} else {
 						this.fieldResult('tsd_failed', true, 'lose')
 						if (!this.is1v1 && this.is1v1 !== "garbage")
-
+							
 							endGame('tsd_failed', 'lose')
 					}
 				} else this.statistics.tsd++
 			}
 			if (this.frenzy.activatorGauge >= Math.max(this.frenzyactivatorMax, 0)) {
 				if (!this.isFrenzy) {
-					this.are.frenzyEnt = 200
+					this.are.frenzyEnt = 50
 				}
 			}
 		}
-
+		
 		if (this.frenzy.fails >= this.frenzy.failMax && this.frenzy.timer > 0) {
 			this.are.failing = 1
-			this.are.frenzyExt = 30
+			this.are.frenzyExt = 15
 		}
-
+		
 		if (this.isFrenzy && this.frenzy.timer <= 0) {
-			this.are.frenzyExt = 20
+			this.are.frenzyExt = 10
 		}
-
+		
 		this.draw();
-		this.linespinrecog = false
-		this.minispinrecog = false
+		//this.linespinrecog = false
+		//this.minispinrecog = false
 		while (this.remainingLevelLines <= 0 && ["marathon", "master"].indexOf(this.isGravityType) !== -1 && (typeof this.levelMax === "number" ? (this.levelMax > this.level) : true)) {
 			this.level++
 			this.remainingLevelLines += this.maxLevelLines
-			soundPlayer.playse('levelup')
+			this.playSound('levelup')
 		}
+		
+		if (!isReplay && server.isOnline && server.isRunning) {
+			let wr = server.createWriter("PLAYER_CLEARTEXT", 2*2 + 3);
+			wr.u8(linesDetection);
+			if (this.linespinrecog) wr.u8(2);
+			else
+			if (this.minispinrecog) wr.u8(1);
+			else wr.u8(0);
+			
+			wr.i16(this.renInteger);
+			if (linesDetection > 0) {
+				wr.i16(this.b2b);
+				wr.u8(perfectClear? 1 : 0)
+			} else { wr.i16(-2); wr.u8(0); }
+			
+			server.send(wr.buffer);
+		}
+		
+		this.linespinrecog = false
+		this.minispinrecog = false
+		
 		return true
 	},
-
+	
 	resetFieldPosition: function() {
 		this.mainAssets["gtris-body"].style.transition = 'transform 0s linear'
 		this.mainAssets["gtris-body"].style.transform = 'translateY(0) rotateZ(0deg)'
 	},
-
-	showClearText: function(compo, text, animation, aText, isEffect) {
+	
+	showClearText: function(compo, text, animation, aText, isEffect, acolor) {
 		let components = $(`#${this.mainAssets.regular}`),
 			docid = docId(this.mainAssets.regular)
 		docid.style.opacity = "0%"
@@ -1551,26 +1691,20 @@ Field.prototype = {
 			components.animate({ opacity: 1, letterSpacing: `${totalTetrionSize * 0.13}px` }, 1800, 'linear')
 			components.animate({ opacity: 0, letterSpacing: `${totalTetrionSize * 0.13}px` }, 200, 'linear')
 		} else if (selectedSettings.Other.ClearText == 2) {
+			$iH(this.mainAssets.regular, aText ? (isEffect ? (() => {
+				var a = aText
+				var e = ""
+				for (var t = 0, len = a.length; t < len; t++) {
+					e += `<span class="gtrisLetter" style="--acolor: ${acolor}; animation: gtrisCLEARTEXTAnim 1.5s 1 ease-out ${t * 0.04}s; opacity: 0%">${a[t]}</span>`
+				}
+				return e
+			})() : aText) : text)
 			if (animation == "outward") {
-				$iH(this.mainAssets.regular, aText ? (isEffect ? (() => {
-					var a = aText.split("")
-					var e = ""
-     for(var t = 0, len = a.length; t < len; t++){
-     	e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
-     }
-					return e
-				})() : aText) : text)
+				
 				requestAnimationFrame(() => docid.style.animation = "cleartextOutward 2.1s 1 ease-out")
 			}
 			else if (animation == "inward") {
-				$iH(this.mainAssets.regular, aText ? (isEffect ? (() => {
-					var a = aText
-					var e = ""
-     for(var t = 0, len = a.length; t < len; t++){
-     	e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
-     }
-					return e
-				})() : aText) : text)
+				
 				requestAnimationFrame(() => docid.style.animation = "cleartextInward 2.1s 1 ease-out")
 			}
 		}
@@ -1594,9 +1728,9 @@ Field.prototype = {
 				$iH(this.mainAssets.tSpin, aText ? (isEffect ? (() => {
 					var a = aText.split("")
 					var e = ""
-     for(var t = 0, len = a.length; t < len; t++){
-     	e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
-     }
+					for (var t = 0, len = a.length; t < len; t++) {
+						e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
+					}
 					return e
 				})() : aText) : text)
 				requestAnimationFrame(() => docid.style.animation = "cleartextOutward 2.1s 1 ease-out")
@@ -1605,9 +1739,9 @@ Field.prototype = {
 				$iH(this.mainAssets.tSpin, aText ? (isEffect ? (() => {
 					var a = aText.split("")
 					var e = ""
-     for(var t = 0, len = a.length; t < len; t++){
-     	e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
-     }
+					for (var t = 0, len = a.length; t < len; t++) {
+						e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
+					}
 					return e
 				})() : aText) : text)
 				requestAnimationFrame(() => docid.style.animation = "cleartextInward 2.1s 1 ease-out")
@@ -1661,7 +1795,7 @@ Field.prototype = {
 			this.b2b++
 		}
 		if (this.minispinrecog) {
-				this.showClearTextTSPIN('', gtris_transText('mini'), "outward", gtris_transText('miniAnimated'))
+			this.showClearTextTSPIN('', gtris_transText('mini'), "outward", gtris_transText('miniAnimated'))
 			this.b2b++
 		}
 		if (line > 3) {
@@ -1677,30 +1811,30 @@ Field.prototype = {
 			this.showClearText('', gtris_transText('line2'), "outward")
 		}
 		if (line == 3) {
-			this.showClearText('', gtris_transText('line3'), "outward")
+			this.showClearText('', gtris_transText('line3'), this.linespinrecog ? "inward" : "outward", gtris_transText('line3'), this.linespinrecog, "#80FF")
 		}
 		if (line == 4) {
-			this.showClearText('', gtris_transText('line4'), "inward", gtris_transText('line4'), true)
+			this.showClearText('', gtris_transText('line4'), "inward", gtris_transText('line4'), true, "#0CCF")
 		}
 		if (line >= 5) {
-			this.showClearText('', gtris_transText('line5'), "inward", gtris_transText('line5'), true)
+			this.showClearText('', gtris_transText('line5'), "inward", gtris_transText('line5'), true, "#0CCF")
 		}
-
+		
 		if (mini) {
 			switch (line) {
 				case 1: {
 					if (this.b2b > 0)
-						soundPlayer.playse('mini1E')
+						this.playSound('mini1E')
 					else
-						soundPlayer.playse('mini1')
+						this.playSound('mini1')
 					this.statistics.mini.single++
 					break
 				}
 				case 2: {
 					if (this.b2b > 0)
-						soundPlayer.playse('mini2E')
+						this.playSound('mini2E')
 					else
-						soundPlayer.playse('mini2')
+						this.playSound('mini2')
 					this.statistics.mini.double++
 					break
 				}
@@ -1710,25 +1844,25 @@ Field.prototype = {
 			switch (line) {
 				case 1: {
 					if (this.b2b > 0)
-						soundPlayer.playse('tspin1E')
+						this.playSound('tspin1E')
 					else
-						soundPlayer.playse('tspin1')
+						this.playSound('tspin1')
 					this.statistics.spin.single++
 					break
 				}
 				case 2: {
 					if (this.b2b > 0)
-						soundPlayer.playse('tspin2E')
+						this.playSound('tspin2E')
 					else
-						soundPlayer.playse('tspin2')
+						this.playSound('tspin2')
 					this.statistics.spin.double++
 					break
 				}
 				case 3: {
 					if (this.b2b > 0)
-						soundPlayer.playse('tspin3E')
+						this.playSound('tspin3E')
 					else
-						soundPlayer.playse('tspin3')
+						this.playSound('tspin3')
 					this.statistics.spin.triple++
 					break
 				}
@@ -1737,25 +1871,25 @@ Field.prototype = {
 		if (!mini && !spin) {
 			switch (Math.min(4, line)) {
 				case 1: {
-					soundPlayer.playse('line1')
+					this.playSound('line1')
 					this.statistics.line.single++
 					break
 				}
 				case 2: {
-					soundPlayer.playse('line2')
+					this.playSound('line2')
 					this.statistics.line.double++
 					break
 				}
 				case 3: {
-					soundPlayer.playse('line3')
+					this.playSound('line3')
 					this.statistics.line.triple++
 					break
 				}
 				case 4: {
 					if (this.b2b > 0)
-						soundPlayer.playse('line4E')
+						this.playSound('line4E')
 					else
-						soundPlayer.playse('line4')
+						this.playSound('line4')
 					this.statistics.line.gtris++
 					break
 				}
@@ -1913,13 +2047,15 @@ Field.prototype = {
 			}
 		}
 		if (this.b2b > 0) {
-			this.showClearTextB2B('show', gtris_transText("b2bcounter", this.b2b))
-			soundPlayer.playse('b2b')
+			this.showClearTextB2B('show', gtris_transText("b2bcounter", this.b2b));
+			this.playSound('b2b')
 		} else {
 			this.showClearTextB2B('hide')
 		}
+		
+		
 	},
-
+	
 	checkWarning: function(stop) {
 		var checked = false
 		for (var i = 0; i < this.width; i++) {
@@ -1933,10 +2069,6 @@ Field.prototype = {
 		if (stop == 'stop') checked = false
 		if (checked && stop !== 'stop' && !this.isC4W && !this.isFrenzy && stop !== "warning") {
 			if (!this.warning) {
-				soundPlayer.stopse('alarm')
-				if (stop !== 'stop') {
-					soundPlayer.playse('alarm')
-				}
 				docId(this.mainAssets.holdTextPlaceholder).style.backgroundColor = "#f00"
 				docId(this.mainAssets.nextTextPlaceholder).style.backgroundColor = "#f00"
 				docId(this.mainAssets.playField).style.borderColor = "#f00"
@@ -1948,41 +2080,36 @@ Field.prototype = {
 				this.warning = true
 			}
 		} else {
-			if (this.warning) {
+			if (this.warning || stop == "reset") {
 				this.warning = false
-				docId(this.mainAssets.holdTextPlaceholder).style.backgroundColor = "#fff"
-				docId(this.mainAssets.nextTextPlaceholder).style.backgroundColor = "#fff"
-				docId(this.mainAssets.playField).style.borderColor = "#fff"
-				docId(this.mainAssets.meterBarRight).style.borderColor = "#fff"
-				docId(this.mainAssets.meterBarLeft).style.borderColor = "#fff"
-				soundPlayer.stopse("alarm")
-				soundPlayer.fadese('alarm', 100, 0, 0)
+				let amc = "#AAF";
+				docId(this.mainAssets.holdTextPlaceholder).style.backgroundColor = amc;
+				docId(this.mainAssets.nextTextPlaceholder).style.backgroundColor = amc;
+				docId(this.mainAssets.playField).style.borderColor = amc;
+				docId(this.mainAssets.meterBarRight).style.borderColor = amc;
+				docId(this.mainAssets.meterBarLeft).style.borderColor = amc;
 				if (this.isFieldEnable && stop !== 'stop' && stop !== 'paused') {
 					docId(this.mainAssets.characterBackground).src = this.character.fields.normal
 				}
 			}
 		}
 		if (this.warning && stop == 'paused') {
-			soundPlayer.fadese('alarm', 100, 0, 0)
-			soundPlayer.pausese('topoutwarning')
-			soundPlayer.pausese('alarm')
+			
 		}
 		if (this.warning && stop == 'resumed') {
-			soundPlayer.playse('alarm')
-			if (gachamino.lockoutActive) {
-				soundPlayer.playse('topoutwarning')
-			}
+			
 		}
 	},
-
+	
 	draw: function() {
 		clear(_CTX[this.mainAssets.field]);
+		
 		draw(this.grid, 0, -19.6, this.mainAssets.field, void 0, 0);
 		_CTX[this.mainAssets.field].globalCompositeOperation = 'source-atop'
 		_CTX[this.mainAssets.field].fillStyle = 'rgba(0,0,0,0.2)'
 		_CTX[this.mainAssets.field].fillRect(0, 0, _canvasses[this.mainAssets.field].width, _canvasses[this.mainAssets.field].height);
 		_CTX[this.mainAssets.field].globalCompositeOperation = 'source-over'
-
+		
 		if (this.pieceSettings.OUTL == 1) {
 			var b = ~~(cellSize / 6);
 			var c = cellSize;
@@ -2101,8 +2228,8 @@ Field.prototype = {
 			lineCtx.fill();
 			_CTX[this.mainAssets.field].drawImage(lineCanvas, 0, cellSize * -19.6, lineCanvas.width, lineCanvas.height);
 		}
-
-
+		
+		
 	},
 	rectanim: new class {
 		constructor(id) {
@@ -2144,7 +2271,7 @@ Field.prototype = {
 					this.assets[e].addEventListener("load", () => {
 						this.loadedAsset++
 						this.checkLoad()
-					},{once: true})
+					}, { once: true })
 					try {
 						var s = document.createElement("CANVAS"),
 							c = s.getContext("2d")
@@ -2153,10 +2280,10 @@ Field.prototype = {
 				}
 			}
 		}
-		checkLoad(){
-			if(this.loadedAsset >= 7){
+		checkLoad() {
+			if (this.loadedAsset >= 7) {
 				this.allLoaded = true
-			}else{
+			} else {
 				this.allLoaded = false
 			}
 		}
@@ -2259,4 +2386,5 @@ const field = new Field(0, {
 	TEXT_next: "TEXT_next",
 	TEXT_hold: "TEXT_hold",
 	frenzyTimerText: "frenzyTimerText",
+	frenzy: "frenzyCanvas"
 })

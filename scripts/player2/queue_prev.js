@@ -19,7 +19,7 @@ const preview2 = new function() {
     for (var i = 0; i < pieceList.length - 1; i++)
     {
       var temp = pieceList[i];
-      var rand = ~~((pieceList.length - i) * gachamino.rng.next()) + i;
+      var rand = ~~((pieceList.length - i) * gachamino2.rng.next()) + i;
       pieceList[i] = pieceList[rand];
       pieceList[rand] = temp;
     }

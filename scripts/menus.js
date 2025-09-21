@@ -86,7 +86,7 @@ var keysText = {
 	117: 'F6',
 	118: 'F7',
 	119: 'F8',
-	120: 'F9',
+	MAIN_FPS: 'F9',
 	121: 'F10',
 	122: 'F11',
 	123: 'F12',
@@ -137,7 +137,7 @@ function keyUpDown(e) {
 				pause();
 			}
 		}
-		if (e.type === "keydown" && e.keyCode === selectedSettings.Binds.retry) {
+		if (e.type === "keydown" && e.keyCode === selectedSettings.Binds.retry && (!server.isOnline)) {
 			if ($QSA('.menuActive', 0)?.innerHTML) {
 				if ($QSA('.menuActive', 0).innerHTML.indexOf('<textarea') == -1)
 					gameStart(gameMode);
@@ -147,10 +147,11 @@ function keyUpDown(e) {
 		}
 		if (!isReplay) {
 			var flag = keyCodeToKeyFlag(e.keyCode);
+			//console.log(e.keyCode);
 			if (e.type === "keydown") {
-				keysPressed |= flag
+				class_game.keysPressed |= flag;
 			} else if (e.type === "keyup") {
-				keysPressed &= ~flag
+				class_game.keysPressed &= ~flag;
 			}
 		}
 	} else {
@@ -229,7 +230,7 @@ function switchMenu(menuInd, showheader, title, disableUndo) {
 	if (movedMenuSessions.length !== 0) {
 		docId('headerBackButton').style.display = 'flex'
 	} else {
-		headerLast = 'title'
+		headerLast = server.isOnline ? "title_online" :  'title'
 		$iH('headerTitle', title ? title : headerLast)
 		docId('headerBackButton').style.display = 'none'
 	}

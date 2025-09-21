@@ -6,18 +6,18 @@ class UltraScoreAttack {
 	run(bool) {
 		if (this.isTimerEnabled && bool) {
 			this.time--;
-			if (this.time <= 10 * 120 && this.time > 0) {
-				if (this.time % 120 == 0) {
-					this.ringTimer(this.time < 120 * 3.1 ? 1 : '')
-					countDownText(`${(this.time / 120).toFixed(0)}`, false, true)
+			if (this.time <= 10 * MAIN_FPS && this.time > 0) {
+				if (this.time % MAIN_FPS == 0) {
+					this.ringTimer(this.time < MAIN_FPS * 3.1 ? 1 : '')
+					countDownText(`${(this.time / MAIN_FPS).toFixed(0)}`, false, true)
 				}
 			}
 			switch (this.time) {
-				case 120 * 15: {
+				case MAIN_FPS * 15: {
 					this.ringTimer()
 					break
 				}
-				case 120 * 30: {
+				case MAIN_FPS * 30: {
 					this.ringTimer()
 					break
 				}
@@ -57,18 +57,18 @@ class CenterFourWide {
 	run(bool) {
 		if (this.isTimerEnabled && bool) {
 			this.time--;
-			if (this.time <= 10 * 120 && this.time > 0) {
-				if (this.time % 120 == 0) {
-					this.ringTimer(this.time < 120 * 3.1 ? 1 : '')
-					countDownText(`${(this.time / 120).toFixed(0)}`, false, true)
+			if (this.time <= 10 * MAIN_FPS && this.time > 0) {
+				if (this.time % MAIN_FPS == 0) {
+					this.ringTimer(this.time < MAIN_FPS * 3.1 ? 1 : '')
+					countDownText(`${(this.time / MAIN_FPS).toFixed(0)}`, false, true)
 				}
 			}
 			switch (this.time) {
-				case 120 * 15: {
+				case MAIN_FPS * 15: {
 					this.ringTimer()
 					break
 				}
-				case 120 * 30: {
+				case MAIN_FPS * 30: {
 					this.ringTimer()
 					break
 				}
@@ -246,17 +246,30 @@ const amogusSus = new class extends UltraScoreAttack {
 
 const frenzyWar = new class{
 	constructor() {
-		this.timer = 120 * 15
+		this.timer = MAIN_FPS * 15;
+		this.evalType = "straightforward";
 	}
 	init(){
-		this.timer = 120 * 15
+		this.timer = MAIN_FPS * 15
 	}
 	run(bool, func) {
 		if(bool == true){
 			this.timer--
 			func(this.timer)
 		} else {
-			this.timer = 120*15.1
+			this.timer = MAIN_FPS*15.1
 		}
 	}
 }()
+
+
+class FrenzyWar {
+ construxtor(parent) {
+  this.parent = parent;
+  this.damageCollected = 0;
+  this.damage = 0;
+  this.damageTaken = 0;
+  this.hp = 100;
+  
+ }
+}

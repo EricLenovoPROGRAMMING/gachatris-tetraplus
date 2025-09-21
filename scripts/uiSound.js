@@ -183,7 +183,7 @@ class MobileButtonSystem {
 
   var NX = -90,
    NY = -90,
-   AY = 6;
+   AY = 11;
   this.createButton("harddrop", "assets/menu/control_mobile/harddrop.png", "controller", function() {
    if (gameRunning && !isPaused) class_game.touchesPressed |= flags.HDROP;
   }, 19, 67 + AY, 11, 47, 8.3, 8.3, true);
@@ -203,21 +203,21 @@ class MobileButtonSystem {
   this.createButton("ccw", "assets/menu/control_mobile/ccw.png", "controller", function() {
    if (gameRunning && !isPaused) class_game.touchesPressed |= flags.CCW;
   }, 19 + 50, 83 + AY, NX, NY, 8.3, 8.3, true);
-  this.createButton("c180w", "assets/menu/control_mobile/c180w.png", "controller", function() {
+  /*this.createButton("c180w", "assets/menu/control_mobile/c180w.png", "controller", function() {
    if (gameRunning && !isPaused) class_game.touchesPressed |= flags["180DEG"];
-  }, 4 + 50, 75 + AY, NX, NY, 8.3, 8.3, true);
+  }, 4 + 50, 75 + AY, NX, NY, 8.3, 8.3, true);*/
   this.createButton("cw", "assets/menu/control_mobile/cw.png", "controller", function() {
    if (gameRunning && !isPaused) class_game.touchesPressed |= flags.CW;
   }, 34 + 50, 75 + AY, NX, NY, 8.3, 8.3, true);
 
   this.createButton("restart", "assets/menu/control_mobile/restart.png", "button", function() {
-			gameStart(gameMode);
+			if (!server.isOnline||isReplay) gameStart(gameMode);
   }, 9, 1, -10, 6, 5, 5);
   this.createButton("controls", "assets/menu/control_mobile/ctrls.png", "button", function() {
    this.toggleControllers();
   }.bind(this), 25, 1, -10, 34, 5, 5);
   this.createButton("pause", "assets/menu/control_mobile/pause.png", "button", function() {
-   pause(!isPaused);
+   if (!server.isOnline||isReplay) pause(!isPaused);
   }.bind(this), 40, 1, -10, 68.3, 5, 5);
 
   this.checkButtons()

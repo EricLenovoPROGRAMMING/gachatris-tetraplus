@@ -36,7 +36,8 @@ function Field2(NUMBER, ASSETS) {
 		tSpin: ASSETS.tSpin,
 		REN: ASSETS.REN,
 		B2B: ASSETS.B2B,
-		frenzyTimerText: ASSETS.frenzyTimerText
+		frenzyTimerText: ASSETS.frenzyTimerText,
+		frenzy: ASSETS.frenzy
 	}
 	this.valid = false
 	this.renInteger = 0;
@@ -80,6 +81,7 @@ function Field2(NUMBER, ASSETS) {
 	this.levelMax = 15
 	this.isGravityType = ""
 	this.canCheckGarbageBar = false
+	this.garbageLength = 0;
 	this.are = {
 		add: {
 			piece: 0,
@@ -229,6 +231,7 @@ function Field2(NUMBER, ASSETS) {
 		ren: 0,
 		prev: [],
 	}
+	this.isPowerMode = false;
 }
 
 Field2.prototype = {
@@ -421,6 +424,7 @@ Field2.prototype = {
 			if (selectedSettings.Other.ClearText >= 1) {
 				for (var e of pc) {
 					e.style.animationName = 'none'
+					e.offsetHeight;
 				}
 				$iH(this.mainAssets.perfectClear1, innerHTML)
 				$iH(this.mainAssets.perfectClear2, innerHTML)
@@ -511,10 +515,12 @@ Field2.prototype = {
 	playVoice: function(name) {
 		var vol = selectedSettings.Volume.Character / 100
 		if (vol !== 0) {
-		 for (let b in this.character.voices) this.character.voices[b].stop()
+		 for (let b in this.character.voices) { this.character.voices[b].stop() }
+		 if (name in this.character.voices) {
 			this.character.voices[name].volume(vol)
 			// this.character.voices[name].stop()
 			this.character.voices[name].play()
+		 }
 		}
 	},
 	showResultAnimation: function(bool, str) {
@@ -758,12 +764,13 @@ Field2.prototype = {
 	},
 
 	spinCheck: function() {
+	 /*
 		var booldetect = false
 		var boolline = 0
 		this.isSpin = false;
 		this.isMini = false;
-		if (gachamino2.landed == true && gachamino2.moved == false) {
-			if (gachamino2.index == 5) {
+		if (gachamino.landed == true && gachamino.moved == false) {
+			if (gachamino.index == 5) {
 				var checkPoints = 0
 				this.spinCheckCount = 0;
 				var spinCount = this.spinCheckCount
@@ -771,40 +778,39 @@ Field2.prototype = {
 				this.mini2SpinCount = 0
 
 				for (var i = 0; i < pieces[5].spin.highX[0].length; i++) {
-					if ((this.testSpace(gachamino2.x + pieces[5].spin.highX[gachamino2.pos][i], gachamino2.y + pieces[5].spin.highY[gachamino2.pos][i])) == true && gachamino2.landed == true) {
+					if ((this.testSpace(gachamino.x + pieces[5].spin.highX[gachamino.pos][i], gachamino.y + pieces[5].spin.highY[gachamino.pos][i])) == true && gachamino.landed == true) {
 						this.miniSpinCount++;
 						checkPoints++
 					}
 				}
 
 				for (var i = 0; i < pieces[5].spin.highX[0].length * pieces[5].spin.lowY[0].length; i++) {
-					if ((this.testSpace(gachamino2.x + pieces[5].spin.highX[i][gachamino2.pos], gachamino2.y + pieces[5].spin.lowY[i][gachamino2.pos])) == false && gachamino2.landed == true) {
+					if ((this.testSpace(gachamino.x + pieces[5].spin.highX[i][gachamino.pos], gachamino.y + pieces[5].spin.lowY[i][gachamino.pos])) == false && gachamino.landed == true) {
 						this.mini2SpinCount += 0.5 + (this.miniSpinCount * .2) * (this.spinCheckCount / 0.2);
 					}
 				}
 
 				for (var i = 0; i < pieces[5].spin.lowX[0].length; i++) {
-					if ((this.testSpace(gachamino2.x + pieces[5].spin.lowX[gachamino2.pos][i], gachamino2.y + pieces[5].spin.lowY[gachamino2.pos][i])) == true && gachamino2.landed == true) {
+					if ((this.testSpace(gachamino.x + pieces[5].spin.lowX[gachamino.pos][i], gachamino.y + pieces[5].spin.lowY[gachamino.pos][i])) == true && gachamino.landed == true) {
 						this.spinCheckCount += 0.8
 						checkPoints++;
 					}
 				}
-				if (gachamino2.stsd.y == -2) {
-					if (gachamino2.stsd.x == 1) {
+				if (gachamino.stsd.y == -2) {
+					if (gachamino.stsd.x == 1) {
 						this.spinCheckCount += 0.6
 					}
-					if (gachamino2.stsd.x == -1) {
+					if (gachamino.stsd.x == -1) {
 						this.spinCheckCount += 0.6
 					}
 				}
 				if (checkPoints >= 3) {
-					if (this.miniSpinCount >= 1 && this.spinCheckCount >= 0.7 && gachamino2.spinX == gachamino2.x && gachamino2.spinY == gachamino2.y) {
+					if (this.miniSpinCount >= 1 && this.spinCheckCount >= 0.7 && gachamino.spinX == gachamino.x && gachamino.spinY == gachamino.y) {
 						if (this.miniSpinCount == 2) {
 							this.isSpin = true;
 							this.spinrecog = this.isSpin
 							this.isMini = false
 							this.spinrecogmini = this.isMini
-
 
 						}
 						if (this.miniSpinCount == 1 && this.spinCheckCount >= 1) {
@@ -812,20 +818,22 @@ Field2.prototype = {
 							this.spinrecog = this.isSpin
 							this.isMini = true
 							this.spinrecogmini = this.isMini
+
 						}
 					}
-					if (this.miniSpinCount == 1 && this.spinCheckCount >= 1 && this.mini2SpinCount <= 1 && gachamino2.spinX == gachamino2.x && gachamino2.spinY == gachamino2.y) {
+					if (this.miniSpinCount == 1 && this.spinCheckCount >= 1 && this.mini2SpinCount <= 1 && gachamino.spinX == gachamino.x && gachamino.spinY == gachamino.y) {
 						this.isSpin = false;
 						this.spinrecog = this.isSpin
 						this.isMini = true
 						this.spinrecogmini = this.isMini
+
 					}
-					if (gachamino2.stsd.y == -2 && this.spinCheckCount >= 0.7 && this.miniSpinCount >= 1) {
-						if (gachamino2.stsd.x == 1) {
+					if (gachamino.stsd.y == -2 && this.spinCheckCount >= 0.7 && this.miniSpinCount >= 1) {
+						if (gachamino.stsd.x == 1) {
 							this.isSpin = true
 							this.isMini = false
 						}
-						if (gachamino2.stsd.x == -1) {
+						if (gachamino.stsd.x == -1) {
 							this.isSpin = true
 							this.isMini = false
 						}
@@ -841,6 +849,57 @@ Field2.prototype = {
 			this.spinrecog = this.isSpin
 			this.spinrecogmini = this.isMini
 		}
+		*/
+		let p = gachamino2;
+		let fld = this;
+		let spin = 0;
+		let mini = 0;
+		let x1y2 = 0;
+		let check = 0;
+		let posX = p.x;
+		let posY = ~~(p.y);
+		let rot = p.pos;
+		let a = pieces[p.index].spin;
+		let active = p.index;
+		let isMoveAir = p.landed == true && p.moved == false;
+		if (isMoveAir) {
+			if ((active == 5 || false) && active !== 3) {
+				for (let x = 0, len1 = a.highX[rot].length; x < len1; x++) {
+					if (this.testSpace(posX + a.highX[rot][x], posY + a.highY[rot][x])) {
+						spin++;
+						check++;
+					}
+				}
+				for (let x = 0, len1 = a.lowX[rot].length; x < len1; x++) {
+					if (this.testSpace(posX + a.lowX[rot][x], posY + a.lowY[rot][x])) {
+						mini++;
+						check++;
+					}
+				}
+				if (p.stsd.y == -2 && (p.stsd.x >= 1 || p.stsd.x <= -1)) {
+					x1y2++;
+				}
+			}
+		}
+
+		fld.isSpin = 0;
+		fld.isMini = 0;
+		//this.piece.spin.x1y2 = 0;
+
+		if (check >= 3 && !gachamino.hardDropEnabled) {
+			if (x1y2 > 0) {
+				fld.isSpin = 1;
+			} else {
+				if (spin > 1) {
+					fld.isSpin = 1;
+				} else if (mini > 1) {
+					fld.isMini = 1;
+				}',x'
+
+			}
+		}
+		this.spinrecog = this.isSpin;
+		this.spinrecogmini = this.isMini;
 	},
 	removeLines: function() {
 		var doesBlockExist = false
@@ -871,6 +930,7 @@ Field2.prototype = {
 		this.draw()
 	},
 	rng: new ParkMillerPRNG(),
+	garbagerng: new ParkMillerPRNG(),
 	fieldResult: function(title, downfall, winlose) {
 		this.checkWarning('stop');
 		if (this.isActive) {
@@ -885,7 +945,7 @@ Field2.prototype = {
 				this.mainAssets["gtris-body"].style.animationDuration = '4s'
 				this.mainAssets["gtris-body"].style.animationTimingFunction = 'linear'
 				this.isActive = false
-				setTimeout(() => this.playVoice("win"), 2000)
+				setTimeout(() => this.playVoice("win"), 2500)
 			} else if (winlose == 'lose') {
 				this.showResultAnimation('lose', typeof title !== 'object' ? gtris_transText(title) : gtris_transText(title.name, title.array))
 				soundPlayer.playse('game-lose')
@@ -893,7 +953,7 @@ Field2.prototype = {
 				setTimeout(() => this.playVoice("lose"), 500)
 				if ((this.is1v1 == "garbage" || this.is1v1 == "frenzywar")) {
 					field.fieldResult("onevone_pwinres", false, "win")
-					endGame({ name: "onevone_pwin", array: replayData.tuning.name == "" ? gtris_character_details(settingsList.NonIterable.Character[field.character.current]).name : replayData.tuning.name }, "lose")
+					endGame({ name:server.isOnline ? "onevone_pwin_you" : "onevone_pwin", array: replayData.name == "" ? gtris_character_details(settingsList.NonIterable.Character[field.character.current]).name : replayData.name }, "lose")
 				}
 			} else if (winlose !== void 0) {
 				this.showResultAnimation('win', typeof title !== 'object' ? gtris_transText(title) : gtris_transText(title.name, title.array))
@@ -942,13 +1002,20 @@ Field2.prototype = {
 		if (this.canCheckGarbageBar && this.canCheckGarbageBar !== "custom")
 			this.checkGarbageBar()
 	},
-	addGarbageToArray: function(count, row) {
+	addGarbageToArray: function(count) {
 		var _count = count || 0
+		var row = Math.floor(this.garbagerng.next() * 10);
 		for (var e = 0; e < _count; e++)
 			this.garbageArray.push({
 			 row: row,
 			 frame: frame + 60
-			})
+			});
+			if (_count > 0 && !isReplay) {
+				if (frame in replayData.player2.garbage) {
+	replayData.player2.garbage[frame].push(_count);
+} else
+	replayData.player2.garbage[frame] = [_count];
+			}
 		if (this.canCheckGarbageBar && this.canCheckGarbageBar !== "custom")
 			this.checkGarbageBar()
 	},
@@ -985,27 +1052,30 @@ Field2.prototype = {
 		}
 
 
-		if (this.is1v1 == "garbage")
-			var ROW = Math.floor(this.rng.next() * 9.99999);
+		
 		if (count > this.garbageArray.length && this.garbageArray.length > 0 && line >= 3 && !pc) {
 			this.counterVoice = true
 		} else this.counterVoice = false
+		let ga = 0;
 		for (var e = 0; e < _count; e++) {
 			if (this.garbageArray.length > 0) {
 				this.garbageArray.shift()
-			} else if (this.is1v1 == "garbage") {
-				field.addGarbageToArray(1, ROW)
+			} else if (this.is1v1 == "garbage" && !isReplay) {
+				ga++;
 			} else if (this.is1v1 == "frenzywar") {
 				this.frenzyWar.garbageContributed++
 			}
 			this.statistics.atk++
+		}
+		if (ga > 0) {
+			field.addGarbageToArray(ga)
 		}
 		if (this.canCheckGarbageBar && this.canCheckGarbageBar !== "custom")
 			this.checkGarbageBar()
 	},
 	checkGarbageBar: function(change, color) {
 		if (this.canCheckGarbageBar == true) {
-			docId(this.mainAssets.meter_A).style.marginTop = docId(this.mainAssets["meter_A-under"]).style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * this.garbageArray.length))}px`
+			docId(this.mainAssets.meter_A).style.marginTop = docId(this.mainAssets["meter_A-under"]).style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * ((!isReplay && server.isOnline && server.isRunning) ? this.garbageLength : this.garbageArray.length)))}px`
 			this.checkWarning(this.valid ? void 0 : 'stop')
 		} else if (this.canCheckGarbageBar == "custom") {
 			docId(this.mainAssets.meter_A).style.marginTop = docId(this.mainAssets["meter_A-under"]).style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * (change || 0) * 20.4))}px`
@@ -1039,23 +1109,23 @@ Field2.prototype = {
 	checkFrenzyBar: function() {
 		if (this.isFrenzy) {
 			meterBar.frenzy2.style.marginTop = `${Math.max(0,(totalTetrionSize*20.4)-(totalTetrionSize * ((this.frenzy.timer / this.frenzy.maxTimer)*20.4)))}px`
-			$iH(this.mainAssets.frenzyTimerText, Math.max(0, Math.ceil(this.frenzy.timer / 120)))
+			$iH(this.mainAssets.frenzyTimerText, Math.max(0, Math.ceil(this.frenzy.timer / MAIN_FPS)))
 		}
 	},
 	frenzyTimerRun: function() {
 		if (this.isFrenzy == true && this.frenzy.timerEnabled == true && this.isActive) {
 			this.frenzy.timer--
-			if (this.frenzy.timer <= 10 * 120 && this.frenzy.timer > 0) {
-				if (this.frenzy.timer % 120 == 0) {
-					soundPlayer.playse(`hurry${this.frenzy.timer < 120 * 3.1 ? '2' : ''}`)
+			if (this.frenzy.timer <= 10 * MAIN_FPS && this.frenzy.timer > 0) {
+				if (this.frenzy.timer % MAIN_FPS == 0) {
+					soundPlayer.playse(`hurry${this.frenzy.timer < MAIN_FPS * 3.1 ? '2' : ''}`)
 				}
 			}
 			switch (this.frenzy.timer) {
-				case 120 * 15: {
+				case MAIN_FPS * 15: {
 					soundPlayer.playse('hurry')
 					break
 				}
-				case 120 * 30: {
+				case MAIN_FPS * 30: {
 					soundPlayer.playse('hurry')
 					break
 				}
@@ -1137,11 +1207,11 @@ Field2.prototype = {
 		var a = $CN(`gtris-rainbow-border-${this.mainAssets.classP}`)
 		var b = $CN(`gtris-rainbow-bg-${this.mainAssets.classP}`)
 		var bg = docId(this.mainAssets.bgFrenzyLayout)
-		var spin = docId(this.mainAssets.dynamicFrenzyBg)
-  spin.offsetHeight;
+		//var spin = docId(this.mainAssets.dynamicFrenzyBg)
+  //spin.offsetHeight;
 
 		bg.style.display = "none"
-		spin.style.animationName = "none"
+		//spin.style.animationName = "none"
 
 		for (let e of a) {
 			e.style.animationName = "none"
@@ -1158,24 +1228,24 @@ Field2.prototype = {
 				b[e].style.animationName = "frenzyFill"
 			}
 			bg.style.display = "flex"
-			spin.style.animationName = "bgFrenzyRot"
+			//spin.style.animationName = "bgFrenzyRot"
 		}
 
 	},
 
 	changeFrenzyColor: function(type, col, speed) {
 		var e = docId(this.mainAssets.colorFrenzyOverlay)
-		var d = docId(this.mainAssets.dynamicFrenzyBg)
-		const b = ["#222", "#066", "#006", "#610", "#660", "#060", "#606", "#600"]
+		//var d = docId(this.mainAssets.dynamicFrenzyBg)
+		const b = ["#111", "#0aa", "#00a", "#a50", "#aa0", "#0a0", "#a0a", "#a00"]
 		if (type == "change") {
 			e.style.background = col == "n" ? b[0] : b[gachamino2.index + 1]
 		}
 		if (typeof speed !== "undefined") {
-			d.style.animationDuration = speed == "fast" ? "700ms" : "2500ms"
+			//d.style.animationDuration = speed == "fast" ? "700ms" : "2500ms"
 		}
 		if (type == "restore") {
 			e.style.background = b[0]
-			d.style.animationDuration = '2500ms'
+	  //d.style.animationDuration = '2500ms'
 		}
 	},
 
@@ -1258,7 +1328,8 @@ Field2.prototype = {
 							getElemPos(this.mainAssets.playField, "y") + getElemPos("wholeCanvas", "height") + (Math.random() * 50 * totalTetrionSize),
 							this.isFrenzy ? 70 : 150,
 							1,
-							"fallField"
+							"fallField",
+							Math.random() * MAIN_FPS - (Math.random() * MAIN_FPS)
 						)
 
 
@@ -1345,6 +1416,7 @@ Field2.prototype = {
 		}
 
 		if (linesDetection == 0) {
+	 this.isPowerMode = false;
 			if (!this.isFrenzyOngoing && !this.isFrenzy)
 				this.addGarbageToField()
 			if (this.renInteger > 1) {
@@ -1372,8 +1444,8 @@ Field2.prototype = {
 			if (this.isFrenzy) {
 				this.frenzy.failTrigger = true
 				this.frenzy.fails++
-				this.are.next = 80
-				this.are.del = 70
+				this.are.next = 40
+				this.are.del = 35
 				for (var x = 0; x < this.width; x++) {
 					for (var y = 0; y < this.height; y++) {
 						if (this.grid[x][y] !== 0 && this.testSpace(x, y)) {
@@ -1402,12 +1474,17 @@ Field2.prototype = {
 			}
 
 
-			this.renInteger++
+			this.renInteger++;
+			if (this.renInteger > 1 && (linesDetection > 3 || (this.isSpin && linesDetection > 1))) this.isPowerMode = true;
+
+
 			if (this.renInteger > 0) {
-				this.showClearTextREN('show', gtris_transText('combo', this.renInteger))
+				this.showClearTextREN('show', gtris_transText('combo', this.renInteger));
 				this.score += this.renInteger * 50 * this.level
 				if (!this.isFrenzy) {
-					soundPlayer.playse(`ren${Math.min(20,this.renInteger)}`)
+					soundPlayer.playse(`ren${Math.min(20,this.renInteger)}`);
+					if (this.isPowerMode)	soundPlayer.playse(`ren${Math.min(20,this.renInteger)}_power`);
+					
 					if (SCREEN_WIDTH * 0.8 > SCREEN_HEIGHT && selectedSettings.Other.Particle >= 4)
 					 for (let e = 0; e < Math.min(20, this.renInteger); e++)
 					  GTRISParticleManagement.addParticle(
@@ -1431,6 +1508,8 @@ Field2.prototype = {
 			} else {
 				this.totalStrength = 0
 				this.frenzy.initVoice++
+				PLAYERS[1].frenzyBg.moveEye(gachamino2.x,gachamino2.y - (this.height - 20.4), false);
+    
 				this.changeFrenzyColor("change", "", "fast")
 				if (this.frenzy.requireLines <= 0) {
 					this.frenzy.successTrigger = true
@@ -1475,18 +1554,18 @@ Field2.prototype = {
 			}
 			if (this.frenzy.activatorGauge >= Math.max(this.frenzyactivatorMax, 0)) {
 				if (!this.isFrenzy) {
-					this.are.frenzyEnt = 200
+					this.are.frenzyEnt = 100
 				}
 			}
 		}
 
 		if (this.frenzy.fails >= this.frenzy.failMax && this.frenzy.timer > 0) {
 			this.are.failing = 1
-			this.are.frenzyExt = 30
+			this.are.frenzyExt = 15
 		}
 
 		if (this.isFrenzy && this.frenzy.timer <= 0) {
-			this.are.frenzyExt = 20
+			this.are.frenzyExt = 10
 		}
 
 		this.draw();
@@ -1505,7 +1584,7 @@ Field2.prototype = {
 		this.mainAssets["gtris-body"].style.transform = 'translateY(0) rotateZ(0deg)'
 	},
 
-	showClearText: function(compo, text, animation, aText, isEffect) {
+	showClearText: function(compo, text, animation, aText, isEffect, acolor) {
 		let components = $(`#${this.mainAssets.regular}`),
 			docid = docId(this.mainAssets.regular)
 		docid.style.opacity = "0%"
@@ -1520,26 +1599,20 @@ Field2.prototype = {
 			components.animate({ opacity: 1, letterSpacing: `${totalTetrionSize * 0.13}px` }, 1800, 'linear')
 			components.animate({ opacity: 0, letterSpacing: `${totalTetrionSize * 0.13}px` }, 200, 'linear')
 		} else if (selectedSettings.Other.ClearText == 2) {
-			if (animation == "outward") {
-				$iH(this.mainAssets.regular, aText ? (isEffect ? (() => {
+			$iH(this.mainAssets.regular, aText ? (isEffect ? (() => {
 					var a = aText.split("")
 					var e = ""
 					for (var t = 0, len = a.length; t < len; t++) {
-						e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
+						e += `<span class="gtrisLetter" style="--acolor: ${acolor}; animation: gtrisCLEARTEXTAnim 1.5s 1 ease-out ${t * 0.04}s; opacity: 0%">${a[t]}</span>`
 					}
 					return e
 				})() : aText) : text)
+			if (animation == "outward") {
+				
 				requestAnimationFrame(() => docid.style.animation = "cleartextOutward 2.1s 1 ease-out")
 			}
 			else if (animation == "inward") {
-				$iH(this.mainAssets.regular, aText ? (isEffect ? (() => {
-					var a = aText.split("")
-					var e = ""
-					for (var t = 0, len = a.length; t < len; t++) {
-						e += `<span class="gtrisLetter" style="animation: gtrisCLEARTEXTAnim 2.1s 1 ease-out ${t * 0.12}s; opacity: 0%">${a[t]}</span>`
-					}
-					return e
-				})() : aText) : text)
+				
 				requestAnimationFrame(() => docid.style.animation = "cleartextInward 2.1s 1 ease-out")
 			}
 		}
@@ -1646,13 +1719,13 @@ Field2.prototype = {
 			this.showClearText('', gtris_transText('line2'), "outward")
 		}
 		if (line == 3) {
-			this.showClearText('', gtris_transText('line3'), "outward")
+			this.showClearText('', gtris_transText('line3'), this.linespinrecog ? "inward" : "outward", gtris_transText('line3'), this.linespinrecog, "#80FF")
 		}
 		if (line == 4) {
-			this.showClearText('', gtris_transText('line4'), "inward", gtris_transText('line4'), true)
+			this.showClearText('', gtris_transText('line4'), "inward", gtris_transText('line4'), true, "#0CCF")
 		}
 		if (line >= 5) {
-			this.showClearText('', gtris_transText('line5'), "inward", gtris_transText('line5'), true)
+			this.showClearText('', gtris_transText('line5'), "inward", gtris_transText('line5'), true, "#0CCF")
 		}
 
 		if (mini) {
@@ -1902,10 +1975,6 @@ Field2.prototype = {
 		if (stop == 'stop') checked = false
 		if (checked && stop !== 'stop' && !this.isC4W && !this.isFrenzy && stop !== "warning") {
 			if (!this.warning) {
-				soundPlayer.stopse('alarm')
-				if (stop !== 'stop') {
-					soundPlayer.playse('alarm')
-				}
 				docId(this.mainAssets.holdTextPlaceholder).style.backgroundColor = "#f00"
 				docId(this.mainAssets.nextTextPlaceholder).style.backgroundColor = "#f00"
 				docId(this.mainAssets.playField).style.borderColor = "#f00"
@@ -1917,30 +1986,25 @@ Field2.prototype = {
 				this.warning = true
 			}
 		} else {
-			if (this.warning) {
+			if (this.warning || stop == "reset") {
 				this.warning = false
-				docId(this.mainAssets.holdTextPlaceholder).style.backgroundColor = "#fff"
-				docId(this.mainAssets.nextTextPlaceholder).style.backgroundColor = "#fff"
-				docId(this.mainAssets.playField).style.borderColor = "#fff"
-				docId(this.mainAssets.meterBarRight).style.borderColor = "#fff"
-				docId(this.mainAssets.meterBarLeft).style.borderColor = "#fff"
-				soundPlayer.stopse("alarm")
-				soundPlayer.fadese('alarm', 100, 0, 0)
+				let amc = "#FAA";
+				docId(this.mainAssets.holdTextPlaceholder).style.backgroundColor = amc;
+				docId(this.mainAssets.nextTextPlaceholder).style.backgroundColor = amc;
+				docId(this.mainAssets.playField).style.borderColor = amc;
+				docId(this.mainAssets.meterBarRight).style.borderColor = amc;
+				docId(this.mainAssets.meterBarLeft).style.borderColor = amc;
 				if (this.isFieldEnable && stop !== 'stop' && stop !== 'paused') {
 					docId(this.mainAssets.characterBackground).src = this.character.fields.normal
 				}
 			}
 		}
 		if (this.warning && stop == 'paused') {
-			soundPlayer.fadese('alarm', 100, 0, 0)
-			soundPlayer.pausese('topoutwarning')
-			soundPlayer.pausese('alarm')
+			
 		}
 		if (this.warning && stop == 'resumed') {
-			soundPlayer.playse('alarm')
-			if (gachamino2.lockoutActive) {
-				soundPlayer.playse('topoutwarning')
-			}
+			//soundPlayer.playse('alarm')
+			
 		}
 	},
 
@@ -2228,4 +2292,5 @@ const field2 = new Field2(1, {
 	TEXT_next: "TEXT_next2",
 	TEXT_hold: "TEXT_hold2",
 	frenzyTimerText: "frenzyTimerText2",
+	frenzy: "frenzyCanvas2"
 })
