@@ -1,0 +1,398 @@
+{
+	"sources": {
+		"land": "land.ogg",
+		"b2b": "b2b.ogg",
+		"rotate": "rotate.ogg",
+		"harddrop": "harddrop.ogg",
+		"move": "move.ogg",
+		"lock": "lock.ogg",
+		"hold": "hold.ogg",
+		"game-2": "game-2.ogg",
+		"game-3": "game-3.ogg",
+		"game-1": "game-1.ogg",
+		"prespin": "prespin.ogg",
+		"bravo": "bravo.ogg",
+		"ihs": "ihs.ogg",
+		"irs": "irs.ogg",
+		"hurry2": "hurry2.ogg",
+		"game-win": "game-win.ogg",
+		"pause": "pause.ogg",
+		"collapse": "collapse.ogg",
+		"game-start": "game-start.ogg",
+		"game-lose": "game-lose.ogg",
+		"hurry": "hurry.ogg",
+		"timeup": "timeup.ogg",
+		"levelup": "levelup.ogg",
+		"frenzy": "frenzy.ogg",
+		"ren1": "ren/ren1.ogg",
+		"lineup": "lineup.ogg",
+		"ren2": "ren/ren2.ogg",
+		"ren3": "ren/ren3.ogg",
+		"ren5": "ren/ren5.ogg",
+		"ren4": "ren/ren4.ogg",
+		"ren6": "ren/ren6.ogg",
+		"ren7": "ren/ren7.ogg",
+		"ren9": "ren/ren9.ogg",
+		"ren10": "ren/ren10.ogg",
+		"ren8": "ren/ren8.ogg",
+		"ren11": "ren/ren11.ogg",
+		"ren12": "ren/ren12.ogg",
+		"ren14": "ren/ren14.ogg",
+		"ren15": "ren/ren15.ogg",
+		"ren13": "ren/ren13.ogg",
+		"ren16": "ren/ren16.ogg",
+		"ren17": "ren/ren17.ogg",
+		"ren18": "ren/ren18.ogg",
+		"ren20": "ren/ren20.ogg",
+		"line": "line.ogg",
+		"ren19": "ren/ren19.ogg",
+		"tspin0": "tspin0.ogg",
+		"tspin": "tspin.ogg",
+		"line4E": "line4b2b.ogg",
+		"topoutwarning": "topoutwarning.ogg",
+		"alarm": "alarm.ogg",
+		"line4": "line4.ogg"
+	},
+	"init": {
+		"land": {
+			"src": "land",
+			"loop": false
+		},
+		"firsthold": {
+			"src": "hold",
+			"loop": false
+		},
+		"harddrop": {
+			"src": "harddrop",
+			"loop": false
+		},
+		"prespinmini": {
+			"src": "prespin",
+			"loop": false
+		},
+		"move": {
+			"src": "move",
+			"loop": false
+		},
+		"lock": {
+			"src": "lock",
+			"loop": false
+		},
+		"rotate": {
+			"src": "rotate",
+			"loop": false
+		},
+		"hold": {
+			"src": "hold",
+			"loop": false
+		},
+		"ihs": {
+			"src": "ihs",
+			"loop": false
+		},
+		"game-3": {
+			"src": "game-3",
+			"loop": false
+		},
+		"game-1": {
+			"src": "game-1",
+			"loop": false
+		},
+		"pause": {
+			"src": "pause",
+			"loop": false
+		},
+		"irs": {
+			"src": "irs",
+			"loop": false
+		},
+		"hurry": {
+			"src": "hurry",
+			"loop": false
+		},
+		"game-2": {
+			"src": "game-2",
+			"loop": false
+		},
+		"timeup": {
+			"src": "timeup",
+			"loop": false
+		},
+		"hurry2": {
+			"src": "hurry2",
+			"loop": false
+		},
+		"levelup": {
+			"src": "levelup",
+			"loop": false
+		},
+		"prespin": {
+			"src": "prespin",
+			"loop": false
+		},
+		"game-start": {
+			"src": "game-start",
+			"loop": false
+		},
+		"game-lose": {
+			"src": "game-lose",
+			"loop": false
+		},
+		"bravo": {
+			"src": "bravo",
+			"loop": false
+		},
+		"game-win": {
+			"src": "game-win",
+			"loop": false
+		},
+		"collapse": {
+			"src": "collapse",
+			"loop": false
+		},
+		"lineup": {
+			"src": "lineup",
+			"loop": false
+		},
+		"ren3": {
+			"src": "ren3",
+			"loop": false
+		},
+		"ren1": {
+			"src": "ren1",
+			"loop": false
+		},
+		"ren2_power": {
+			"src": "ren2",
+			"loop": false
+		},
+		"ren3_power": {
+			"src": "ren3",
+			"loop": false
+		},
+		"ren4_power": {
+			"src": "ren4",
+			"loop": false
+		},
+		"ren7_power": {
+			"src": "ren7",
+			"loop": false
+		},
+		"ren9_power": {
+			"src": "ren9",
+			"loop": false
+		},
+		"ren2": {
+			"src": "ren2",
+			"loop": false
+		},
+		"ren4": {
+			"src": "ren4",
+			"loop": false
+		},
+		"ren6": {
+			"src": "ren6",
+			"loop": false
+		},
+		"ren5_power": {
+			"src": "ren5",
+			"loop": false
+		},
+		"ren7": {
+			"src": "ren7",
+			"loop": false
+		},
+		"ren9": {
+			"src": "ren9",
+			"loop": false
+		},
+		"ren6_power": {
+			"src": "ren6",
+			"loop": false
+		},
+		"ren10_power": {
+			"src": "ren10",
+			"loop": false
+		},
+		"ren8_power": {
+			"src": "ren8",
+			"loop": false
+		},
+		"ren10": {
+			"src": "ren10",
+			"loop": false
+		},
+		"ren5": {
+			"src": "ren5",
+			"loop": false
+		},
+		"ren8": {
+			"src": "ren8",
+			"loop": false
+		},
+		"ren11": {
+			"src": "ren11",
+			"loop": false
+		},
+		"ren11_power": {
+			"src": "ren11",
+			"loop": false
+		},
+		"ren12_power": {
+			"src": "ren12",
+			"loop": false
+		},
+		"ren13_power": {
+			"src": "ren13",
+			"loop": false
+		},
+		"ren15": {
+			"src": "ren15",
+			"loop": false
+		},
+		"ren14": {
+			"src": "ren14",
+			"loop": false
+		},
+		"ren12": {
+			"src": "ren12",
+			"loop": false
+		},
+		"ren13": {
+			"src": "ren13",
+			"loop": false
+		},
+		"ren16": {
+			"src": "ren16",
+			"loop": false
+		},
+		"ren14_power": {
+			"src": "ren14",
+			"loop": false
+		},
+		"ren17": {
+			"src": "ren17",
+			"loop": false
+		},
+		"ren19": {
+			"src": "ren19",
+			"loop": false
+		},
+		"ren15_power": {
+			"src": "ren15",
+			"loop": false
+		},
+		"ren16_power": {
+			"src": "ren16",
+			"loop": false
+		},
+		"ren17_power": {
+			"src": "ren17",
+			"loop": false
+		},
+		"ren18_power": {
+			"src": "ren18",
+			"loop": false
+		},
+		"ren19_power": {
+			"src": "ren19",
+			"loop": false
+		},
+		"ren20_power": {
+			"src": "ren20",
+			"loop": false
+		},
+		"line1": {
+			"src": "line",
+			"loop": false
+		},
+		"line3": {
+			"src": "line",
+			"loop": false
+		},
+		"line2": {
+			"src": "line",
+			"loop": false
+		},
+		"line5": {
+			"src": "line4",
+			"loop": false
+		},
+		"line5E": {
+			"src": "line4E",
+			"loop": false
+		},
+		"ren18": {
+			"src": "ren18",
+			"loop": false
+		},
+		"ren20": {
+			"src": "ren20",
+			"loop": false
+		},
+		"tspin0": {
+			"src": "tspin0",
+			"loop": false
+		},
+		"tspin1": {
+			"src": "tspin",
+			"loop": false
+		},
+		"tspin1E": {
+			"src": "tspin",
+			"loop": false
+		},
+		"tspin2": {
+			"src": "tspin",
+			"loop": false
+		},
+		"tspin2E": {
+			"src": "tspin",
+			"loop": false
+		},
+		"tspin3": {
+			"src": "tspin",
+			"loop": false
+		},
+		"tspin3E": {
+			"src": "tspin",
+			"loop": false
+		},
+		"mini0": {
+			"src": "tspin0",
+			"loop": false
+		},
+		"mini2E": {
+			"src": "tspin",
+			"loop": false
+		},
+		"mini1": {
+			"src": "tspin",
+			"loop": false
+		},
+		"mini1E": {
+			"src": "tspin",
+			"loop": false
+		},
+		"mini2": {
+			"src": "tspin",
+			"loop": false
+		},
+		"line4": {
+			"src": "line4",
+			"loop": false
+		},
+		"line4E": {
+			"src": "line4E",
+			"loop": false
+		},
+		"topoutwarning": {
+			"src": "topoutwarning",
+			"loop": true
+		},
+		"alarm": {
+			"src": "alarm",
+			"loop": true
+		}
+	}
+}
