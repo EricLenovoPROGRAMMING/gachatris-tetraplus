@@ -168,7 +168,7 @@ gtris-listCell-Details {
 }
 
 gtris-subdiv>gtris-list {
-  display: block;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
