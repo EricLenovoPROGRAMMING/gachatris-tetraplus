@@ -106,7 +106,7 @@ class BinaryReader {
 
 
 const server = new class {
-	#urls = ["ws://localhost:2400", "wss://curly-parakeet-9gqqv7xgx442px54-2400.app.github.dev"];
+	#urls = ["wss://expert-bassoon-7jrrqvxjq5g2g65-2400.app.github.dev"];
 	#socket = {};
 	userID = null;
 	roomID = null;
